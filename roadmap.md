@@ -1,5 +1,5 @@
 # TellHer foundation
-- [ ] Editorial design system and public landing page
-- [ ] Real accounts and private profile storage
-- [ ] Protected app shell, navigation, and six empty states
-- [ ] Desktop/mobile navigation, focus, and readability verification
+- [x] Editorial design system and public landing page
+- [x] Real accounts and private profile storage
+- [x] Protected app shell, navigation, and six empty states
+- [x] Desktop/mobile navigation, focus, and readability verification
