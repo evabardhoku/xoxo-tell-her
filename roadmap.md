@@ -17,4 +17,4 @@
 - [x] Trusted Picks in MyCircle: own picks + picks from direct circle with provenance, no ratings
 # Publication
 - [ ] (on hold, user asked) Publish and verify the live site as a first-time reviewer
-- [ ] Fictional members connected to Eva's account with Ripples, replies and picks
+- [x] Fictional members connected to Eva's account with Ripples, replies and picks
