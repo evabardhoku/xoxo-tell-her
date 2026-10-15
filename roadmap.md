@@ -14,6 +14,6 @@
 - [x] Optional AI perspective synthesis on question pages
 - [x] Integration pass and fictional demo network
 # Trusted Picks
-- [ ] Trusted Picks in MyCircle: own picks + picks from direct circle with provenance, no ratings
+- [x] Trusted Picks in MyCircle: own picks + picks from direct circle with provenance, no ratings
 # Publication
 - [ ] Publish and verify the live site as a first-time reviewer

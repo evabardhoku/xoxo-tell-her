@@ -46,4 +46,8 @@ await reply('june', q2, 'watch_wait', 'I’d see how they respond to a general t
 await ask('lina', 'Housing & Moving', 'A landlord asked me to pay the deposit in cash before viewing the flat in person. The listing photos look great. What would you want to check first?', 'circle', 'feels_off', null);
 await ask('sofia', 'Dating & Boundaries', 'After two dates he suggested we share locations on our phones “so we always know the other is safe.” I like him, but it feels fast. How have others handled this?', 'extended', 'unsure', null);
 await ask('noor', 'Everyday Life', 'A neighbour I barely know asked if she could leave her spare key with me while she travels. Is it reasonable to say no?', 'community', 'feels_okay', null);
+const pick = async (who: string, category: string, title: string, note: string, location: string | null) => { const { error } = await c[who]!.from('trusted_picks').insert({ owner_id: id[who]!, category, title, note, location }); if (error) throw error; };
+await pick('lina', 'Services', 'A locksmith who quotes before starting', 'She told me the price on the phone, arrived on time and didn’t upsell anything.', 'Rome · Trastevere');
+await pick('sofia', 'Health & Care', 'A GP who listens without rushing', 'She took my questions seriously and explained the options plainly.', null);
+await pick('sofia', 'Travel', 'Women-run guesthouse with clear check-in', 'They sent written check-in instructions and never asked for flight details.', 'Lisbon');
 console.log('Seeded demo. Sign in as maya.demo@example.com /', PASSWORD);
