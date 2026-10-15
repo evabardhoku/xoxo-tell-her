@@ -305,23 +305,35 @@ export type Database = {
       }
       wingwoman_sessions: {
         Row: {
+          context: string | null
           created_at: string
           id: string
+          instinct: string | null
           owner_id: string
+          reflection: Json | null
+          situation: string | null
           title: string
           updated_at: string
         }
         Insert: {
+          context?: string | null
           created_at?: string
           id?: string
+          instinct?: string | null
           owner_id: string
+          reflection?: Json | null
+          situation?: string | null
           title?: string
           updated_at?: string
         }
         Update: {
+          context?: string | null
           created_at?: string
           id?: string
+          instinct?: string | null
           owner_id?: string
+          reflection?: Json | null
+          situation?: string | null
           title?: string
           updated_at?: string
         }

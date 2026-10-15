@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, LockKeyhole } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -9,11 +9,13 @@ import { Input } from '@/components/ui/input';
 import { pageHead } from '@/lib/metadata';
 import { categories, errorText, feedQuery, instincts, reachPreview, reaches, type Reach } from '@/lib/askher';
 
-export const Route = createFileRoute('/_authenticated/ripple')({ head: () => pageHead('Start a Trust Ripple', 'Ask a sensitive question anonymously and choose how far it travels.'), component: Composer });
+export const Route = createFileRoute('/_authenticated/ripple')({ validateSearch: (s: Record<string, unknown>): { from?: string } => (typeof s['from'] === 'string' ? { from: s['from'] } : {}), head: () => pageHead('Start a Trust Ripple', 'Ask a sensitive question anonymously and choose how far it travels.'), component: Composer });
 
 const steps = ['Question', 'My Instinct', 'Reach', 'Review & Send'];
+const contextCategory: Record<string, string> = { Dating: 'Dating & Boundaries', Work: 'Work' };
 
 function Composer() {
+ const { from } = Route.useSearch();
  const [step, setStep] = useState(0);
  const [category, setCategory] = useState('');
  const [body, setBody] = useState('');
@@ -22,6 +24,13 @@ function Composer() {
  const [scope, setScope] = useState<Reach | ''>('');
  const [error, setError] = useState(''); const [busy, setBusy] = useState(false);
  const qc = useQueryClient(); const navigate = useNavigate();
+ useEffect(() => {
+  if (!from) return;
+  supabase.from('wingwoman_sessions').select('context, situation, instinct').eq('id', from).maybeSingle().then(({ data }) => {
+   if (!data) return;
+   setBody((data.situation ?? '').slice(0, 2000)); setInstinct(data.instinct ?? ''); setCategory(contextCategory[data.context ?? ''] ?? '');
+  });
+ }, [from]);
  const preview = useQuery({ queryKey: ['reach-preview'], queryFn: async () => {
   const [c, e] = await Promise.all([supabase.rpc('tellher_reach_preview', { _scope: 'circle' }), supabase.rpc('tellher_reach_preview', { _scope: 'extended' })]);
   if (c.error) throw c.error; if (e.error) throw e.error; return { circle: c.data ?? 0, extended: e.data ?? 0, community: null };
