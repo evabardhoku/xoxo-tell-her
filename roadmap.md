@@ -3,3 +3,9 @@
 - [x] Real accounts and private profile storage
 - [x] Protected app shell, navigation, and six empty states
 - [x] Desktop/mobile navigation, focus, and readability verification
+
+# Secure account and data foundation
+- [x] Extend private profiles and require explicit community self-attestation
+- [x] Prepare locked-down trust connections, questions, and private question metadata
+- [x] Add private avatar uploads and complete account onboarding
+- [x] Verify persistent sessions, profile readback, and cross-account privacy

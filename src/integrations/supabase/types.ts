@@ -16,28 +16,157 @@ export type Database = {
     Tables: {
       profiles: {
         Row: {
+          avatar_path: string | null
+          bio: string | null
+          city: string | null
+          country: string | null
           created_at: string
           display_name: string
+          first_name: string
           id: string
+          last_name: string
+          updated_at: string
+          woman_attested_at: string | null
+        }
+        Insert: {
+          avatar_path?: string | null
+          bio?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          display_name?: string
+          first_name?: string
+          id: string
+          last_name?: string
+          updated_at?: string
+          woman_attested_at?: string | null
+        }
+        Update: {
+          avatar_path?: string | null
+          bio?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          display_name?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          updated_at?: string
+          woman_attested_at?: string | null
+        }
+        Relationships: []
+      }
+      question_private_meta: {
+        Row: {
+          created_at: string
+          initial_instinct: string | null
+          owner_id: string
+          question_id: string
         }
         Insert: {
           created_at?: string
-          display_name?: string
-          id: string
+          initial_instinct?: string | null
+          owner_id: string
+          question_id: string
         }
         Update: {
           created_at?: string
-          display_name?: string
+          initial_instinct?: string | null
+          owner_id?: string
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_private_meta_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "question_private_meta_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: true
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      questions: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          reach: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
           id?: string
+          reach?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          reach?: string
+          status?: string
+          updated_at?: string
         }
         Relationships: []
+      }
+      trust_connections: {
+        Row: {
+          created_at: string
+          id: string
+          recipient_id: string
+          requester_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          recipient_id: string
+          requester_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          recipient_id?: string
+          requester_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trust_connections_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trust_connections_requester_id_fkey"
+            columns: ["requester_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      tellher_member_ready: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
