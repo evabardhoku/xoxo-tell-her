@@ -1,0 +1,29 @@
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
+import { useEffect, useState, type FormEvent } from 'react';
+import { ArrowRight } from 'lucide-react';
+import { Brand } from '@/components/brand';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { supabase } from '@/integrations/supabase/client';
+import { lovable } from '@/integrations/lovable';
+import { useAccount } from '@/hooks/account';
+import { pageHead } from '@/lib/metadata';
+
+export const Route = createFileRoute('/auth')({ head: () => pageHead('Welcome', 'Sign in or create your TellHer account. A little closer. A little wiser.'), component: Auth });
+function Auth() {
+ const [mode, setMode] = useState<'signin' | 'signup' | 'forgot'>('signin'); const [error, setError] = useState(''); const [message, setMessage] = useState(''); const [busy, setBusy] = useState(false);
+ const { user, ready } = useAccount(); const navigate = useNavigate();
+ useEffect(() => { if (ready && user) void navigate({ to: '/home', replace: true }); }, [user, ready, navigate]);
+ async function submit(event: FormEvent<HTMLFormElement>) {
+  event.preventDefault(); setBusy(true); setError(''); setMessage('');
+  const fields = new FormData(event.currentTarget); const email = String(fields.get('email')); const password = String(fields.get('password') || '');
+  try {
+   if (mode === 'forgot') { const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/reset-password` }); if (error) throw error; setMessage('If an account exists for this email, you’ll receive a password reset link.'); }
+   else if (mode === 'signup') { const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin, data: { display_name: String(fields.get('display_name')).trim() } } }); if (error) throw error; setMessage('Check your email to confirm your account. Your space will be here when you return.'); }
+   else { const { error } = await supabase.auth.signInWithPassword({ email, password }); if (error) throw error; await navigate({ to: '/home', replace: true }); }
+  } catch (err) { setError(err instanceof Error ? err.message : 'We couldn’t complete that. Please try again.'); } finally { setBusy(false); }
+ }
+ async function social(provider: 'google' | 'lovable') { setError(''); setBusy(true); try { const result = await lovable.auth.signInWithOAuth(provider, { redirect_uri: `${window.location.origin}/auth` }); if (result.error) throw result.error; if (!result.redirected) await navigate({ to: '/home', replace: true }); } catch (err) { setError(err instanceof Error ? err.message : 'Sign-in couldn’t be completed.'); } finally { setBusy(false); } }
+ const changeMode = (next: typeof mode) => { setMode(next); setError(''); setMessage(''); };
+ return <main className="auth-page"><Brand /><section className="auth-panel"><div className="eyebrow">A space built on trust</div><h1>{mode === 'signup' ? 'Your circle starts with you.' : mode === 'forgot' ? 'Find your way back.' : 'Welcome to TellHer.'}</h1><p>{mode === 'forgot' ? 'We’ll send a link to reset your password.' : 'A little closer. A little wiser. A space to be yourself.'}</p><form className="account-form" onSubmit={submit}>{mode === 'signup' && <div className="field"><label htmlFor="display-name">Display name</label><Input id="display-name" name="display_name" autoComplete="name" required maxLength={80} placeholder="What should we call you?" /></div>}<div className="field"><label htmlFor="email">Email address</label><Input id="email" name="email" type="email" autoComplete="email" required placeholder="you@example.com" /></div>{mode !== 'forgot' && <div className="field"><label htmlFor="password">Password</label><Input id="password" name="password" type="password" autoComplete={mode === 'signup' ? 'new-password' : 'current-password'} required minLength={8} placeholder={mode === 'signup' ? 'At least 8 characters' : 'Your password'} /></div>}{error && <p role="alert" className="form-note form-error">{error}</p>}{message && <p role="status" className="form-note form-success">{message}</p>}<Button variant="editorial" size="lg" disabled={busy}>{busy ? 'One moment…' : mode === 'signup' ? 'Create your account' : mode === 'forgot' ? 'Send reset link' : 'Enter TellHer'}<ArrowRight /></Button></form>{mode !== 'forgot' && <><div className="auth-divider">or continue with</div><div className="social-buttons"><Button variant="outline" disabled={busy} onClick={() => social('google')}>Continue with Google</Button><Button className="lovable-auth-button" disabled={busy} onClick={() => social('lovable')}>Continue with Lovable</Button></div></>}<div className="mt-6 flex flex-wrap items-center justify-between gap-2"><Button variant="link" size="sm" onClick={() => changeMode(mode === 'signin' ? 'signup' : 'signin')}>{mode === 'signin' ? 'New here? Create an account' : 'Back to sign in'}</Button>{mode === 'signin' && <Button variant="link" size="sm" onClick={() => changeMode('forgot')}>Forgot password?</Button>}</div><p className="form-note mt-7">Your profile stays private. Trust Ripples and Wingwoman are coming soon.</p><Button asChild variant="link" className="mt-3"><Link to="/">Back to TellHer</Link></Button></section></main>;
+}
