@@ -12,7 +12,7 @@
 - Keep public pages at top-level routes and private app pages under the client-only `_authenticated` layout; this preserves one public home and a single account gate.
 - Keep account state in one root subscriber and private profile access owner-scoped through the generated browser client; this avoids duplicate session listeners and enforces database privacy.
 - Keep all trust, Ripple, response, and AI surfaces presentation-only until explicitly requested; no simulated data or actions may imply implemented product logic.
-- Keep prepared trust/question tables read-only for members until explicit workflows are implemented; author identity belongs only in owner-readable question metadata, never in shareable question rows.
+- Trust edges change only through owner-checked database functions (send, respond, cancel, find by exact email, circle listing, extended-reach count) so other members never see emails, raw ids beyond lookup, or second-degree identities; question tables stay read-only for members until explicit workflows are implemented; author identity belongs only in owner-readable question metadata, never in shareable question rows.
 - Share profile validation and editing between account onboarding and Profile; database triggers enforce attestation and field limits independently of the UI.
 - Keep avatars in owner-scoped private storage and strip uploaded image metadata; short-lived signed links prevent public identity exposure.
 - Keep reusable editorial styling in semantic global design tokens and shared foundation components; later functionality can replace empty states without rebuilding navigation.

@@ -22,6 +22,13 @@
       "when": 1792096176897,
       "tag": "0002_tellher_audience_replies_sessions_reports",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792096349744,
+      "tag": "0003_mycircle_trust_graph",
+      "breakpoints": true
     }
   ]
 }
