@@ -340,7 +340,34 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      tellher_cancel_trust: { Args: { _id: string }; Returns: undefined }
+      tellher_extended_reach_count: { Args: never; Returns: number }
+      tellher_find_member: {
+        Args: { _email: string }
+        Returns: {
+          city: string
+          first_name: string
+          last_initial: string
+          member_id: string
+        }[]
+      }
       tellher_member_ready: { Args: never; Returns: boolean }
+      tellher_my_circle: {
+        Args: never
+        Returns: {
+          city: string
+          connection_id: string
+          created_at: string
+          first_name: string
+          kind: string
+          last_initial: string
+        }[]
+      }
+      tellher_respond_trust: {
+        Args: { _accept: boolean; _id: string }
+        Returns: undefined
+      }
+      tellher_send_trust: { Args: { _recipient: string }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
