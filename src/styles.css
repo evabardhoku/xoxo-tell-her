@@ -145,3 +145,36 @@ h1,h2,h3,p { margin:0; } h1,h2,h3 { font-family:var(--font-editorial); font-weig
 .reply-text { width:100%;border:1px solid var(--border);border-radius:12px;background:var(--background);padding:10px 12px;font-size:14px; }
 .reply-section { display:grid;gap:12px; } .reply-card { border:1px solid var(--border);border-radius:14px;background:var(--card);padding:16px 20px;display:grid;gap:8px; } .reply-body { font-size:14px;line-height:1.6;white-space:pre-wrap; }
 @media (max-width:640px) { .tag-grid { grid-template-columns:1fr; } .pm-row { grid-template-columns:1fr 2rem; } .pm-row .pm-track { grid-column:1 / -1;grid-row:2; } }
+
+/* ---- Polish pass: abstract hero, signature motion, consistency ---- */
+.hero-ripples { mix-blend-mode:normal; }
+.hr-ring { fill:none; stroke:var(--secondary); stroke-width:1; opacity:.38; transform-origin:center; animation:hr-breathe 9s ease-in-out infinite; }
+.hr-ring-0 { stroke:var(--primary); opacity:.5; } .hr-ring-3,.hr-ring-4 { stroke:var(--accent); stroke-dasharray:2 7; opacity:.45; }
+.hr-ring-1 { animation-delay:.6s; } .hr-ring-2 { animation-delay:1.2s; } .hr-ring-3 { animation-delay:1.8s; } .hr-ring-4 { animation-delay:2.4s; }
+.hr-core { fill:var(--primary); } .hr-node { stroke:var(--background); stroke-width:2; } .hr-node-0 { fill:var(--secondary); } .hr-node-1 { fill:var(--accent); } .hr-node-2 { fill:var(--information); opacity:.7; }
+@keyframes hr-breathe { 0%,100% { transform:scale(1); } 50% { transform:scale(1.015); } }
+
+.reach-rings-mini { width:92px; height:92px; margin:4px 0 14px; }
+.rr-ring { fill:none; stroke:var(--border); stroke-width:1; transform-origin:60px 60px; transition:stroke .3s ease; }
+.rr-ring.is-on { stroke:var(--secondary); animation:rr-expand .55s cubic-bezier(.2,.7,.2,1) both; }
+.rr-ring.is-on:nth-of-type(3) { stroke:var(--accent); stroke-dasharray:3 4; }
+.rr-core { fill:var(--primary); }
+@keyframes rr-expand { from { transform:scale(.7); opacity:0; } to { transform:scale(1); opacity:1; } }
+
+.pm-fill { transition:width .6s cubic-bezier(.2,.7,.2,1); }
+.pm-count { font-variant-numeric:tabular-nums; }
+.composer-body { animation:step-in .28s ease-out both; }
+@keyframes step-in { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+/* consistency */
+.question-card,.reply-card,.composer-card,.perspective-map,.instinct-card,.empty-panel { border-radius:16px; box-shadow:none; }
+.choice-chip { min-height:40px; font-weight:500; transition:border-color .2s, background .2s; }
+.choice-chip:hover:not(:disabled),.choice-card:hover:not(:disabled) { border-color:var(--secondary); }
+.choice-chip:disabled { opacity:.6; cursor:not-allowed; }
+.field-legend,.field label { font-weight:600; color:var(--foreground); }
+.question-body,.reply-body,.review-body,.page-heading p,.empty-panel p { max-width:68ch; }
+.reply-body,.review ul,.composer-body ul { line-height:1.7; }
+.composer-body ul { list-style:disc; padding-left:1.2em; display:grid; gap:6px; }
+input:focus-visible,textarea:focus-visible,select:focus-visible { outline:2px solid var(--ring); outline-offset:2px; }
+@media (max-width:760px) { .mobile-nav .nav-link { min-height:48px; justify-content:center; } .choice-chip { min-height:44px; } .reach-rings-mini { width:76px;height:76px; } .hero-ripples { height:320px; } }
+@media (prefers-reduced-motion: reduce) { .hr-ring,.rr-ring.is-on,.composer-body { animation:none!important; } .pm-fill { transition:none!important; } }
