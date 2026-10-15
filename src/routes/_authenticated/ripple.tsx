@@ -11,7 +11,7 @@ import { categories, errorText, feedQuery, instincts, reachPreview, reaches, typ
 
 export const Route = createFileRoute('/_authenticated/ripple')({ validateSearch: (s: Record<string, unknown>): { from?: string } => (typeof s['from'] === 'string' ? { from: s['from'] } : {}), head: () => pageHead('Start a Trust Ripple', 'Ask a sensitive question anonymously and choose how far it travels.'), component: Composer });
 
-const steps = ['Question', 'My Instinct', 'Reach', 'Review & Send'];
+const steps = ['Question', 'MyInstinct', 'Reach', 'Review & Send'];
 const contextCategory: Record<string, string> = { Dating: 'Dating & Boundaries', Work: 'Work' };
 
 function Composer() {
@@ -58,7 +58,7 @@ function Composer() {
    </div>}
    {step === 2 && <div className="composer-body"><fieldset className="field"><legend className="field-legend">How far should it travel?</legend><div className="choice-stack">{reaches.map(r => { const empty = r.value !== 'community' && preview.data && (count(r.value) ?? 0) === 0; return <button type="button" key={r.value} className="choice-card" aria-pressed={scope === r.value} disabled={Boolean(empty)} onClick={() => setScope(r.value)}><strong>{r.label}</strong><span>{r.hint}</span><em>{preview.isPending ? 'Checking reach…' : empty ? 'No one here yet' : reachPreview(r.value, count(r.value))}</em></button>; })}</div></fieldset></div>}
    {step === 3 && scope && <div className="composer-body review">
-    <dl><div><dt>Category</dt><dd>{category}</dd></div><div><dt>Question</dt><dd className="review-body">{body.trim()}</dd></div><div><dt>My Instinct · private</dt><dd>{instincts.find(i => i.value === instinct)?.label}{note.trim() && ` — ${note.trim()}`}</dd></div><div><dt>Reach</dt><dd>{reachPreview(scope, count(scope))}</dd></div></dl>
+    <dl><div><dt>Category</dt><dd>{category}</dd></div><div><dt>Question</dt><dd className="review-body">{body.trim()}</dd></div><div><dt>MyInstinct · private</dt><dd>{instincts.find(i => i.value === instinct)?.label}{note.trim() && ` — ${note.trim()}`}</dd></div><div><dt>Reach</dt><dd>{reachPreview(scope, count(scope))}</dd></div></dl>
     <p className="form-note">Your name, photo and instinct are never shown with the question. Women may or may not choose to respond.</p>
    </div>}
    {error && <p role="alert" className="form-note form-error">{error}</p>}
