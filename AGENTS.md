@@ -18,3 +18,4 @@
 - Keep reusable editorial styling in semantic global design tokens and shared foundation components; later functionality can replace empty states without rebuilding navigation.
 - Replies and Perspective Map data flow only through visibility-checked database functions (one reply per member, never by the question author); the map lists perspectives in a fixed order so no answer reads as winning.
 - Wingwoman AI calls run only in an authenticated server function that saves the session under the caller's own row; the composer reloads drafts by owner-scoped session id, never via URL text, so situations stay private.
+- Perspective synthesis is generated on demand in an authenticated server function that reads replies only through the visibility-checked reply functions and is gated by a shared meaningful-reply threshold; it is never stored and never replaces the map.

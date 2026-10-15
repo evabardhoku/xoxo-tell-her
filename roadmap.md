@@ -11,3 +11,4 @@
 - [x] Verify persistent sessions, profile readback, and cross-account privacy
 # Wingwoman
 - [x] Private AI reflection with optional instinct, saved per owner, handing off to an editable Trust Ripple draft
+- [x] Optional AI perspective synthesis on question pages
