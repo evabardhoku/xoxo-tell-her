@@ -12,3 +12,4 @@
 # Wingwoman
 - [x] Private AI reflection with optional instinct, saved per owner, handing off to an editable Trust Ripple draft
 - [x] Optional AI perspective synthesis on question pages
+- [x] Integration pass and fictional demo network

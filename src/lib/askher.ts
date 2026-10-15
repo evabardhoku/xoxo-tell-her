@@ -7,7 +7,7 @@ export const instincts = [
  { value: 'feels_off', label: 'Something feels off' },
 ] as const;
 export const reaches = [
- { value: 'circle', label: 'My circle', hint: 'Only women you trust directly.' },
+ { value: 'circle', label: 'MyCircle', hint: 'Only women you trust directly.' },
  { value: 'extended', label: 'Extended circle', hint: 'Your circle and the women they trust. Two layers at most.' },
  { value: 'community', label: 'TellHer community', hint: 'Signed-in TellHer members.' },
 ] as const;
