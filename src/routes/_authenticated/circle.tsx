@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { pageHead } from '@/lib/metadata';
 import { circleQuery, memberName, type CircleEntry } from '@/lib/circle';
 import { emailSchema } from '@/lib/profile';
+import { TrustedPicks } from '@/components/trusted-picks';
 
 export const Route = createFileRoute('/_authenticated/circle')({
  loader: ({ context }) => context.queryClient.ensureQueryData(circleQuery),
@@ -41,6 +42,7 @@ function Circle() {
    <section className="circle-card"><h2>Requests for you</h2>{by('incoming').length ? <ul className="member-list">{by('incoming').map(m => <Member key={m.connection_id} m={m}><Button size="sm" variant="editorial" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: true })}><Check />Accept</Button><Button size="sm" variant="ghost" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: false })}>Decline</Button></Member>)}</ul> : <p className="form-note">No requests waiting.</p>}{respond.isError && <p role="alert" className="form-note form-error">{message(respond.error)}</p>}</section>
    <section className="circle-card"><h2>Sent requests</h2>{by('outgoing').length ? <ul className="member-list">{by('outgoing').map(m => <Member key={m.connection_id} m={m}><span className="status-label">Pending</span><Button size="sm" variant="ghost" aria-label={`Withdraw request to ${memberName(m)}`} disabled={cancel.isPending} onClick={() => cancel.mutate(m.connection_id)}><X /></Button></Member>)}</ul> : <p className="form-note">Nothing pending.</p>}</section>
   </div>
+  <TrustedPicks />
  </>;
 }
 
