@@ -56,22 +56,61 @@ export type Database = {
         }
         Relationships: []
       }
+      question_audience: {
+        Row: {
+          created_at: string
+          question_id: string
+          recipient_id: string
+          trust_distance: number
+        }
+        Insert: {
+          created_at?: string
+          question_id: string
+          recipient_id: string
+          trust_distance: number
+        }
+        Update: {
+          created_at?: string
+          question_id?: string
+          recipient_id?: string
+          trust_distance?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_audience_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "question_audience_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       question_private_meta: {
         Row: {
           created_at: string
           initial_instinct: string | null
+          instinct_note: string | null
           owner_id: string
           question_id: string
         }
         Insert: {
           created_at?: string
           initial_instinct?: string | null
+          instinct_note?: string | null
           owner_id: string
           question_id: string
         }
         Update: {
           created_at?: string
           initial_instinct?: string | null
+          instinct_note?: string | null
           owner_id?: string
           question_id?: string
         }
@@ -94,7 +133,9 @@ export type Database = {
       }
       questions: {
         Row: {
+          audience_scope: string
           body: string
+          category: string
           created_at: string
           id: string
           reach: string
@@ -102,7 +143,9 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          audience_scope?: string
           body: string
+          category?: string
           created_at?: string
           id?: string
           reach?: string
@@ -110,7 +153,9 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          audience_scope?: string
           body?: string
+          category?: string
           created_at?: string
           id?: string
           reach?: string
@@ -118,6 +163,103 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      replies: {
+        Row: {
+          author_id: string
+          body: string
+          created_at: string
+          id: string
+          perspective_tag: string | null
+          question_id: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          body: string
+          created_at?: string
+          id?: string
+          perspective_tag?: string | null
+          question_id: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          created_at?: string
+          id?: string
+          perspective_tag?: string | null
+          question_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "replies_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "replies_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reports: {
+        Row: {
+          created_at: string
+          id: string
+          question_id: string | null
+          reason: string
+          reply_id: string | null
+          reporter_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          question_id?: string | null
+          reason: string
+          reply_id?: string | null
+          reporter_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          question_id?: string | null
+          reason?: string
+          reply_id?: string | null
+          reporter_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_reply_id_fkey"
+            columns: ["reply_id"]
+            isOneToOne: false
+            referencedRelation: "replies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_reporter_id_fkey"
+            columns: ["reporter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       trust_connections: {
         Row: {
@@ -155,6 +297,38 @@ export type Database = {
           {
             foreignKeyName: "trust_connections_requester_id_fkey"
             columns: ["requester_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wingwoman_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          owner_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          owner_id: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          owner_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wingwoman_sessions_owner_id_fkey"
+            columns: ["owner_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
