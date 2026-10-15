@@ -16,7 +16,7 @@ export const Route = createFileRoute('/_authenticated/circle')({
  component: Circle,
 });
 
-const message = (e: unknown) => (e instanceof Error ? e.message : 'Something went wrong.');
+const message = (e: unknown) => (e as { message?: string } | null)?.message || 'Something went wrong.';
 
 function Circle() {
  const { data } = useSuspenseQuery(circleQuery);
