@@ -303,6 +303,44 @@ export type Database = {
           },
         ]
       }
+      trusted_picks: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          location: string | null
+          note: string
+          owner_id: string
+          title: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          location?: string | null
+          note: string
+          owner_id: string
+          title: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          location?: string | null
+          note?: string
+          owner_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trusted_picks_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wingwoman_sessions: {
         Row: {
           context: string | null
@@ -354,6 +392,18 @@ export type Database = {
     Functions: {
       tellher_can_view: { Args: { _q: string }; Returns: boolean }
       tellher_cancel_trust: { Args: { _id: string }; Returns: undefined }
+      tellher_circle_picks: {
+        Args: never
+        Returns: {
+          category: string
+          created_at: string
+          id: string
+          location: string
+          note: string
+          recommender: string
+          title: string
+        }[]
+      }
       tellher_delete_question: { Args: { _id: string }; Returns: undefined }
       tellher_delete_reply: { Args: { _id: string }; Returns: undefined }
       tellher_extended_reach_count: { Args: never; Returns: number }
