@@ -16,3 +16,4 @@
 - Share profile validation and editing between account onboarding and Profile; database triggers enforce attestation and field limits independently of the UI.
 - Keep avatars in owner-scoped private storage and strip uploaded image metadata; short-lived signed links prevent public identity exposure.
 - Keep reusable editorial styling in semantic global design tokens and shared foundation components; later functionality can replace empty states without rebuilding navigation.
+- Replies and Perspective Map data flow only through visibility-checked database functions (one reply per member, never by the question author); the map lists perspectives in a fixed order so no answer reads as winning.
