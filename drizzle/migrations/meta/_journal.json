@@ -15,6 +15,13 @@
       "when": 1792093309552,
       "tag": "0001_secure_tellher_data_foundation",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792096176897,
+      "tag": "0002_tellher_audience_replies_sessions_reports",
+      "breakpoints": true
     }
   ]
 }

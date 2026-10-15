@@ -64,5 +64,16 @@ describe.skipIf(!url || !key)('Private profile access', () => {
    await admin.from('question_private_meta').update({ owner_id: ids[0] }).eq('question_id', questionId);
    expect((await owner.from('questions').select('id').eq('id', questionId)).data).toEqual([{ id: questionId }]);
   } finally { await admin.from('questions').delete().eq('id', questionId); }
+  });
+ it('keeps replies, audience, and reports read-only and Wingwoman sessions owner-only', async () => {
+  expect((await owner.from('replies').insert({ question_id: crypto.randomUUID(), author_id: ids[0], body: 'x' })).error).not.toBeNull();
+  expect((await owner.from('question_audience').insert({ question_id: crypto.randomUUID(), recipient_id: ids[0], trust_distance: 1 })).error).not.toBeNull();
+  expect((await owner.from('reports').insert({ reporter_id: ids[0], question_id: crypto.randomUUID(), reason: 'x' })).error).not.toBeNull();
+  expect((await owner.from('wingwoman_sessions').insert({ owner_id: ids[1] })).error).not.toBeNull();
+  const own = await owner.from('wingwoman_sessions').insert({ owner_id: ids[0], title: 'Mine' }).select('id').single();
+  expect(own.error).toBeNull();
+  const other = await admin.from('wingwoman_sessions').insert({ owner_id: ids[1], title: 'Theirs' }).select('id').single();
+  expect((await owner.from('wingwoman_sessions').select('id').eq('id', other.data!.id)).data).toEqual([]);
+  expect((await owner.from('wingwoman_sessions').delete().eq('id', other.data!.id).select('id')).data).toEqual([]);
  });
 });
