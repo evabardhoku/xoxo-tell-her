@@ -340,8 +340,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      tellher_can_view: { Args: { _q: string }; Returns: boolean }
       tellher_cancel_trust: { Args: { _id: string }; Returns: undefined }
       tellher_delete_question: { Args: { _id: string }; Returns: undefined }
+      tellher_delete_reply: { Args: { _id: string }; Returns: undefined }
       tellher_extended_reach_count: { Args: never; Returns: number }
       tellher_feed: {
         Args: never
@@ -355,6 +357,14 @@ export type Database = {
           my_instinct: string
           my_note: string
           reply_count: number
+        }[]
+      }
+      tellher_feed_map: {
+        Args: never
+        Returns: {
+          n: number
+          perspective_tag: string
+          question_id: string
         }[]
       }
       tellher_find_member: {
@@ -378,6 +388,10 @@ export type Database = {
           last_initial: string
         }[]
       }
+      tellher_post_reply: {
+        Args: { _body: string; _id: string; _tag: string }
+        Returns: string
+      }
       tellher_publish_question: {
         Args: {
           _body: string
@@ -388,7 +402,31 @@ export type Database = {
         }
         Returns: string
       }
+      tellher_question: {
+        Args: { _id: string }
+        Returns: {
+          audience_scope: string
+          body: string
+          category: string
+          created_at: string
+          id: string
+          is_mine: boolean
+          my_instinct: string
+          my_note: string
+          my_reply_id: string
+        }[]
+      }
       tellher_reach_preview: { Args: { _scope: string }; Returns: number }
+      tellher_replies: {
+        Args: { _id: string }
+        Returns: {
+          body: string
+          created_at: string
+          id: string
+          is_mine: boolean
+          perspective_tag: string
+        }[]
+      }
       tellher_report_question: {
         Args: { _id: string; _reason: string }
         Returns: undefined
