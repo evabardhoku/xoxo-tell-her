@@ -56,7 +56,7 @@ describe.skipIf(!url || !key)('Private profile access', () => {
   const question = await admin.from('questions').insert({ body: 'A private test question' }).select('id').single();
   expect(question.error).toBeNull(); const questionId = question.data?.id;
   try {
-   expect((await admin.from('question_private_meta').insert({ question_id: questionId, owner_id: ids[1], initial_instinct: 'Private instinct' })).error).toBeNull();
+   expect((await admin.from('question_private_meta').insert({ question_id: questionId, owner_id: ids[1], initial_instinct: 'unsure' })).error).toBeNull();
    expect((await owner.from('questions').select('id').eq('id', questionId)).data).toEqual([]);
    expect((await owner.from('question_private_meta').select('*').eq('question_id', questionId)).data).toEqual([]);
    expect((await owner.from('questions').insert({ body: 'Not enabled' })).error).not.toBeNull();
