@@ -1,0 +1,14 @@
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useEffect, useState, type FormEvent } from 'react';
+import { Brand } from '@/components/brand';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { supabase } from '@/integrations/supabase/client';
+import { pageHead } from '@/lib/metadata';
+export const Route = createFileRoute('/reset-password')({ head: () => pageHead('Reset password', 'Securely set a new password for your TellHer account.'), component: ResetPassword });
+function ResetPassword() {
+ const [recovery, setRecovery] = useState(false); const [error, setError] = useState(''); const [done, setDone] = useState(false); const [busy, setBusy] = useState(false);
+ useEffect(() => { const hash = new URLSearchParams(window.location.hash.slice(1)); if (hash.get('type') === 'recovery') { sessionStorage.setItem('tellher-recovery', 'true'); setRecovery(true); } else if (sessionStorage.getItem('tellher-recovery') === 'true') { void supabase.auth.getUser().then(({ data }) => setRecovery(Boolean(data.user))); } }, []);
+ async function submit(event: FormEvent<HTMLFormElement>) { event.preventDefault(); setError(''); setBusy(true); const fields = new FormData(event.currentTarget); const password = String(fields.get('password')); if (password !== fields.get('confirm')) { setError('Your passwords don’t match.'); setBusy(false); return; } const { error } = await supabase.auth.updateUser({ password }); if (error) setError(error.message); else { setDone(true); sessionStorage.removeItem('tellher-recovery'); } setBusy(false); }
+ return <main className="auth-page"><Brand /><section className="auth-panel"><h1>A fresh start.</h1>{done ? <><p role="status">Your password has been updated.</p><Button asChild variant="editorial"><Link to="/home">Return to your space</Link></Button></> : recovery ? <form className="account-form" onSubmit={submit}><div className="field"><label htmlFor="new-password">New password</label><Input id="new-password" name="password" type="password" autoComplete="new-password" required minLength={8} /></div><div className="field"><label htmlFor="confirm-password">Confirm new password</label><Input id="confirm-password" name="confirm" type="password" autoComplete="new-password" required minLength={8} /></div>{error && <p role="alert" className="form-error form-note">{error}</p>}<Button variant="editorial" disabled={busy}>{busy ? 'Saving…' : 'Set new password'}</Button></form> : <><p>Open the password reset link in your email to set a new password.</p><Button asChild variant="editorial"><Link to="/auth">Back to sign in</Link></Button></>}</section></main>;
+}
