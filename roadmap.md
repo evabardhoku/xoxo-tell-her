@@ -5,7 +5,7 @@
 - [x] Desktop/mobile navigation, focus, and readability verification
 
 # Secure account and data foundation
-- [ ] Extend private profiles and require explicit community self-attestation
-- [ ] Prepare locked-down trust connections, questions, and private question metadata
-- [ ] Add private avatar uploads and complete account onboarding
-- [ ] Verify persistent sessions, profile readback, and cross-account privacy
+- [x] Extend private profiles and require explicit community self-attestation
+- [x] Prepare locked-down trust connections, questions, and private question metadata
+- [x] Add private avatar uploads and complete account onboarding
+- [x] Verify persistent sessions, profile readback, and cross-account privacy

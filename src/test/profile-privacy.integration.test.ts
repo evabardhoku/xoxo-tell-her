@@ -25,7 +25,7 @@ describe.skipIf(!url || !key)('Private profile access', () => {
  afterAll(async () => { for (const id of ids) await admin.auth.admin.deleteUser(id); });
  it('automatically creates a profile linked to the new account', async () => {
   const { data, error } = await owner.from('profiles').select('id, first_name, last_name, woman_attested_at');
-  expect(error).toBeNull(); expect(data).toHaveLength(1); expect(data?.[0]).toMatchObject({ id: ids[0], first_name: 'Private 0', last_name: 'Test' }); expect(data?.[0].woman_attested_at).toBeTruthy();
+  expect(error).toBeNull(); expect(data).toHaveLength(1); expect(data?.[0]).toMatchObject({ id: ids[0], first_name: 'Private 0', last_name: 'Test' }); expect(data?.[0]?.woman_attested_at).toBeTruthy();
  });
  it('allows reading only the signed-in user’s profile', async () => {
   const { data, error } = await owner.from('profiles').select('id').eq('id', ids[1]);
