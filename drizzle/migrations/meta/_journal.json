@@ -29,6 +29,13 @@
       "when": 1792096349744,
       "tag": "0003_mycircle_trust_graph",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792096948892,
+      "tag": "0004_askher_trust_ripple",
+      "breakpoints": true
     }
   ]
 }

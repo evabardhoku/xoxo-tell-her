@@ -341,7 +341,22 @@ export type Database = {
     }
     Functions: {
       tellher_cancel_trust: { Args: { _id: string }; Returns: undefined }
+      tellher_delete_question: { Args: { _id: string }; Returns: undefined }
       tellher_extended_reach_count: { Args: never; Returns: number }
+      tellher_feed: {
+        Args: never
+        Returns: {
+          audience_scope: string
+          body: string
+          category: string
+          created_at: string
+          id: string
+          is_mine: boolean
+          my_instinct: string
+          my_note: string
+          reply_count: number
+        }[]
+      }
       tellher_find_member: {
         Args: { _email: string }
         Returns: {
@@ -363,9 +378,31 @@ export type Database = {
           last_initial: string
         }[]
       }
+      tellher_publish_question: {
+        Args: {
+          _body: string
+          _category: string
+          _instinct: string
+          _note: string
+          _scope: string
+        }
+        Returns: string
+      }
+      tellher_reach_preview: { Args: { _scope: string }; Returns: number }
+      tellher_report_question: {
+        Args: { _id: string; _reason: string }
+        Returns: undefined
+      }
       tellher_respond_trust: {
         Args: { _accept: boolean; _id: string }
         Returns: undefined
+      }
+      tellher_ripple_audience: {
+        Args: { _author: string; _scope: string }
+        Returns: {
+          recipient_id: string
+          trust_distance: number
+        }[]
       }
       tellher_send_trust: { Args: { _recipient: string }; Returns: undefined }
     }
