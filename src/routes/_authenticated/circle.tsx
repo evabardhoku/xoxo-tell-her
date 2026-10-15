@@ -59,7 +59,7 @@ function AddMember({ onSent }: { onSent: () => void }) {
   setBusy(true); const { data, error } = await supabase.rpc('tellher_find_member', { _email: parsed.data }); setBusy(false);
   if (error) return setNote({ text: message(error), error: true });
   if (!data?.length) return setNote({ text: 'No TellHer member matches that exact address.' });
-  setFound(data[0]);
+  setFound(data[0] ?? null);
  };
  const send = async () => {
   if (!found) return; setBusy(true); const { error } = await supabase.rpc('tellher_send_trust', { _recipient: found.member_id }); setBusy(false);
