@@ -28,7 +28,7 @@ function Composer() {
   if (!from) return;
   supabase.from('wingwoman_sessions').select('context, situation, instinct').eq('id', from).maybeSingle().then(({ data }) => {
    if (!data) return;
-   setBody(data.situation ?? ''); setInstinct(data.instinct ?? ''); setCategory(contextCategory[data.context ?? ''] ?? '');
+   setBody((data.situation ?? '').slice(0, 2000)); setInstinct(data.instinct ?? ''); setCategory(contextCategory[data.context ?? ''] ?? '');
   });
  }, [from]);
  const preview = useQuery({ queryKey: ['reach-preview'], queryFn: async () => {
