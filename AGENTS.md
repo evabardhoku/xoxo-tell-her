@@ -20,3 +20,4 @@
 - Wingwoman AI calls run only in an authenticated server function that saves the session under the caller's own row; the composer reloads drafts by owner-scoped session id, never via URL text, so situations stay private.
 - Perspective synthesis is generated on demand in an authenticated server function that reads replies only through the visibility-checked reply functions and is gated by a shared meaningful-reply threshold; it is never stored and never replaces the map.
 - Demo content is created by scripts/seed-demo.ts through the same member functions real users call, using fictional @example.com accounts; it is idempotent and never runs from the app.
+- Trusted Picks are owner-written rows readable by others only through a function limited to the reader's accepted direct circle, exposing just the recommender's first name; no ratings or ranking, so provenance is the only signal.

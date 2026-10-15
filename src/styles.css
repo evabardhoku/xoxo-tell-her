@@ -178,3 +178,14 @@ h1,h2,h3,p { margin:0; } h1,h2,h3 { font-family:var(--font-editorial); font-weig
 input:focus-visible,textarea:focus-visible,select:focus-visible { outline:2px solid var(--ring); outline-offset:2px; }
 @media (max-width:760px) { .mobile-nav .nav-link { min-height:48px; justify-content:center; } .choice-chip { min-height:44px; } .reach-rings-mini { width:76px;height:76px; } .hero-ripples { height:320px; } }
 @media (prefers-reduced-motion: reduce) { .hr-ring,.rr-ring.is-on,.composer-body { animation:none!important; } .pm-fill { transition:none!important; } }
+
+/* Trusted Picks */
+.picks-card { margin-top: 1.5rem; display: grid; gap: 1.25rem; }
+.picks-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.pick-form { display: grid; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.pick-list { display: grid; gap: 0.75rem; }
+.pick-item { display: grid; gap: 0.4rem; padding: 1rem 1.1rem; border: 1px solid var(--border); border-radius: 14px; background: var(--card); }
+.pick-title { font-family: var(--font-serif, inherit); font-size: 1.05rem; font-weight: 500; color: var(--foreground); }
+.pick-note { font-size: 0.9rem; line-height: 1.6; color: var(--foreground); }
+.pick-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.picks-sub { font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted-foreground); }

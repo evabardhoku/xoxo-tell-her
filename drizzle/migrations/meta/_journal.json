@@ -57,6 +57,13 @@
       "when": 1792101262466,
       "tag": "0007_wingwoman_reflections",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1792104709541,
+      "tag": "0008_trusted_picks",
+      "breakpoints": true
     }
   ]
 }
