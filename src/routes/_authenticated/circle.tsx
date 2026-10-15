@@ -75,7 +75,7 @@ function AddMember({ onSent }: { onSent: () => void }) {
 
 function ReachRings({ direct, extended }: { direct: number; extended: number }) {
  return <svg className="reach-rings" viewBox="0 0 240 240" role="img" aria-label={`You, ${direct} in your direct circle, ${extended} in extended reach`}>
-  <circle cx="120" cy="120" r="108" className="ring-extended" /><circle cx="120" cy="120" r="68" className="ring-direct" /><circle cx="120" cy="120" r="9" className="ring-you" />
-  <text x="120" y="146" className="ring-label">You</text><text x="120" y="47" className="ring-label">Direct · {direct}</text><text x="120" y="226" className="ring-label">Extended · {extended}</text>
+  <circle cx="120" cy="120" r="100" className="ring-extended" /><circle cx="120" cy="120" r="68" className="ring-direct" /><circle cx="120" cy="120" r="9" className="ring-you" />
+  <text x="120" y="146" className="ring-label">You</text><text x="120" y="47" className="ring-label">Direct · {direct}</text><text x="120" y="236" className="ring-label">Extended · {extended}</text>
  </svg>;
 }
