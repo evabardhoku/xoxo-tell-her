@@ -55,7 +55,7 @@ function AddMember({ onSent }: { onSent: () => void }) {
  const [busy, setBusy] = useState(false);
  const search = async (e: FormEvent) => {
   e.preventDefault(); setFound(null); setNote(null);
-  const parsed = emailSchema.safeParse(email); if (!parsed.success) return setNote({ text: parsed.error.issues[0].message, error: true });
+  const parsed = emailSchema.safeParse(email); if (!parsed.success) return setNote({ text: parsed.error.issues[0]?.message ?? "Enter a valid email address.", error: true });
   setBusy(true); const { data, error } = await supabase.rpc('tellher_find_member', { _email: parsed.data }); setBusy(false);
   if (error) return setNote({ text: message(error), error: true });
   if (!data?.length) return setNote({ text: 'No TellHer member matches that exact address.' });
