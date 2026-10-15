@@ -26,7 +26,7 @@ function AskHer() {
  </>;
 }
 
-function QuestionCard({ q, counts }: { q: FeedQuestion; counts?: Counts }) {
+function QuestionCard({ q, counts }: { q: FeedQuestion; counts?: Counts | undefined }) {
  const qc = useQueryClient();
  const [reporting, setReporting] = useState(false); const [reason, setReason] = useState('');
  const [note, setNote] = useState<{ text: string; error?: boolean } | null>(null); const [busy, setBusy] = useState(false);
