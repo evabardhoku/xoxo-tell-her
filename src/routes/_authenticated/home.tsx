@@ -38,6 +38,7 @@ function CurrentPage() {
  ].slice(0, SHELF_LIMIT);
  const shelves = useQueries({ queries: shelfOwners.map(o => shelfQuery(o.id)) });
  const [filter, setFilter] = useState<CurrentFilter>('all');
+ const [limit, setLimit] = useState(6);
 
  const loading = circle.isPending || feed.isPending || picks.isPending || ext.isPending;
  const items = useMemo(() => {
@@ -57,12 +58,12 @@ function CurrentPage() {
 
  return <>
   <div className="page-heading current-heading"><div><div className="eyebrow">THE CURRENT</div><h1>{first ? `Welcome back, ${first}.` : 'Welcome back.'}</h1><p>What useful things are moving through your trust network right now.</p></div>
-   <div className="current-actions"><Button asChild variant="editorial"><Link to="/ripple">Start a Trust Ripple<ArrowRight /></Link></Button><Button asChild variant="outline"><Link to="/wingwoman"><LockKeyhole />Talk to Wingwoman</Link></Button><Button asChild variant="ghost"><Link to="/constellations"><Sparkle />Constellations</Link></Button><Button asChild variant="ghost"><Link to="/search" search={{ q: '' }} aria-label="Search TellHer"><SearchIcon />Search</Link></Button></div></div>
+   <div className="current-actions"><Button asChild variant="editorial"><Link to="/ripple">Start a Trust Ripple<ArrowRight /></Link></Button><Button asChild variant="outline"><Link to="/wingwoman"><LockKeyhole />Talk to Wingwoman</Link></Button><Link to="/search" search={{ q: '' }} className="member-link inline-flex items-center gap-1 text-sm" aria-label="Search TellHer"><SearchIcon size={14} />Search</Link></div></div>
   {loading ? <p role="status" className="form-note">Gathering what’s moving…</p>
    : !items.length ? <section className="empty-panel"><h2>The Current is quiet for now.</h2><p>As your Direct Circle grows, their questions, notes and picks will gather here.</p><Button asChild variant="editorial" className="mt-6"><Link to="/circle">Go to Circle<ArrowRight /></Link></Button></section>
    : <>
-    {filters.length > 1 && <div className="current-filters" role="group" aria-label="Filter The Current">{filters.map(f => <button key={f.value} type="button" className="current-filter" aria-pressed={filter === f.value} onClick={() => setFilter(f.value)}>{f.label}</button>)}</div>}
-    <ol className="current-stream">{shown.map(i => <li key={i.key} className="current-item"><p className="current-provenance">{i.provenance}</p><CurrentCard i={i} counts={i.kind === 'question' ? maps.data?.[i.q.id] : undefined} /></li>)}</ol>
+    {filters.length > 1 && <div className="current-filters" role="group" aria-label="Filter The Current">{filters.map(f => <button key={f.value} type="button" className="current-filter" aria-pressed={filter === f.value} onClick={() => { setFilter(f.value); setLimit(6); }}>{f.label}</button>)}</div>}
+    <ol className="current-stream">{shown.slice(0, limit).map(i => <li key={i.key} className="current-item"><p className="current-provenance">{i.provenance}</p><CurrentCard i={i} counts={i.kind === 'question' ? maps.data?.[i.q.id] : undefined} /></li>)}</ol>
    </>}
  </>;
 }
