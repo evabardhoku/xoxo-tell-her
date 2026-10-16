@@ -36,7 +36,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   <NotificationBell />
   <UserMenu initial={profile.data.first_name.slice(0, 1).toUpperCase()} active={pathname === '/profile'} />
  </div></header>
- {hub.length > 0 && <nav className="hub-tabs" aria-label={`${area!.label} sections`}>{hub.map(h => { const on = pathname === h.to || pathname.startsWith(`${h.to}/`); return <Link key={h.to} to={h.to} data-active={on} aria-current={on ? 'page' : undefined}>{h.label}</Link>; })}</nav>}
+ {hub.length > 0 && <nav className="hub-tabs" aria-label={`${area!.label} sections`}>{hub.map(h => { const on = pathname === h.to || pathname.startsWith(`${h.to}/`); return <Link key={h.label} to={h.to} search={'search' in h ? h.search : undefined} data-active={on} aria-current={on ? 'page' : undefined}>{h.label}</Link>; })}</nav>}
  <main className="app-main">{children}<p className="app-footnote"><LockKeyhole size={12} />A little space. A little perspective. Always your choice.</p></main>
  <Link to="/wingwoman" className="mind-fab" aria-label="What's on your mind? Talk to Wingwoman"><Feather size={22} /></Link>
  <nav className="mobile-nav" aria-label="Mobile navigation">{navigation.map(link)}</nav></>;
