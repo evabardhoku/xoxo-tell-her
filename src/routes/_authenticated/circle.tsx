@@ -13,6 +13,7 @@ import { emailSchema } from '@/lib/profile';
 import { TrustedPicks } from '@/components/trusted-picks';
 import { ExtendedCircle } from '@/components/extended-circle';
 import { InboxList } from '@/components/inbox-list';
+import { ScrollPanel } from '@/components/scroll-panel';
 
 export const Route = createFileRoute('/_authenticated/circle')({
  validateSearch: zodValidator(z.object({ view: fallback(z.string(), 'direct').default('direct') })),

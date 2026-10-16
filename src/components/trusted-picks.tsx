@@ -4,6 +4,7 @@ import { MapPin, Plus, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAccount } from '@/hooks/account';
 import { Button } from './ui/button';
+import { ScrollPanel } from './scroll-panel';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 
