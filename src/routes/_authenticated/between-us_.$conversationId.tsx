@@ -50,11 +50,11 @@ function Conversation() {
    <div className="ww-thread-head"><div><h1 className="bu-title"><Link to="/profile/$memberId" params={{ memberId: row.member_id }} className="member-link">{row.first_name} {row.last_initial && `${row.last_initial}.`}</Link></h1><p className="private-note"><LockKeyhole size={12} />Private — only the two of you can read this.</p></div>
     <Button variant="ghost" size="sm" onClick={toggleBlock}>{row.blocked_by_me ? 'Unblock' : 'Block'}</Button></div>
    {note && <p role="status" className="form-note">{note}</p>}
-   <ol className="ww-messages">{msgs.data.map(m => { const mine = m.sender_id === user?.id; return <li key={m.id} className={`ww-msg ${mine ? 'ww-user' : 'bu-theirs'}`}>
+   <ol className="ww-messages">{(msgs.data ?? []).map(m => { const mine = m.sender_id === user?.id; return <li key={m.id} className={`ww-msg ${mine ? 'ww-user' : 'bu-theirs'}`}>
     <p>{m.body}</p><span className="bu-time">{relativeTime(m.created_at)}{!mine && <button type="button" className="bu-report" onClick={() => setReporting(m.id)} aria-label="Report this message"><Flag size={11} /></button>}</span>
     {reporting === m.id && <span className="bu-report-form"><label htmlFor={`r-${m.id}`} className="sr-only">Reason</label><Textarea id={`r-${m.id}`} rows={2} maxLength={1000} value={reason} onChange={e => setReason(e.target.value)} placeholder="What’s wrong with this message?" /><span className="flex gap-2"><Button size="sm" variant="ghost" onClick={() => setReporting(null)}>Cancel</Button><Button size="sm" variant="editorial" disabled={!reason.trim()} onClick={report}>Report</Button></span></span>}
    </li>; })}</ol>
-   {!msgs.data.length && <p className="form-note">No messages yet. Say hello.</p>}
+   {!(msgs.data ?? []).length && <p className="form-note">No messages yet. Say hello.</p>}
    <div ref={end} />
    {error && <p role="alert" className="form-note form-error">{error}</p>}
    {row.can_message ? <div className="ww-composer"><label htmlFor="bu-text" className="sr-only">Message {row.first_name}</label><Textarea id="bu-text" rows={2} maxLength={2000} value={text} onChange={e => setText(e.target.value)} onKeyDown={onKey} disabled={busy} placeholder="Write a message…" /><Button variant="editorial" size="icon" aria-label="Send" disabled={!text.trim() || busy} onClick={() => void send()}><Send /></Button></div>

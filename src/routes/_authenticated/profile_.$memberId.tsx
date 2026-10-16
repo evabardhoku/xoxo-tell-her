@@ -1,10 +1,9 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
-import { Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { canMessageQuery } from '@/lib/between-us';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
-import { ArrowLeft, LockKeyhole, MapPin } from 'lucide-react';
+import { ArrowLeft, LockKeyhole, Mail, MapPin } from 'lucide-react';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { pageHead } from '@/lib/metadata';
