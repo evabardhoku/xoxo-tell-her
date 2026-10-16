@@ -95,7 +95,7 @@ await reply('amira', q4, 'been_there', 'I simply stopped replying once and it wa
 await ask('nadia', 'Services', 'An electrician quoted me double what a friend paid for similar work and said the price is only valid today. Is that a normal tactic?', 'community', 'feels_off', null);
 await ask('amira', 'Everyday Life', 'A new neighbour asked me to sign for her parcels while she’s away for a month. Would you say yes?', 'circle', 'feels_okay', null);
 
-const pick = async (who: string, category: string, title: string, note: string, location: string | null) => { const { error } = await c[who]!.from('trusted_picks').insert({ owner_id: id[who]!, category, title, note, location }); if (error) throw error; };
+const pick = async (who: string, category: string, title: string, note: string, location: string | null) => { const { count } = await c[who]!.from('trusted_picks').select('id', { count: 'exact', head: true }).eq('title', title); if (count) return; const { error } = await c[who]!.from('trusted_picks').insert({ owner_id: id[who]!, category, title, note, location }); if (error) throw error; };
 await pick('giulia', 'Housing & Moving', 'A tenants’ advice desk that answers emails', 'They read my contract for free and told me exactly which clauses mattered.', 'Rome · Pigneto');
 await pick('amira', 'Travel', 'Airport transfer booked through the hotel', 'Fixed price, driver waited with a name sign, no surprises.', 'Milan Malpensa');
 await pick('elena', 'Health & Care', 'A physiotherapist who doesn’t rush', 'She explained every exercise and checked in after a week.', 'Tirana');
