@@ -41,7 +41,7 @@ describe.skipIf(!url || !key)('Independent Ripple reach and identity', () => {
  it('identity never broadens circle reach', async () => { expect(await identity(restricted, 2)).toBeUndefined(); expect(await identity(restricted)).toMatchObject({ author_visibility: 'named' }); });
  it('old publication path defaults to anonymous', async () => { expect(await identity(legacy)).toMatchObject({ author_visibility: 'anonymous', first_name: null, profile_id: null }); });
  it('client and privileged updates cannot change published identity in either direction', async () => {
-  for (const [q, change, original] of [[anonymous, 'named', 'anonymous'], [named, 'anonymous', 'named']]) {
+  for (const [q, change, original] of [[anonymous, 'named', 'anonymous'], [named, 'anonymous', 'named']] as const) {
    await client(0).from('questions').update({ author_visibility: change }).eq('id', q);
    expect((await admin.from('questions').update({ author_visibility: change }).eq('id', q)).error?.message).toContain('locked');
    expect((await identity(q)).author_visibility).toBe(original);

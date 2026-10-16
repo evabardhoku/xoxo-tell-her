@@ -21,7 +21,7 @@ const search = z.object({
 export const Route = createFileRoute('/_authenticated/askher')({
  validateSearch: zodValidator(search),
  loader: ({ context }) => Promise.all([context.queryClient.ensureQueryData(feedQuery), context.queryClient.ensureQueryData(feedMapQuery)]),
- head: () => pageHead('Ask', 'Talk it through privately, or ask women you trust — without names.'),
+ head: () => pageHead('Ask', 'Talk privately with Wingwoman, or send a Trust Ripple anonymously or with your name.'),
  errorComponent: () => <p role="alert" className="form-note form-error">Questions could not be loaded. Please refresh.</p>,
  component: AskHub,
 });
@@ -31,7 +31,7 @@ function AskHub() {
  const view = raw === 'ripples' ? 'ripples' : 'wingwoman';
  const tab = (v: string, label: string) => <Link to="/askher" search={{ view: v }} className="ripple-tab" role="tab" aria-selected={view === v} data-active={view === v}>{label}</Link>;
  return <>
-  <div className="page-heading"><div><div className="eyebrow">ASK</div><h1>Room for another perspective.</h1><p>Start privately with Wingwoman, or ask women you trust — always without names.</p></div><Button asChild variant="editorial"><Link to="/ripple"><Plus />Ask anonymously</Link></Button></div>
+  <div className="page-heading"><div><div className="eyebrow">ASK</div><h1>Room for another perspective.</h1><p>Start privately with Wingwoman, or ask women you trust — quietly or with your name.</p></div><Button asChild variant="editorial"><Link to="/ripple"><Plus />Ask anonymously</Link></Button></div>
   <div className="ripple-tabs" role="tablist" aria-label="Ask views">{tab('wingwoman', 'Wingwoman')}{tab('ripples', 'My Ripples')}</div>
   {view === 'wingwoman' ? <WingwomanTab /> : <RipplesTab />}
  </>;

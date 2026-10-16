@@ -17,7 +17,7 @@ import { useServerFn } from '@tanstack/react-start';
 import { conversationExcerpt, rippleIdentityPublication } from '@/lib/ripple-draft';
 import { proposeRippleDraft } from '@/lib/wingwoman.functions';
 
-export const Route = createFileRoute('/_authenticated/ripple')({ validateSearch: (s: Record<string, unknown>): { from?: string } => (typeof s['from'] === 'string' ? { from: s['from'] } : {}), head: () => pageHead('Start a Trust Ripple', 'Ask a sensitive question anonymously and choose how far it travels.'), component: Composer });
+export const Route = createFileRoute('/_authenticated/ripple')({ validateSearch: (s: Record<string, unknown>): { from?: string } => (typeof s['from'] === 'string' ? { from: s['from'] } : {}), head: () => pageHead('Start a Trust Ripple', 'Choose who sees your question and whether to ask anonymously or with your name.'), component: Composer });
 
 const steps = ['Question', 'My Instinct', 'Reach', 'Review & Send'];
 const contextCategory: Record<string, string> = { Dating: 'Dating & Boundaries', Work: 'Work' };
