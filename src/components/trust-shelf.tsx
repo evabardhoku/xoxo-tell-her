@@ -44,7 +44,7 @@ export function TrustShelf({ memberId, firstName, editable = false }: { memberId
    <div className="field"><label htmlFor={`shelf-loc-${memberId}`}>Location</label><Input id={`shelf-loc-${memberId}`} value={place} onChange={e => setPlace(e.target.value)} placeholder="e.g. Rome" /></div>
   </div>}
   <div className="ripple-tabs" role="tablist" aria-label="Trust Shelf"><button type="button" role="tab" className="ripple-tab" aria-selected={tab === 'notes'} data-active={tab === 'notes'} onClick={() => setTab('notes')}>Trust Notes <span className="form-note">{notes.length}</span></button><button type="button" role="tab" className="ripple-tab" aria-selected={tab === 'picks'} data-active={tab === 'picks'} onClick={() => setTab('picks')}>Trusted Picks <span className="form-note">{picks.length}</span></button></div>
-  {tab === 'notes' && (notes.length ? <ul className="shelf-list">{notes.map(n => <li key={n.id} className="shelf-note">
+  {tab === 'notes' && (notes.length ? <ScrollPanel label="Trust Notes" className="shelf-list">{notes.map(n => <li key={n.id} className="shelf-note">
    <div className="question-meta"><span className="question-category">{n.category}</span>{n.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{n.location}</span>}</div>
    <h4>{n.title}</h4><p>{n.body}</p>
    {editable && <div className="pick-foot"><span /><span className="flex gap-1"><Button size="sm" variant="ghost" aria-label={`Edit note ${n.title}`} onClick={() => setEditing(n)}><Pencil /></Button><Button size="sm" variant="ghost" aria-label={`Delete note ${n.title}`} disabled={remove.isPending} onClick={() => remove.mutate(n.id)}><Trash2 /></Button></span></div>}
