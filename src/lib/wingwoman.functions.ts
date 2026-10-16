@@ -37,21 +37,16 @@ const schema = {
  },
 };
 
-async function reflect(context: string, situation: string, apiKey: string): Promise<Reflection> {
+/** Streams one Responses call and returns the final text. Shared by the first reflection and follow-up turns. */
+async function streamResponse(body: Record<string, unknown>, apiKey: string): Promise<string> {
  const res = await fetch('https://ai.gateway.lovable.dev/v1/responses', {
   method: 'POST',
   headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json', 'X-Lovable-AIG-SDK': 'fetch' },
-  body: JSON.stringify({
-   model: 'openai/gpt-6-astra', stream: true, store: false,
-   reasoning: { effort: 'low' },
-   instructions: SYSTEM,
-   input: [{ role: 'user', content: `Context: ${context}\n\nWhat happened (her words):\n${situation}` }],
-   text: { format: { type: 'json_schema', name: 'reflection', strict: true, schema } },
-  }),
+  body: JSON.stringify({ model: 'openai/gpt-6-astra', stream: true, store: false, reasoning: { effort: 'low' }, ...body }),
  });
  if (!res.ok || !res.body) {
-  const body = await res.text().catch(() => '');
-  console.error('wingwoman gateway', res.status, body.slice(0, 500));
+  const t = await res.text().catch(() => '');
+  console.error('wingwoman gateway', res.status, t.slice(0, 500));
   if (res.status === 429) throw new Error('Wingwoman is busy right now. Please try again in a moment.');
   if (res.status === 402) throw new Error('Wingwoman is unavailable: AI credits have run out for this workspace.');
   throw new Error('Wingwoman could not reflect right now. Please try again later.');
@@ -75,9 +70,58 @@ async function reflect(context: string, situation: string, apiKey: string): Prom
   }
  }
  if (refused || !text) throw new Error('Wingwoman can’t reflect on this one. If you’re in danger, please contact local emergency services.');
+ return text;
+}
+
+async function reflect(context: string, situation: string, apiKey: string): Promise<Reflection> {
+ const text = await streamResponse({
+  instructions: SYSTEM,
+  input: [{ role: 'user', content: `Context: ${context}\n\nWhat happened (her words):\n${situation}` }],
+  text: { format: { type: 'json_schema', name: 'reflection', strict: true, schema } },
+ }, apiKey);
  const r = JSON.parse(text) as Reflection;
  return { what_stands_out: r.what_stands_out.slice(0, 4), questions: r.questions.slice(0, 3), next_step: r.next_step, safety_note: r.safety_note || null };
 }
+
+/** Plain-text rendering of a stored one-shot reflection, used as conversation context. */
+export function reflectionText(r: Reflection) {
+ return [r.safety_note, `What stands out:\n- ${r.what_stands_out.join('\n- ')}`, `Questions worth asking yourself:\n- ${r.questions.join('\n- ')}`, `A reasonable next step: ${r.next_step}`].filter(Boolean).join('\n\n');
+}
+
+const CHAT = `${SYSTEM.split('Output:')[0]}
+This is a continuing private conversation. Voice: a thoughtful girls' girl — warm, observant, conversational, supportive, and direct when useful. Never blindly validating: gently separate what she knows from what she is assuming, and say so when something would make you pause too.
+Respond naturally to what she just said, in a few short paragraphs at most. Do not use headings or the earlier three-section format unless she asks for structure. Ask at most one question back.
+Avoid caricature: no "bestie", "queen", "girl!" or forced slang. Plain text only, no markdown headings.
+If she describes an immediate, explicit threat or emergency, calmly encourage her to prioritize immediate safety and contact local emergency services or a local support line, and say plainly that TellHer cannot respond to emergencies.`;
+
+export const HISTORY_TURNS = 20;
+const msgInput = z.object({ sessionId: z.string().uuid(), content: z.string().trim().min(1).max(4000) });
+
+export const sendWingwomanMessage = createServerFn({ method: 'POST' })
+ .middleware([requireSupabaseAuth])
+ .inputValidator((d: unknown) => msgInput.parse(d))
+ .handler(async ({ data, context }) => {
+  const key = process.env['LOVABLE_API_KEY'];
+  if (!key) throw new Error('Wingwoman is not configured.');
+  // RLS scopes both reads to the caller; another member's session id returns nothing.
+  const { data: s } = await context.supabase.from('wingwoman_sessions').select('id, context, situation, instinct, reflection').eq('id', data.sessionId).maybeSingle();
+  if (!s) throw new Error('This conversation could not be found.');
+  const { data: past, error: pe } = await context.supabase.from('wingwoman_messages').select('role, content').eq('session_id', s.id).order('created_at', { ascending: false }).limit(HISTORY_TURNS);
+  if (pe) { console.error(pe); throw new Error('Your conversation could not be loaded.'); }
+  const { error: ue } = await context.supabase.from('wingwoman_messages').insert({ session_id: s.id, owner_id: context.userId, role: 'user', content: data.content });
+  if (ue) { console.error(ue); throw new Error('Your message could not be saved.'); }
+  const input = [
+   { role: 'user', content: `Context: ${s.context ?? 'Other'}\n\nWhat happened (her words):\n${s.situation ?? ''}` },
+   ...(s.reflection ? [{ role: 'assistant', content: reflectionText(s.reflection as Reflection) }] : []),
+   ...(past ?? []).reverse().map(m => ({ role: m.role, content: m.content })),
+   { role: 'user', content: data.content },
+  ];
+  const reply = (await streamResponse({ instructions: CHAT, input }, key)).trim().slice(0, 6000);
+  const { data: row, error } = await context.supabase.from('wingwoman_messages').insert({ session_id: s.id, owner_id: context.userId, role: 'assistant', content: reply }).select('id, role, content, created_at').single();
+  if (error) { console.error(error); throw new Error('Wingwoman’s reply could not be saved.'); }
+  await context.supabase.from('wingwoman_sessions').update({ updated_at: new Date().toISOString() }).eq('id', s.id);
+  return row;
+ });
 
 export const createReflection = createServerFn({ method: 'POST' })
  .middleware([requireSupabaseAuth])
