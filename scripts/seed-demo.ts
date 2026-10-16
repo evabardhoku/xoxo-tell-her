@@ -68,6 +68,12 @@ const seedExtras = async () => {
  const feed = ((await all['maya']!.cl.rpc('tellher_feed')).data ?? []) as { id: string; body: string }[];
  const echoPlan: [string, string[]][] = [['My manager keeps presenting', ['lina', 'sofia', 'noor', 'iris', 'june']], ['I’m travelling alone for the first time', ['lina', 'sofia', 'noor', 'maya']], ['After two dates he suggested', ['maya']]];
  for (const [start, who] of echoPlan) { const q = feed.find(f => f.body.startsWith(start)); if (!q) continue; for (const k of who) await all[k]!.cl.rpc('tellher_echo', { _id: q.id }); }
+ // Echo Room on Maya's manager-credit Ripple (5 Echoes); anonymous voices, demo members only, only if empty.
+ const credit = feed.find(f => f.body.startsWith('My manager keeps presenting'));
+ if (credit && !((await all['maya']!.cl.rpc('tellher_echo_room', { _q: credit.id })).data ?? []).length) {
+  const roomMsgs: [string, string][] = [['maya', 'Thank you for echoing this. It helps to know it isn’t just me.'], ['lina', 'Same pattern with a previous manager. Recap emails after every 1:1 changed a lot.'], ['sofia', 'I kept a simple doc of ideas with dates. I never had to use it, but it made me calmer.'], ['maya', 'I’m going to try the recap email this week.']];
+  for (const [k, b] of roomMsgs) { const r = await all[k]!.cl.rpc('tellher_echo_room_post', { _q: credit.id, _body: b }); if (r.error) throw r.error; }
+ }
  const maya = m['maya']!;
  const { count: ww } = await maya.cl.from('wingwoman_sessions').select('id', { count: 'exact', head: true }).eq('title', 'Asked to cover a colleague’s project again'); if (ww) return;
  // Legacy-style one-shot reflection.

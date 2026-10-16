@@ -25,6 +25,7 @@ import { Route as AuthenticatedWingwomanRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAskherIdRouteImport } from './routes/_authenticated/askher_.$id'
 import { Route as AuthenticatedBetweenUsConversationIdRouteImport } from './routes/_authenticated/between-us_.$conversationId'
 import { Route as AuthenticatedProfileMemberIdRouteImport } from './routes/_authenticated/profile_.$memberId'
+import { Route as AuthenticatedAskherIdRoomRouteImport } from './routes/_authenticated/askher_.$id_.room'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -107,6 +108,12 @@ const AuthenticatedProfileMemberIdRoute =
     path: '/profile/$memberId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAskherIdRoomRoute =
+  AuthenticatedAskherIdRoomRouteImport.update({
+    id: '/askher_/$id_/room',
+    path: '/askher/$id/room',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -124,6 +131,7 @@ export interface FileRoutesByFullPath {
   '/askher/$id': typeof AuthenticatedAskherIdRoute
   '/between-us/$conversationId': typeof AuthenticatedBetweenUsConversationIdRoute
   '/profile/$memberId': typeof AuthenticatedProfileMemberIdRoute
+  '/askher/$id/room': typeof AuthenticatedAskherIdRoomRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -141,6 +149,7 @@ export interface FileRoutesByTo {
   '/askher/$id': typeof AuthenticatedAskherIdRoute
   '/between-us/$conversationId': typeof AuthenticatedBetweenUsConversationIdRoute
   '/profile/$memberId': typeof AuthenticatedProfileMemberIdRoute
+  '/askher/$id/room': typeof AuthenticatedAskherIdRoomRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -160,6 +169,7 @@ export interface FileRoutesById {
   '/_authenticated/askher_/$id': typeof AuthenticatedAskherIdRoute
   '/_authenticated/between-us_/$conversationId': typeof AuthenticatedBetweenUsConversationIdRoute
   '/_authenticated/profile_/$memberId': typeof AuthenticatedProfileMemberIdRoute
+  '/_authenticated/askher_/$id_/room': typeof AuthenticatedAskherIdRoomRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -179,6 +189,7 @@ export interface FileRouteTypes {
     | '/askher/$id'
     | '/between-us/$conversationId'
     | '/profile/$memberId'
+    | '/askher/$id/room'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -196,6 +207,7 @@ export interface FileRouteTypes {
     | '/askher/$id'
     | '/between-us/$conversationId'
     | '/profile/$memberId'
+    | '/askher/$id/room'
   id:
     | '__root__'
     | '/'
@@ -214,6 +226,7 @@ export interface FileRouteTypes {
     | '/_authenticated/askher_/$id'
     | '/_authenticated/between-us_/$conversationId'
     | '/_authenticated/profile_/$memberId'
+    | '/_authenticated/askher_/$id_/room'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -337,6 +350,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileMemberIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/askher_/$id_/room': {
+      id: '/_authenticated/askher_/$id_/room'
+      path: '/askher/$id/room'
+      fullPath: '/askher/$id/room'
+      preLoaderRoute: typeof AuthenticatedAskherIdRoomRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -353,6 +373,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAskherIdRoute: typeof AuthenticatedAskherIdRoute
   AuthenticatedBetweenUsConversationIdRoute: typeof AuthenticatedBetweenUsConversationIdRoute
   AuthenticatedProfileMemberIdRoute: typeof AuthenticatedProfileMemberIdRoute
+  AuthenticatedAskherIdRoomRoute: typeof AuthenticatedAskherIdRoomRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -369,6 +390,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBetweenUsConversationIdRoute:
     AuthenticatedBetweenUsConversationIdRoute,
   AuthenticatedProfileMemberIdRoute: AuthenticatedProfileMemberIdRoute,
+  AuthenticatedAskherIdRoomRoute: AuthenticatedAskherIdRoomRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
