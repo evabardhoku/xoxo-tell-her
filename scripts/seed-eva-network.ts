@@ -66,7 +66,7 @@ const ins = await admin.from('trust_connections').insert(edges); if (ins.error) 
 await trust('giulia', 'nadia'); await trust('amira', 'hana'); await trust('elena', 'nadia');
 // A pending request for Eva to answer
 await trust('valentina', 'eva');
-} else { const { data: mine } = await c['giulia']!.rpc('tellher_feed'); for (const q of (mine ?? []) as { id: string; is_mine: boolean }[]) if (q.is_mine) await c['giulia']!.rpc('tellher_delete_question', { _id: q.id }); }
+} else { for (const k of ['giulia', 'amira', 'elena', 'chiara', 'nadia']) { const { data: mine } = await c[k]!.rpc('tellher_feed'); for (const q of (mine ?? []) as { id: string; is_mine: boolean }[]) if (q.is_mine) await c[k]!.rpc('tellher_delete_question', { _id: q.id }); } }
 
 // Extended Circle discovery: Valentina reachable via Chiara but not discoverable; one pending Trust Bridge from Eva to Hana.
 const edge = async (a: string, b: string) => (await admin.from('trust_connections').select('id').eq('requester_id', id[a]!).eq('recipient_id', id[b]!).in('status', ['pending', 'accepted'])).data?.length;
