@@ -65,8 +65,8 @@ function RequestsTab() {
  </div>;
 }
 
-function Member({ m, children }: { m: CircleEntry; children?: React.ReactNode }) {
- return <li className="member-row"><span className="member-initial" aria-hidden>{m.first_name.slice(0, 1).toUpperCase()}</span><div className="member-meta"><Link to="/profile/$memberId" params={{ memberId: m.member_id }} className="member-link"><strong>{memberName(m)}</strong></Link>{m.city && <span>{m.city}</span>}</div>{children && <div className="member-actions">{children}</div>}</li>;
+function Member({ m, children, known }: { m: CircleEntry; children?: React.ReactNode; known?: string[] | undefined }) {
+ return <li className="member-row"><span className="member-initial" aria-hidden>{m.first_name.slice(0, 1).toUpperCase()}</span><div className="member-meta"><Link to="/profile/$memberId" params={{ memberId: m.member_id }} className="member-link"><strong>{memberName(m)}</strong></Link>{m.city && <span>{m.city}</span>}{known && known.length > 0 && <span className="member-known">{known.slice(0, 3).join(' · ')}</span>}</div>{children && <div className="member-actions">{children}</div>}</li>;
 }
 
 function AddMember({ onSent }: { onSent: () => void }) {
@@ -113,6 +113,6 @@ function DirectCircle({ direct }: { direct: CircleEntry[] }) {
    return (field === 'all' ? Object.values(f).flat() : f[field]).some(v => v.toLowerCase().includes(q)); });
  }, [direct, details.data, text, field]);
  return <section className="circle-card"><h2>Direct Circle</h2>
-  {direct.length > 1 && <details><summary className="form-note">Find someone in your Circle</summary><div className="shelf-filters" role="search" aria-label="Filter Direct Circle"><div className="field"><label htmlFor="dc-q">Search</label><Input id="dc-q" value={text} onChange={e => setText(e.target.value)} placeholder="Name, city, topic…" /></div><div className="field"><label htmlFor="dc-f">Search in</label><select id="dc-f" className="ext-select" value={field} onChange={e => setField(e.target.value as Field)}><option value="all">Everything</option><option value="name">Name</option><option value="location">Location</option><option value="known">Known for</option><option value="ask">Ask me about</option></select></div></div></details>}
-  {direct.length ? shown.length ? <ScrollPanel label="Direct Circle members" className="member-list">{shown.map(m => <Member key={m.connection_id} m={m} />)}</ScrollPanel> : <p className="form-note">No one in your Direct Circle matches.</p> : <p className="form-note">No one yet. Invite a woman you trust below.</p>}</section>;
+  {direct.length > 1 && <div className="field circle-search" role="search"><label htmlFor="dc-q" className="sr-only">Search My Circle</label><Input id="dc-q" value={text} onChange={e => setText(e.target.value)} placeholder="Search by name, city or topic" /></div>}
+  {direct.length ? shown.length ? <ScrollPanel label="Direct Circle members" className="member-list">{shown.map(m => <Member key={m.connection_id} m={m} known={details.data?.[m.member_id]?.known_for} />)}</ScrollPanel> : <p className="form-note">No one in your Direct Circle matches.</p> : <p className="form-note">No one yet. Connect in person or add her by email below.</p>}</section>;
 }
