@@ -9,9 +9,11 @@ export function accountLifecycle(options: {
 }) {
  let active = true;
  let revision = 0;
+ let initialized = false;
  let identity: string | null = null;
  const apply = (user: User | null) => {
-  if (identity !== (user?.id ?? null)) options.clearCache();
+  if (initialized && identity !== (user?.id ?? null)) options.clearCache();
+  initialized = true;
   identity = user?.id ?? null;
   options.setUser(user);
   options.setReady();

@@ -5,6 +5,12 @@ import { accountLifecycle } from '@/lib/account-lifecycle';
 
 const user = (id: string) => ({ id } as User);
 describe('Safe account transitions', () => {
+ it('preserves in-flight route reads during initial account hydration', () => {
+  const clearCache = vi.fn();
+  const account = accountLifecycle({ setUser: vi.fn(), setReady: vi.fn(), clearCache, refresh: vi.fn() });
+  account.initial(user('first'));
+  expect(clearCache).not.toHaveBeenCalled();
+ });
  it('clears previous private data before displaying a different account', () => {
   const cache = new QueryClient(); const snapshots: unknown[] = [];
   const account = accountLifecycle({ setUser: () => snapshots.push(cache.getQueryData(['private-profile'])), setReady: vi.fn(), clearCache: () => cache.clear(), refresh: vi.fn() });
