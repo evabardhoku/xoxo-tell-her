@@ -6,7 +6,7 @@ import { LockKeyhole, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { EmptyRipple } from '@/components/brand';
 import { pageHead } from '@/lib/metadata';
-import { feedMapQuery } from '@/lib/perspectives';
+import { feedMapQuery, type Counts } from '@/lib/perspectives';
 import { feedQuery, relativeTime, type FeedQuestion } from '@/lib/askher';
 import { FeedFilters, QuestionCard, useFeedFilter } from '@/components/question-feed';
 import { skyQuery } from '@/lib/constellations';
@@ -68,22 +68,22 @@ function RipplesTab() {
  </>;
 }
 
-function MineList({ list, outcomes, map }: { list: FeedQuestion[]; outcomes: Set<string>; map: Record<string, never> }) {
+function MineList({ list, outcomes, map }: { list: FeedQuestion[]; outcomes: Set<string>; map: Record<string, Counts | undefined> }) {
  const { f, setF, shown } = useFeedFilter(list);
  return <section aria-label="Questions you started" className="ask-section">
   <h2 className="eyebrow">STARTED BY ME</h2>
   {list.length === 0 ? <section className="empty-panel"><EmptyRipple /><h2>You haven’t started a Ripple yet.</h2><p>When you send a question, it will appear here with its perspectives.</p></section>
    : <><FeedFilters f={f} setF={setF} id="ask-mine" />
-   {shown.length ? <ul className="question-list">{shown.map(q => <QuestionCard key={q.id} q={q} counts={map[q.id as never]} detail badge={statusBadge(q, outcomes)} />)}</ul> : <p className="form-note">No Ripples match these filters.</p>}</>}
+   {shown.length ? <ul className="question-list">{shown.map(q => <QuestionCard key={q.id} q={q} counts={map[q.id]} detail badge={statusBadge(q, outcomes)} />)}</ul> : <p className="form-note">No Ripples match these filters.</p>}</>}
  </section>;
 }
 
-function ReachedList({ list, map, initial }: { list: FeedQuestion[]; map: Record<string, never>; initial: string }) {
+function ReachedList({ list, map, initial }: { list: FeedQuestion[]; map: Record<string, Counts | undefined>; initial: string }) {
  const { f, setF, shown } = useFeedFilter(list, initial);
  return <section aria-label="Ripples that reached you" className="ask-section">
   <h2 className="eyebrow">REACHED ME</h2>
   {list.length === 0 ? <section className="empty-panel"><EmptyRipple /><h2>Nothing has reached you yet.</h2><p>Questions from your circle and beyond will appear here.</p></section>
    : <><FeedFilters f={f} setF={setF} id="ask-reached" />
-   {shown.length ? <ul className="question-list">{shown.map(q => <QuestionCard key={q.id} q={q} counts={map[q.id as never]} detail />)}</ul> : <p className="form-note">No Ripples match these filters.</p>}</>}
+   {shown.length ? <ul className="question-list">{shown.map(q => <QuestionCard key={q.id} q={q} counts={map[q.id]} detail />)}</ul> : <p className="form-note">No Ripples match these filters.</p>}</>}
  </section>;
 }
