@@ -96,12 +96,20 @@ function Thread({ id }: { id: string }) {
  };
  const onKey = (e: KeyboardEvent) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); void submit(); } };
  const instinct = instincts.find(i => i.value === session.instinct)?.label;
+ const atRisk = Boolean((session.reflection as Reflection | null)?.safety_note) || [session.situation ?? '', ...messages.filter(m => m.role === 'user').map(m => m.content)].some(mentionsImmediateRisk);
+ const remove = async () => {
+  if (!window.confirm('Delete this conversation? This cannot be undone.')) return;
+  const { error } = await supabase.from('wingwoman_sessions').delete().eq('id', id);
+  if (error) return setError(errorText(error));
+  qc.removeQueries({ queryKey: ['ww-thread', id] }); await qc.invalidateQueries({ queryKey: sessionsQuery.queryKey }); navigate({ to: '/wingwoman', search: {} });
+ };
  // Gentle next-step chips appear once Wingwoman has replied; each hides when it has nothing to show.
  const replied = Boolean(session.reflection) || messages.some(m => m.role !== 'user');
  const r = rel.data;
  const showChips = replied && !chipsGone && !pending;
  return <section className="ww-thread" aria-label="Conversation">
   <div className="ww-thread-head"><div className="question-meta"><span className="question-category">{session.context ?? 'Other'}</span><span>{relativeTime(session.created_at)}</span>{instinct && <span className="private-note"><LockKeyhole size={12} />Your instinct · {instinct}</span>}</div>
+  <Button variant="ghost" size="sm" onClick={() => void remove()}>Delete conversation</Button>
 </div>
   <ol className="ww-messages">
    <li className="ww-msg ww-user"><p>{session.situation}</p></li>
