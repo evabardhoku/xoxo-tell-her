@@ -10,7 +10,17 @@ const people = [
  ['noor', 'Noor', 'Demo', 'Lyon'], ['iris', 'Iris', 'Demo', 'Ghent'], ['june', 'June', 'Demo', 'Bristol'],
 ] as const;
 const { data: list } = await admin.auth.admin.listUsers({ perPage: 1000 });
-if (list.users.some(u => u.email === 'maya.demo@example.com')) { console.log('Demo already seeded.'); process.exit(0); }
+// Safe member-profile details for the fictional demo members only (re-applied on every run).
+const details: Record<string, Record<string, unknown>> = {
+ maya: { bio: 'Project manager who likes a second opinion before big decisions.', country: 'Portugal', languages: ['Portuguese', 'English'], occupation: 'Project manager', known_for: ['Workplace politics'], ask_me_about: ['Asking for a raise'], discoverability: 'direct' },
+ lina: { bio: 'Teacher in Porto. Calm, direct, and good at difficult conversations.', country: 'Portugal', languages: ['Portuguese', 'English', 'Spanish'], occupation: 'Secondary school teacher', known_for: ['Hard conversations', 'Education'], ask_me_about: ['Setting boundaries', 'Teaching careers'], discoverability: 'community' },
+ sofia: { bio: 'Software engineer, moved countries twice. Happy to talk relocation.', country: 'Spain', languages: ['Spanish', 'English'], occupation: 'Software engineer', known_for: ['Relocating', 'Tech jobs'], ask_me_about: ['Moving abroad', 'Salary negotiation'], discoverability: 'extended' },
+ noor: { bio: 'Studying medicine in Lyon. I like practical questions.', country: 'France', languages: ['Arabic', 'French', 'English'], occupation: 'Medical student', known_for: ['Student life'], ask_me_about: ['Studying abroad', 'Finding flatmates'], discoverability: 'extended' },
+ iris: { bio: 'Illustrator in Ghent who travels for fairs.', country: 'Belgium', languages: ['Dutch', 'English'], occupation: 'Illustrator', known_for: ['Freelancing', 'Travel'], ask_me_about: ['Trade fairs', 'Pricing creative work'], discoverability: 'community' },
+ june: { bio: 'Charity fundraiser in Bristol and keen cyclist.', country: 'United Kingdom', languages: ['English'], occupation: 'Fundraiser', known_for: ['Nonprofits'], ask_me_about: ['Cycling commutes'], discoverability: 'direct' },
+};
+for (const u of list.users) { const k = u.email?.match(/^(\w+)\.demo@example\.com$/)?.[1]; if (k && details[k]) { const r = await admin.from('profiles').update(details[k]).eq('id', u.id); if (r.error) throw r.error; } }
+if (list.users.some(u => u.email === 'maya.demo@example.com')) { console.log('Demo already seeded; profile details refreshed.'); process.exit(0); }
 const id: Record<string, string> = {}; const c: Record<string, SupabaseClient> = {};
 for (const [k, first, last, city] of people) {
  const email = `${k}.demo@example.com`;
@@ -18,7 +28,7 @@ for (const [k, first, last, city] of people) {
  if (error) throw error; id[k] = data.user!.id;
  const cl = createClient(url, pub, { auth: { persistSession: false } });
  const s = await cl.auth.signInWithPassword({ email, password: PASSWORD }); if (s.error) throw s.error;
- await cl.from('profiles').update({ city }).eq('id', id[k]); c[k] = cl;
+ await cl.from('profiles').update({ city, ...details[k] }).eq('id', id[k]); c[k] = cl;
 }
 const trust = async (a: string, b: string) => {
  const e1 = await c[a]!.rpc('tellher_send_trust', { _recipient: id[b]! }); if (e1.error) throw e1.error;
