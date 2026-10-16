@@ -71,6 +71,13 @@
       "when": 1792146451849,
       "tag": "0009_safe_member_profiles",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792146464338,
+      "tag": "0010_fix_profile_details_validation",
+      "breakpoints": true
     }
   ]
 }
