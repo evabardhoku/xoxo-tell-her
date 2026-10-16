@@ -16,41 +16,56 @@ export type Database = {
     Tables: {
       profiles: {
         Row: {
+          ask_me_about: string[]
           avatar_path: string | null
           bio: string | null
           city: string | null
           country: string | null
           created_at: string
+          discoverability: string
           display_name: string
           first_name: string
           id: string
+          known_for: string[]
+          languages: string[]
           last_name: string
+          occupation: string | null
           updated_at: string
           woman_attested_at: string | null
         }
         Insert: {
+          ask_me_about?: string[]
           avatar_path?: string | null
           bio?: string | null
           city?: string | null
           country?: string | null
           created_at?: string
+          discoverability?: string
           display_name?: string
           first_name?: string
           id: string
+          known_for?: string[]
+          languages?: string[]
           last_name?: string
+          occupation?: string | null
           updated_at?: string
           woman_attested_at?: string | null
         }
         Update: {
+          ask_me_about?: string[]
           avatar_path?: string | null
           bio?: string | null
           city?: string | null
           country?: string | null
           created_at?: string
+          discoverability?: string
           display_name?: string
           first_name?: string
           id?: string
+          known_for?: string[]
+          languages?: string[]
           last_name?: string
+          occupation?: string | null
           updated_at?: string
           woman_attested_at?: string | null
         }
@@ -438,6 +453,23 @@ export type Database = {
           member_id: string
         }[]
       }
+      tellher_member_profile: {
+        Args: { _id: string }
+        Returns: {
+          ask_me_about: string[]
+          bio: string
+          city: string
+          country: string
+          first_name: string
+          has_avatar: boolean
+          known_for: string[]
+          languages: string[]
+          last_name: string
+          occupation: string
+          relation: string
+          via: string
+        }[]
+      }
       tellher_member_ready: { Args: never; Returns: boolean }
       tellher_my_circle: {
         Args: never
@@ -448,6 +480,7 @@ export type Database = {
           first_name: string
           kind: string
           last_initial: string
+          member_id: string
         }[]
       }
       tellher_post_reply: {
