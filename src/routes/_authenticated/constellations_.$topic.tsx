@@ -29,7 +29,7 @@ function Place() {
  const direct = (circle.data?.entries ?? []).filter(e => e.kind === 'direct').slice(0, 12);
  const shelves = useQueries({ queries: direct.map(d => shelfQuery(d.member_id)) });
 
- const ripples = (feed.data ?? []).filter(q => q.category === topic);
+ const ripples = (feed.data ?? []).filter(q => q.category === topic && q.author_visibility !== 'named');
  const topicPicks = (picks.data?.circle ?? []).filter(p => p.category === topic);
  const notes = shelves.flatMap((s, i) => { const owner = direct[i]; return owner ? (s.data?.notes ?? []).filter(n => n.category === topic).map(n => ({ ...n, member_id: owner.member_id, by: owner.first_name })) : []; });
  // The Echo action follows the most-echoed Ripple here that isn't the viewer's own.
@@ -49,7 +49,7 @@ function Place() {
    <p className="form-note">Women choose whether to name their Ripple. Echoes and letters stay anonymous.</p>
   </header>
   {echoTarget && <Echo id={echoTarget.id} isAuthor={false} />}
-  <section className="member-section"><h2>Ripples</h2><ul className="question-list">{ripples.map(q => <QuestionCard key={q.id} q={q} counts={maps.data?.[q.id]} />)}</ul></section>
+  <section className="member-section"><h2>Recent anonymous Ripples</h2><ul className="question-list">{ripples.map(q => <QuestionCard key={q.id} q={q} counts={maps.data?.[q.id]} />)}</ul></section>
   {(Boolean(letters.data?.length) || topicPicks.length > 0 || notes.length > 0) && <section className="member-section"><h2>From women who’ve been there</h2>
    {letters.data?.length ? <><h3 className="picks-sub mb-3">Letters from the Other Side</h3><ul className="letter-list">{letters.data.map(l => <li key={l.id} className={`letter-card ${l.mine ? 'letter-card--mine' : ''}`}>
      <p className="letter-body">{l.body}</p>

@@ -39,3 +39,14 @@ const titles: Record<string, string> = {
  'Everyday Life': 'The small things that weigh on you',
 };
 export const placeTitle = (category: string) => titles[category] ?? category;
+
+/** Counts below this stay hidden so small groups can't be singled out (mirrors ECHO_THRESHOLD). */
+export const SKY_COUNT_THRESHOLD = 3;
+export type TrendingTheme = { category: string; excerpt: string; recent: number | null; latest: string };
+/** Themes with recent anonymous activity, newest activity first. Never ranked by size; small counts hidden. */
+export function trendingThemes(rows: SkyRow[], now = Date.now(), days = 30, max = 5): TrendingTheme[] {
+ const since = now - days * 86400000; const by = new Map<string, SkyRow[]>();
+ for (const r of skyOnly(rows)) if (Date.parse(r.created_at) >= since) by.set(r.category, [...(by.get(r.category) ?? []), r]);
+ return [...by.entries()].map(([category, rs]) => { const sorted = [...rs].sort((a, b) => b.created_at.localeCompare(a.created_at)); return { category, excerpt: sorted[0]!.excerpt, recent: rs.length >= SKY_COUNT_THRESHOLD ? rs.length : null, latest: sorted[0]!.created_at }; })
+  .sort((a, b) => b.latest.localeCompare(a.latest)).slice(0, max);
+}
