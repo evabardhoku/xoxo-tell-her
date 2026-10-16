@@ -318,6 +318,50 @@ export type Database = {
           },
         ]
       }
+      trust_notes: {
+        Row: {
+          author_id: string
+          body: string
+          created_at: string
+          id: string
+          location: string | null
+          search: unknown
+          title: string
+          topic: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          body: string
+          created_at?: string
+          id?: string
+          location?: string | null
+          search?: unknown
+          title: string
+          topic: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          created_at?: string
+          id?: string
+          location?: string | null
+          search?: unknown
+          title?: string
+          topic?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trust_notes_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trusted_picks: {
         Row: {
           category: string
@@ -471,6 +515,18 @@ export type Database = {
         }[]
       }
       tellher_member_ready: { Args: never; Returns: boolean }
+      tellher_member_shelf: {
+        Args: { _id: string }
+        Returns: {
+          body: string
+          category: string
+          created_at: string
+          id: string
+          kind: string
+          location: string
+          title: string
+        }[]
+      }
       tellher_my_circle: {
         Args: never
         Returns: {

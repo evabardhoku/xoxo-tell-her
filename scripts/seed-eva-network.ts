@@ -35,6 +35,23 @@ for (const [k, first, last, city, bio] of people) {
  const s = await cl.auth.signInWithPassword({ email, password: PASSWORD }); if (s.error) throw s.error; c[k] = cl;
  const p = await cl.from('profiles').update({ city, country: k === 'elena' ? 'Albania' : 'Italy', bio, ...details[k] }).eq('id', data.user.id); if (p.error) throw p.error;
 }
+// Trust Notes: fictional, written by each member under her own session; only added if she has none yet.
+const notes: Record<string, [string, string, string, string | null][]> = {
+ giulia: [['Three things I wish I knew before renting abroad', 'Housing & Moving', 'Ask for the registered contract number before paying any deposit.\nPhotograph every room, with dates, on the day you move in.\nNever agree to pay part of the rent in cash "to keep it simple".', 'Rome'],
+  ['How I read a lease in twenty minutes', 'Housing & Moving', 'I read the deposit, notice period and repairs clauses first. Those three cause most disputes. Anything unclear goes in an email so there is a written trail.', null]],
+ amira: [['Arriving late at a new airport', 'Travel', 'I book the first night close to the airport, save the official taxi rank location offline, and send my flight number to one friend. Small habits, big calm.', null],
+  ['A short checklist before accepting a freelance brief', 'Work', 'Written scope, a named contact, payment terms in days, and what happens if the project is cancelled. If any of these is missing, I ask before starting.', 'Milan']],
+ elena: [['Choosing a doctor in a new city', 'Health & Care', 'Ask colleagues who they actually go to, check whether the clinic answers the phone, and book a short first visit for something small to see how you are listened to.', 'Tirana'],
+  ['Getting home safely after a night shift', 'Everyday Life', 'I share my route with a colleague, keep my phone charged at work, and keep one taxi number I trust. Boring, but it works.', null]],
+ chiara: [['What I check before accepting an internship offer', 'Study', 'Is it paid, and when? Who is my supervisor, by name? Is there a written plan of what I will learn? An offer without answers to these is a warning.', 'Bologna']],
+ nadia: [['Before signing a lease for a small shop', 'Money', 'Ask how long the previous tenant stayed and why they left, check who pays for structural repairs, and have the lease read by someone who is not the agent.', 'Turin']],
+ hana: [['Getting paid on time as a freelancer', 'Money', 'Invoice on the day you deliver, state payment terms clearly, and send one polite reminder the day after the due date. Most late payers are just disorganised.', null]],
+};
+for (const [k, list] of Object.entries(notes)) {
+ const { count } = await c[k]!.from('trust_notes').select('id', { count: 'exact', head: true });
+ if (count) continue;
+ const r = await c[k]!.from('trust_notes').insert(list.map(([title, topic, body, location]) => ({ author_id: id[k]!, title, topic, body, location }))); if (r.error) throw r.error;
+}
 const trust = async (a: string, b: string) => {
  const e1 = await c[a]!.rpc('tellher_send_trust', { _recipient: id[b]! }); if (e1.error) throw e1.error;
  if (b === 'eva') return; // Eva accepts or declines herself
@@ -78,7 +95,7 @@ await reply('amira', q4, 'been_there', 'I simply stopped replying once and it wa
 await ask('nadia', 'Services', 'An electrician quoted me double what a friend paid for similar work and said the price is only valid today. Is that a normal tactic?', 'community', 'feels_off', null);
 await ask('amira', 'Everyday Life', 'A new neighbour asked me to sign for her parcels while she’s away for a month. Would you say yes?', 'circle', 'feels_okay', null);
 
-const pick = async (who: string, category: string, title: string, note: string, location: string | null) => { const { error } = await c[who]!.from('trusted_picks').insert({ owner_id: id[who]!, category, title, note, location }); if (error) throw error; };
+const pick = async (who: string, category: string, title: string, note: string, location: string | null) => { const { count } = await c[who]!.from('trusted_picks').select('id', { count: 'exact', head: true }).eq('title', title); if (count) return; const { error } = await c[who]!.from('trusted_picks').insert({ owner_id: id[who]!, category, title, note, location }); if (error) throw error; };
 await pick('giulia', 'Housing & Moving', 'A tenants’ advice desk that answers emails', 'They read my contract for free and told me exactly which clauses mattered.', 'Rome · Pigneto');
 await pick('amira', 'Travel', 'Airport transfer booked through the hotel', 'Fixed price, driver waited with a name sign, no surprises.', 'Milan Malpensa');
 await pick('elena', 'Health & Care', 'A physiotherapist who doesn’t rush', 'She explained every exercise and checked in after a week.', 'Tirana');

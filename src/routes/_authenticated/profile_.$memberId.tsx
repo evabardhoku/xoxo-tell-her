@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { pageHead } from '@/lib/metadata';
 import { memberAvatar } from '@/lib/member.functions';
+import { TrustShelf } from '@/components/trust-shelf';
 
 const memberQuery = (id: string) => ({
  queryKey: ['member-profile', id],
@@ -50,6 +51,7 @@ function MemberProfile() {
    {lists.map(([label, items]) => items.length > 0 && <section key={label} className="member-section"><h2>{label}</h2><ul className="tag-list">{items.map(t => <li key={t}>{t}</li>)}</ul></section>)}
    {!m.bio && lists.every(([, i]) => !i.length) && <p className="form-note member-section">She hasn’t added more about herself yet.</p>}
   </article>
+  <TrustShelf memberId={memberId} firstName={m.first_name} />
  </>;
 }
 
