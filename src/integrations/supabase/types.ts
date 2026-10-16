@@ -400,6 +400,48 @@ export type Database = {
           },
         ]
       }
+      wingwoman_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          owner_id: string
+          role: string
+          session_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          owner_id: string
+          role: string
+          session_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          owner_id?: string
+          role?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wingwoman_messages_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wingwoman_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "wingwoman_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wingwoman_sessions: {
         Row: {
           context: string | null
