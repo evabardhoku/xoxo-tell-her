@@ -19,7 +19,7 @@ export const Route = createFileRoute('/_authenticated/wingwoman')({
 });
 
 type Msg = { id: string; role: string; content: string; created_at: string };
-const sessionsQuery = { queryKey: ['ww-sessions'], queryFn: async () => { const { data, error } = await supabase.from('wingwoman_sessions').select('id, title, context, updated_at').order('updated_at', { ascending: false }).limit(30); if (error) throw error; return data ?? []; } };
+export const sessionsQuery = { queryKey: ['ww-sessions'], queryFn: async () => { const { data, error } = await supabase.from('wingwoman_sessions').select('id, title, context, updated_at').order('updated_at', { ascending: false }).limit(30); if (error) throw error; return data ?? []; } };
 const threadQuery = (id: string) => ({ queryKey: ['ww-thread', id], queryFn: async () => {
  const [s, m] = await Promise.all([
   supabase.from('wingwoman_sessions').select('id, context, situation, instinct, reflection, created_at').eq('id', id).maybeSingle(),

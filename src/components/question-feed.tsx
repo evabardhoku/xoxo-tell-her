@@ -30,7 +30,7 @@ export function FeedFilters({ f, setF, id = 'f' }: { f: FeedFilter; setF: (f: Fe
 export const reachReason = (s: string) => s === 'circle' ? 'Reached you through Direct reach' : s === 'extended' ? 'Reached you through Extended reach' : 'Shared with all TellHer women';
 export const statusLabel = (q: FeedQuestion) => q.reply_count ? 'Open · has perspectives' : 'Open · awaiting perspectives';
 
-export function QuestionCard({ q, counts, detail = false }: { q: FeedQuestion; counts?: Counts | undefined; detail?: boolean }) {
+export function QuestionCard({ q, counts, detail = false, badge }: { q: FeedQuestion; counts?: Counts | undefined; detail?: boolean; badge?: string }) {
  const qc = useQueryClient();
  const [reporting, setReporting] = useState(false); const [reason, setReason] = useState('');
  const [note, setNote] = useState<{ text: string; error?: boolean } | null>(null); const [busy, setBusy] = useState(false);
@@ -38,7 +38,7 @@ export function QuestionCard({ q, counts, detail = false }: { q: FeedQuestion; c
  const remove = async () => { if (!window.confirm('Delete this question for everyone?')) return; setBusy(true); const { error } = await supabase.rpc('tellher_delete_question', { _id: q.id }); setBusy(false); if (error) return setNote({ text: errorText(error), error: true }); refresh(); };
  const report = async () => { setBusy(true); const { error } = await supabase.rpc('tellher_report_question', { _id: q.id, _reason: reason }); setBusy(false); if (error) return setNote({ text: errorText(error), error: true }); setReporting(false); setNote({ text: 'Thank you. This question was reported for review.' }); };
  return <li className={`question-card ${q.is_mine ? 'question-card--mine' : ''}`}>
-  <div className="question-meta"><span className="question-category">{q.category}</span><span>{reachContext(q.audience_scope)}</span><span>{relativeTime(q.created_at)}</span>{q.is_mine && <span className="mine-label">Your question</span>}{detail && <span>{q.is_mine ? statusLabel(q) : reachReason(q.audience_scope)}</span>}</div>
+  <div className="question-meta"><span className="question-category">{q.category}</span><span>{reachContext(q.audience_scope)}</span><span>{relativeTime(q.created_at)}</span>{q.is_mine && <span className="mine-label">Your question</span>}{badge && <span className="status-badge">{badge}</span>}{detail && !badge && <span>{q.is_mine ? statusLabel(q) : reachReason(q.audience_scope)}</span>}</div>
   <Link to="/askher/$id" params={{ id: q.id }} className="question-link"><p className="question-body">{q.body}</p></Link>
   {q.is_mine && q.my_instinct && <p className="private-note"><LockKeyhole size={12} />Only you see this · {instincts.find(i => i.value === q.my_instinct)?.label}{q.my_note && ` — ${q.my_note}`}</p>}
   <div className="question-foot"><Link to="/askher/$id" params={{ id: q.id }} className="form-note inline-flex items-center gap-2">{counts && <PerspectiveStrip counts={counts} />}{q.reply_count} {q.reply_count === 1 ? 'perspective' : 'perspectives'}</Link>

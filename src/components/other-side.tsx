@@ -8,14 +8,20 @@ import { Textarea } from '@/components/ui/textarea';
 import { errorText, relativeTime } from '@/lib/askher';
 import { outcomeLabel, outcomeStatuses, type Outcome } from '@/lib/outcome';
 
+/** Days after which the author is gently asked how things turned out. */
+export const OUTCOME_PROMPT_DAYS = 7;
+
 /** "The Other Side": the author's own update on what happened next. Others see it only when she shares it. */
-export function OtherSide({ id, isAuthor }: { id: string; isAuthor: boolean }) {
+export function OtherSide({ id, isAuthor, createdAt }: { id: string; isAuthor: boolean; createdAt?: string }) {
  const qc = useQueryClient();
  const q = useQuery({ queryKey: ['outcome', id], queryFn: async () => { const { data, error } = await supabase.rpc('tellher_outcome', { _q: id }); if (error) throw error; return ((data ?? [])[0] ?? null) as Outcome | null; } });
  const [editing, setEditing] = useState(false);
  if (q.isPending) return null;
  const o = q.data ?? null;
  if (!o && !isAuthor) return null;
+ // The gentle prompt appears only once the Ripple has had some time to breathe.
+ const due = !createdAt || Date.now() - Date.parse(createdAt) >= OUTCOME_PROMPT_DAYS * 86400000;
+ if (!o && !due && !editing) return null;
  const done = () => { setEditing(false); qc.invalidateQueries({ queryKey: ['outcome', id] }); };
  return <section className="other-side" aria-labelledby="other-side-title">
   <div className="eyebrow" id="other-side-title">THE OTHER SIDE</div>
@@ -28,7 +34,7 @@ export function OtherSide({ id, isAuthor }: { id: string; isAuthor: boolean }) {
     {isAuthor && <Button size="sm" variant="ghost" onClick={() => setEditing(true)}>Edit update</Button>}
    </>
    : <>
-    <p className="other-side-summary">What happened next?</p>
+    <p className="other-side-summary">What happened in the end?</p>
     <p className="form-note">When you’re ready, you can add a few words about how things turned out. It may help the next woman in a similar place. You can keep it private, and come back to it any time.</p>
     <Button variant="soft" onClick={() => setEditing(true)}>Add an update</Button>
    </>}
