@@ -1,8 +1,9 @@
-import { SectionTabs } from '@/components/app-shell';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { zodValidator, fallback } from '@tanstack/zod-adapter';
+import { z } from 'zod';
 import { useMemo, useState, type FormEvent } from 'react';
-import { Check, Search, X } from 'lucide-react';
+import { Check, Inbox, Search, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,8 +12,10 @@ import { circleQuery, memberName, type CircleEntry } from '@/lib/circle';
 import { emailSchema } from '@/lib/profile';
 import { TrustedPicks } from '@/components/trusted-picks';
 import { ExtendedCircle } from '@/components/extended-circle';
+import { InboxList } from '@/components/inbox-list';
 
 export const Route = createFileRoute('/_authenticated/circle')({
+ validateSearch: zodValidator(z.object({ view: fallback(z.string(), 'direct').default('direct') })),
  loader: ({ context }) => context.queryClient.ensureQueryData(circleQuery),
  head: () => pageHead('Circle', 'Your small circle of trusted women on TellHer.'),
  errorComponent: () => <p role="alert" className="form-note form-error">Your circle could not be loaded. Please refresh.</p>,
@@ -20,35 +23,58 @@ export const Route = createFileRoute('/_authenticated/circle')({
 });
 
 const message = (e: unknown) => (e as { message?: string } | null)?.message || 'Something went wrong.';
+type View = 'direct' | 'extended' | 'messages' | 'requests';
 
 function Circle() {
+ const { view: raw } = Route.useSearch();
+ const view: View = (['direct', 'extended', 'messages', 'requests'] as const).includes(raw as View) ? raw as View : 'direct';
+ const { data } = useSuspenseQuery(circleQuery);
+ const direct = data.entries.filter(e => e.kind === 'direct');
+ const pending = data.entries.filter(e => e.kind === 'incoming' || e.kind === 'outgoing').length;
+ const tab = (v: View, label: string) => <Link to="/circle" search={{ view: v }} className="ripple-tab" role="tab" aria-selected={view === v} data-active={view === v}>{label}</Link>;
+ return <>
+  <div className="page-heading"><div><div className="eyebrow">CIRCLE</div><h1>Trust starts close to home.</h1><p>The women you choose to trust. Only accepted trust shapes how far a Trust Ripple can travel.</p></div>
+   {pending > 0 && <Link to="/circle" search={{ view: 'requests' }} className="requests-indicator" aria-label={`${pending} pending trust ${pending === 1 ? 'request' : 'requests'}`}><Inbox size={15} /><span className="requests-count">{pending}</span>Requests</Link>}
+  </div>
+  <div className="ripple-tabs" role="tablist" aria-label="Circle views">{tab('direct', 'Direct')}{tab('extended', 'Extended')}{tab('messages', 'Messages')}</div>
+  {view === 'direct' && <DirectTab direct={direct} extendedCount={data.extendedCount} />}
+  {view === 'extended' && <ExtendedCircle direct={direct} />}
+  {view === 'messages' && <InboxList />}
+  {view === 'requests' && <RequestsTab />}
+  {view === 'direct' && <TrustedPicks />}
+ </>;
+}
+
+function DirectTab({ direct, extendedCount }: { direct: CircleEntry[]; extendedCount: number }) {
+ const qc = useQueryClient();
+ const refresh = () => qc.invalidateQueries({ queryKey: circleQuery.queryKey });
+ return <>
+  <section className="circle-summary" aria-label="Your reach">
+   <ReachRings direct={direct.length} extended={extendedCount} />
+   <dl className="reach-stats">
+    <div><dt>Direct Circle</dt><dd>{direct.length}</dd><p>{direct.length === 1 ? 'Woman' : 'Women'} you trust who accepted.</p></div>
+    <div><dt>Extended Circle</dt><dd>{extendedCount}</dd><p>Additional women trusted by your Direct Circle, counted once and never including your Direct Circle. Shown only as a number.</p></div>
+    <div><dt>Extended reach</dt><dd>Up to {direct.length + extendedCount}</dd><p>Women an Extended Circle Ripple can travel to through your trust network.</p></div>
+   </dl>
+  </section>
+  <div className="circle-grid">
+   <DirectCircle direct={direct} />
+   <AddMember onSent={refresh} />
+  </div>
+ </>;
+}
+
+function RequestsTab() {
  const { data } = useSuspenseQuery(circleQuery);
  const qc = useQueryClient();
  const refresh = () => qc.invalidateQueries({ queryKey: circleQuery.queryKey });
  const by = (k: CircleEntry['kind']) => data.entries.filter(e => e.kind === k);
- const direct = by('direct');
  const respond = useMutation({ mutationFn: async (v: { id: string; accept: boolean }) => { const { error } = await supabase.rpc('tellher_respond_trust', { _id: v.id, _accept: v.accept }); if (error) throw error; }, onSuccess: refresh });
  const cancel = useMutation({ mutationFn: async (id: string) => { const { error } = await supabase.rpc('tellher_cancel_trust', { _id: id }); if (error) throw error; }, onSuccess: refresh });
- return <>
-  <div className="page-heading"><div><div className="eyebrow">MY CIRCLE</div><h1>Trust starts close to home.</h1><p>The women you choose to trust. Only accepted trust shapes how far a Trust Ripple can travel.</p></div></div>
-  <SectionTabs label="Circle sections"><a href="#direct-circle">Direct Circle</a><a href="#extended-circle">Extended Circle</a><a href="#requests">Requests &amp; Trust Bridges</a><a href="#trusted-picks">Trusted Picks</a></SectionTabs>
-  <section className="circle-summary" aria-label="Your reach">
-   <ReachRings direct={direct.length} extended={data.extendedCount} />
-   <dl className="reach-stats">
-    <div><dt>Direct Circle</dt><dd>{direct.length}</dd><p>{direct.length === 1 ? 'Woman' : 'Women'} you trust who accepted.</p></div>
-    <div><dt>Extended Circle</dt><dd>{data.extendedCount}</dd><p>Additional women trusted by your Direct Circle, counted once and never including your Direct Circle. Shown only as a number.</p></div>
-    <div><dt>Extended reach</dt><dd>Up to {direct.length + data.extendedCount}</dd><p>Women an Extended Circle Ripple can travel to through your trust network.</p></div>
-   </dl>
-  </section>
-  <div className="circle-grid">
-   <div id="direct-circle" className="scroll-mt-24"><DirectCircle direct={direct} /></div>
-   <AddMember onSent={refresh} />
-   <section id="requests" className="circle-card scroll-mt-24"><h2>Requests for you</h2>{by('incoming').length ? <ul className="member-list">{by('incoming').map(m => <Member key={m.connection_id} m={m}><Button size="sm" variant="editorial" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: true })}><Check />Accept</Button><Button size="sm" variant="ghost" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: false })}>Decline</Button></Member>)}</ul> : <p className="form-note">No requests waiting.</p>}{respond.isError && <p role="alert" className="form-note form-error">{message(respond.error)}</p>}</section>
-   <section className="circle-card"><h2>Sent requests &amp; Trust Bridges</h2>{by('outgoing').length ? <ul className="member-list">{by('outgoing').map(m => <Member key={m.connection_id} m={m}><span className="status-label">Pending</span><Button size="sm" variant="ghost" aria-label={`Withdraw request to ${memberName(m)}`} disabled={cancel.isPending} onClick={() => cancel.mutate(m.connection_id)}><X /></Button></Member>)}</ul> : <p className="form-note">Nothing pending.</p>}</section>
-  </div>
-  <div id="extended-circle" className="scroll-mt-24"><ExtendedCircle direct={direct} /></div>
-  <div id="trusted-picks" className="scroll-mt-24"><TrustedPicks /></div>
- </>;
+ return <div className="circle-grid">
+  <section className="circle-card"><h2>Requests for you</h2>{by('incoming').length ? <ul className="member-list">{by('incoming').map(m => <Member key={m.connection_id} m={m}><Button size="sm" variant="editorial" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: true })}><Check />Accept</Button><Button size="sm" variant="ghost" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: false })}>Decline</Button></Member>)}</ul> : <p className="form-note">No requests waiting.</p>}{respond.isError && <p role="alert" className="form-note form-error">{message(respond.error)}</p>}</section>
+  <section className="circle-card"><h2>Sent requests &amp; Trust Bridges</h2>{by('outgoing').length ? <ul className="member-list">{by('outgoing').map(m => <Member key={m.connection_id} m={m}><span className="status-label">Pending</span><Button size="sm" variant="ghost" aria-label={`Withdraw request to ${memberName(m)}`} disabled={cancel.isPending} onClick={() => cancel.mutate(m.connection_id)}><X /></Button></Member>)}</ul> : <p className="form-note">Nothing pending.</p>}</section>
+ </div>;
 }
 
 function Member({ m, children }: { m: CircleEntry; children?: React.ReactNode }) {
