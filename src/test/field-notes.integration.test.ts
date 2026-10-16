@@ -18,7 +18,7 @@ describe.skipIf(!url || !key)('Field Note links and identity consent', () => {
   await admin.from('trust_connections').insert([{ requester_id: ids[0], recipient_id: ids[1], status: 'accepted' }, { requester_id: ids[1], recipient_id: ids[0], status: 'accepted' }]);
   const old = await c(0).from('trust_notes').insert({ author_id: ids[0], title: 'Legacy Field Note', topic: 'Travel', body: 'An existing note remains in the same record after this product change.' }).select('id').single(); if (old.error) throw old.error; legacy = old.data.id;
   for (const [owner, visibility] of [[0, 'anonymous'], [0, 'named'], [1, 'anonymous']] as const) {
-   const r = await c(owner).rpc('tellher_publish_question_identity', { _category: 'Housing & Moving', _body: 'Fieldnotetest what helped you prepare for moving abroad?', _scope: 'community', _instinct: 'unsure', _author_visibility: visibility });
+   const r = await c(owner).rpc('tellher_publish_question_identity', { _category: 'Housing & Moving', _body: 'Fieldnotetest what helped you prepare for moving abroad?', _scope: 'community', _instinct: 'unsure', _note: '', _author_visibility: visibility });
    if (r.error) throw r.error; qs.push(r.data);
   }
   [anon, named, other] = qs;
