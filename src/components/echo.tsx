@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { supabase } from '@/integrations/supabase/client';
+import { Button } from './ui/button';
 import { errorText } from '@/lib/askher';
 
 /** Exact counts are shown only at or above this number, to protect anonymity. Mirrors tellher_echo_signal. */
@@ -22,15 +23,12 @@ export function EchoRoomEntry({ id }: { id: string }) {
  const room = useQuery(echoRoomQuery(id));
  if (!room.data?.can_enter) return null;
  return <section className="echo-room-entry" aria-labelledby="echo-room-entry-title">
-  <div className="eyebrow" id="echo-room-entry-title">ECHO ROOM</div>
-  <p className="form-note">A quiet room for the women who echoed this experience.</p>
-  <Link to="/askher/$id/room" params={{ id }} className="member-link text-sm echo-room-link">Open Echo Room</Link>
+  <Link to="/askher/$id/room" params={{ id }} className="member-link text-sm echo-room-link">Talk with women who’ve been here</Link>
  </section>;
 }
 
-export function Echo({ id, isAuthor }: { id: string; isAuthor: boolean }) {
+export function Echo({ id, isAuthor, compact = false, signalOnly = false }: { id: string; isAuthor: boolean; compact?: boolean; signalOnly?: boolean }) {
  const qc = useQueryClient(); const q = useQuery(echoQuery(id));
- const room = useQuery(echoRoomQuery(id));
  const [busy, setBusy] = useState(false); const [note, setNote] = useState<{ text: string; error?: boolean } | null>(null);
  if (!q.data) return null;
  const s = q.data; const line = echoLine(s, isAuthor);
@@ -42,15 +40,12 @@ export function Echo({ id, isAuthor }: { id: string; isAuthor: boolean }) {
   setNote({ text: s.mine ? 'Your Echo was removed.' : 'Echoed quietly. No one will see it was you.' });
   qc.invalidateQueries({ queryKey: ['echo', id] });
  };
+ if (compact && isAuthor) return null;
+ if (signalOnly) return line ? <p className="echo-line">{line}</p> : null;
  if (isAuthor && !line) return null;
- return <section className="echo" data-active={s.mine} aria-label="Echo">
-  <span className="echo-halo" aria-hidden />
-  <div className="echo-text">
-   {line && <p className="echo-line">{line}</p>}
-   {!isAuthor && <p className="form-note">An Echo means “this happened to me too.” It’s anonymous and separate from perspectives.</p>}
-   {note && <p role={note.error ? 'alert' : 'status'} className={`form-note ${note.error ? 'form-error' : ''}`}>{note.text}</p>}
-   {!room.data?.can_enter && !room.data?.unlocked && !isAuthor ? <p className="form-note">Echo Room unlocks when enough women have shared this experience.</p> : null}
-  </div>
-  {!isAuthor && <button type="button" className="echo-button" aria-pressed={s.mine} disabled={busy} onClick={toggle}>{s.mine ? 'You echoed this · Remove' : 'This happened to me too'}</button>}
+ return <section className={compact ? 'echo-compact' : 'echo'} data-active={s.mine} aria-label="Echo">
+  {!compact && line && <p className="echo-line">{line}</p>}
+  {!isAuthor && <Button type="button" variant="outline" aria-pressed={s.mine} disabled={busy} onClick={toggle}>{s.mine ? 'You echoed this · Remove' : 'This happened to me too'}</Button>}
+  {note && <p role={note.error ? 'alert' : 'status'} className={`form-note ${note.error ? 'form-error' : ''}`}>{note.text}</p>}
  </section>;
 }

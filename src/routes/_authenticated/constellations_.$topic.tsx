@@ -49,8 +49,8 @@ function Place() {
    <p className="form-note">Women choose whether to name their Ripple. Echoes and letters stay anonymous.</p>
   </header>
   {echoTarget && <Echo id={echoTarget.id} isAuthor={false} />}
-  <section className="member-section"><h2>Trust Ripples</h2><ul className="question-list">{ripples.map(q => <QuestionCard key={q.id} q={q} counts={maps.data?.[q.id]} />)}</ul></section>
-  <section className="member-section"><h2>From women who’ve been there</h2>
+  <section className="member-section"><h2>Ripples</h2><ul className="question-list">{ripples.map(q => <QuestionCard key={q.id} q={q} counts={maps.data?.[q.id]} />)}</ul></section>
+  {(Boolean(letters.data?.length) || topicPicks.length > 0 || notes.length > 0) && <section className="member-section"><h2>From women who’ve been there</h2>
    {letters.data?.length ? <><h3 className="picks-sub mb-3">Letters from the Other Side</h3><ul className="letter-list">{letters.data.map(l => <li key={l.id} className={`letter-card ${l.mine ? 'letter-card--mine' : ''}`}>
      <p className="letter-body">{l.body}</p>
      <p className="letter-sign">— {l.mine ? 'You' : 'A woman who has been there'}{l.where_now ? `, ${l.where_now}` : ''}</p>
@@ -61,6 +61,6 @@ function Place() {
      {notes.map(n => <div key={n.id} className="shelf-note"><div className="question-meta"><span className="question-category">Field Note</span>{n.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{n.location}</span>}</div><h4>{n.title}</h4><p>{n.body}</p><Link to="/profile/$memberId" params={{ memberId: n.member_id }} className="member-link">{n.by} · Direct Circle</Link><FieldNoteContext id={n.id} /></div>)}
     </div> : null}
    {!letters.data?.length && !topicPicks.length && !notes.length && <p className="form-note">No Field Notes, Letters or Picks shared here yet.</p>}
-  </section>
+  </section>}
  </div>;
 }

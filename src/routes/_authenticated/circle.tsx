@@ -10,7 +10,6 @@ import { Input } from '@/components/ui/input';
 import { pageHead } from '@/lib/metadata';
 import { circleQuery, memberName, type CircleEntry } from '@/lib/circle';
 import { emailSchema } from '@/lib/profile';
-import { TrustedPicks } from '@/components/trusted-picks';
 import { ExtendedCircle } from '@/components/extended-circle';
 import { InboxList } from '@/components/inbox-list';
 import { ScrollPanel } from '@/components/scroll-panel';
@@ -38,36 +37,20 @@ function Circle() {
  const tab = (v: View, label: string, hint?: string) => <Link to="/circle" search={{ view: v }} className="ripple-tab" role="tab" aria-selected={view === v} data-active={view === v}>{label}{hint && <span className="tab-hint"> · {hint}</span>}</Link>;
  return <>
   <div className="page-heading"><div><div className="eyebrow">CIRCLE</div><h1>Trust starts close to home.</h1><p>The women you choose to trust. Only accepted trust shapes how far a Trust Ripple can travel.</p></div>
-   {pending > 0 && <Link to="/circle" search={{ view: 'requests' }} className="requests-indicator" aria-label={`${pending} pending trust ${pending === 1 ? 'request' : 'requests'}`}><Inbox size={15} /><span className="requests-count">{pending}</span>Requests</Link>}
+   {pending > 0 && <Link to="/circle" search={{ view: 'requests' }} className="requests-indicator" aria-label={`${pending} pending connection ${pending === 1 ? 'request' : 'requests'}`}><Inbox size={15} /><span className="requests-count">{pending}</span>Connection requests</Link>}
   </div>
-  <div className="ripple-tabs" role="tablist" aria-label="Circle views">{tab('direct', 'Direct')}{tab('extended', 'Extended', easing ? 'unlocks when you add someone' : undefined)}{tab('messages', 'Messages')}</div>
+  <div className="ripple-tabs" role="tablist" aria-label="Circle views">{tab('direct', 'Direct')}{tab('extended', 'Extended')}{tab('messages', 'Messages')}</div>
   {view === 'direct' && <DirectTab direct={direct} extendedCount={data.extendedCount} easing={easing} />}
-  {view === 'extended' && easing && <p className="form-note discovery-hint">Extended Circle and Trust Bridges unlock when you add someone you trust — they’re the women trusted by your Direct Circle. <Link to="/circle" search={{ view: 'direct' }} className="member-link">Add your first trusted woman</Link></p>}
+  {view === 'extended' && easing && <p className="form-note discovery-hint">Your Direct Circle introduces new paths as it grows. <Link to="/circle" search={{ view: 'direct' }} className="member-link">Add your first trusted woman</Link></p>}
   {view === 'extended' && <ExtendedCircle direct={direct} />}
   {view === 'messages' && <InboxList />}
   {view === 'requests' && <RequestsTab />}
-  {view === 'direct' && <TrustedPicks />}
  </>;
 }
 
-function DirectTab({ direct, extendedCount, easing }: { direct: CircleEntry[]; extendedCount: number; easing: boolean }) {
+function DirectTab({ direct }: { direct: CircleEntry[]; extendedCount: number; easing: boolean }) {
  const qc = useQueryClient();
- const refresh = () => qc.invalidateQueries({ queryKey: circleQuery.queryKey });
- if (easing) return <section className="circle-card" aria-labelledby="first-trust"><h2 id="first-trust">Add your first trusted woman</h2><p className="form-note mb-4">Start with one woman you already trust. Once she accepts, your Extended Circle and Trust Bridges open up.</p><AddMember onSent={refresh} /></section>;
- return <>
-  <section className="circle-summary" aria-label="Your reach">
-   <ReachRings direct={direct.length} extended={extendedCount} />
-   <dl className="reach-stats">
-    <div><dt>Direct Circle</dt><dd>{direct.length}</dd><p>{direct.length === 1 ? 'Woman' : 'Women'} you trust who accepted.</p></div>
-    <div><dt>Extended Circle</dt><dd>{extendedCount}</dd><p>Additional women trusted by your Direct Circle, counted once and never including your Direct Circle. Shown only as a number.</p></div>
-    <div><dt>Extended reach</dt><dd>Up to {direct.length + extendedCount}</dd><p>Women an Extended Circle Ripple can travel to through your trust network.</p></div>
-   </dl>
-  </section>
-  <div className="circle-grid">
-   <DirectCircle direct={direct} />
-   <AddMember onSent={refresh} />
-  </div>
- </>;
+ return <div className="circle-grid"><DirectCircle direct={direct} /><details className="add-trust-disclosure" open={direct.length === 0}><summary>Add someone you trust</summary><AddMember onSent={() => qc.invalidateQueries({ queryKey: circleQuery.queryKey })} /></details></div>;
 }
 
 function RequestsTab() {
@@ -79,7 +62,7 @@ function RequestsTab() {
  const cancel = useMutation({ mutationFn: async (id: string) => { const { error } = await supabase.rpc('tellher_cancel_trust', { _id: id }); if (error) throw error; }, onSuccess: refresh });
  return <div className="circle-grid">
   <section className="circle-card"><h2>Requests for you</h2>{by('incoming').length ? <ul className="member-list">{by('incoming').map(m => <Member key={m.connection_id} m={m}><Button size="sm" variant="editorial" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: true })}><Check />Accept</Button><Button size="sm" variant="ghost" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: false })}>Decline</Button></Member>)}</ul> : <p className="form-note">No requests waiting.</p>}{respond.isError && <p role="alert" className="form-note form-error">{message(respond.error)}</p>}</section>
-  <section className="circle-card"><h2>Sent requests &amp; Trust Bridges</h2>{by('outgoing').length ? <ul className="member-list">{by('outgoing').map(m => <Member key={m.connection_id} m={m}><span className="status-label">Pending</span><Button size="sm" variant="ghost" aria-label={`Withdraw request to ${memberName(m)}`} disabled={cancel.isPending} onClick={() => cancel.mutate(m.connection_id)}><X /></Button></Member>)}</ul> : <p className="form-note">Nothing pending.</p>}</section>
+  <section className="circle-card"><h2>Sent requests</h2>{by('outgoing').length ? <ul className="member-list">{by('outgoing').map(m => <Member key={m.connection_id} m={m}><span className="status-label">Pending</span><Button size="sm" variant="ghost" aria-label={`Withdraw request to ${memberName(m)}`} disabled={cancel.isPending} onClick={() => cancel.mutate(m.connection_id)}><X /></Button></Member>)}</ul> : <p className="form-note">Nothing pending.</p>}</section>
  </div>;
 }
 
@@ -103,11 +86,11 @@ function AddMember({ onSent }: { onSent: () => void }) {
  const send = async () => {
   if (!found) return; setBusy(true); const { error } = await supabase.rpc('tellher_send_trust', { _recipient: found.member_id }); setBusy(false);
   if (error) return setNote({ text: message(error), error: true });
-  setNote({ text: `Trust request sent to ${memberName(found)}.` }); setFound(null); setEmail(''); onSent();
+  setNote({ text: `Connection request sent to ${memberName(found)}.` }); setFound(null); setEmail(''); onSent();
  };
  return <section className="circle-card"><h2>Add a woman you trust</h2><p className="form-note">Enter her exact email. It is only used to find her and is never shown to anyone.</p>
   <form className="add-member" onSubmit={search}><div className="field"><label htmlFor="trust-email">Her email address</label><Input id="trust-email" type="email" autoComplete="off" value={email} onChange={e => setEmail(e.target.value)} /></div><Button type="submit" variant="outline" disabled={busy}><Search />Find</Button></form>
-  {found && <div className="member-row found-member"><span className="member-initial" aria-hidden>{found.first_name.slice(0, 1).toUpperCase()}</span><div className="member-meta"><strong>{memberName(found)}</strong>{found.city && <span>{found.city}</span>}</div><Button size="sm" variant="editorial" disabled={busy} onClick={send}>Send trust request</Button></div>}
+  {found && <div className="member-row found-member"><span className="member-initial" aria-hidden>{found.first_name.slice(0, 1).toUpperCase()}</span><div className="member-meta"><strong>{memberName(found)}</strong>{found.city && <span>{found.city}</span>}</div><Button size="sm" variant="editorial" disabled={busy} onClick={send}>Connect</Button></div>}
   {note && <p role={note.error ? 'alert' : 'status'} className={`form-note ${note.error ? 'form-error' : 'form-success'}`}>{note.text}</p>}
  </section>;
 }
@@ -131,6 +114,6 @@ function DirectCircle({ direct }: { direct: CircleEntry[] }) {
    return (field === 'all' ? Object.values(f).flat() : f[field]).some(v => v.toLowerCase().includes(q)); });
  }, [direct, details.data, text, field]);
  return <section className="circle-card"><h2>Direct Circle</h2>
-  {direct.length > 1 && <div className="shelf-filters" role="search" aria-label="Filter Direct Circle"><div className="field"><label htmlFor="dc-q">Search</label><Input id="dc-q" value={text} onChange={e => setText(e.target.value)} placeholder="Name, city, topic…" /></div><div className="field"><label htmlFor="dc-f">Search in</label><select id="dc-f" className="ext-select" value={field} onChange={e => setField(e.target.value as Field)}><option value="all">Everything</option><option value="name">Name</option><option value="location">Location</option><option value="known">Known for</option><option value="ask">Ask me about</option></select></div></div>}
+  {direct.length > 1 && <details><summary className="form-note">Find someone in your Circle</summary><div className="shelf-filters" role="search" aria-label="Filter Direct Circle"><div className="field"><label htmlFor="dc-q">Search</label><Input id="dc-q" value={text} onChange={e => setText(e.target.value)} placeholder="Name, city, topic…" /></div><div className="field"><label htmlFor="dc-f">Search in</label><select id="dc-f" className="ext-select" value={field} onChange={e => setField(e.target.value as Field)}><option value="all">Everything</option><option value="name">Name</option><option value="location">Location</option><option value="known">Known for</option><option value="ask">Ask me about</option></select></div></div></details>}
   {direct.length ? shown.length ? <ScrollPanel label="Direct Circle members" className="member-list">{shown.map(m => <Member key={m.connection_id} m={m} />)}</ScrollPanel> : <p className="form-note">No one in your Direct Circle matches.</p> : <p className="form-note">No one yet. Invite a woman you trust below.</p>}</section>;
 }

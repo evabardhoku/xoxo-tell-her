@@ -12,7 +12,7 @@ import { inboxQuery, messagesQuery } from '@/lib/between-us';
 import { TagPicker } from '@/components/tag-picker';
 
 export const Route = createFileRoute('/_authenticated/between-us_/$conversationId')({
- head: () => pageHead('Between Us', 'A private conversation with a woman you trust.'),
+ head: () => pageHead('Messages', 'A private conversation with a woman you trust.'),
  component: Conversation,
 });
 
@@ -30,7 +30,7 @@ function Conversation() {
  useEffect(() => { end.current?.scrollIntoView({ block: 'end' }); }, [count]);
  useEffect(() => { if (row) void supabase.rpc('tellher_mark_read', { _c: id }).then(() => qc.invalidateQueries({ queryKey: inboxQuery.queryKey })); }, [id, count, Boolean(row)]); // eslint-disable-line react-hooks/exhaustive-deps
  if (inbox.isPending || msgs.isPending) return <p role="status" className="form-note">Opening your conversation…</p>;
- if (!row) return <><Back /><section className="empty-panel"><LockKeyhole /><h2>This conversation isn’t available.</h2><p>Between Us conversations can only be opened by the two women in them.</p></section></>;
+ if (!row) return <><Back /><section className="empty-panel"><LockKeyhole /><h2>This conversation isn’t available.</h2><p>Private conversations can only be opened by the two women in them.</p></section></>;
  const refresh = () => Promise.all([qc.invalidateQueries({ queryKey: ['between-us-messages', id] }), qc.invalidateQueries({ queryKey: inboxQuery.queryKey })]);
   const send = async () => {
    const body = text.trim(); if (!body || busy) return; setBusy(true); setError('');
@@ -43,7 +43,8 @@ function Conversation() {
   const { error: e } = await supabase.rpc(row.blocked_by_me ? 'tellher_unblock' : 'tellher_block', { _member: row.member_id }); if (e) return setError(errorText(e)); await refresh();
  };
  const report = async () => {
-  const { error: e } = await supabase.rpc('tellher_report_message', { _id: reporting!, _reason: reason }); if (e) return setNote(errorText(e));
+  if (!reporting) return;
+  const { error: e } = await supabase.rpc('tellher_report_message', { _id: reporting, _reason: reason }); if (e) return setNote(errorText(e));
   setReporting(null); setReason(''); setNote('Thank you. This message was reported for review.');
  };
  return <>
@@ -59,9 +60,9 @@ function Conversation() {
    {!(msgs.data ?? []).length && <p className="form-note">No messages yet. Say hello.</p>}
    <div ref={end} />
    {error && <p role="alert" className="form-note form-error">{error}</p>}
-   {row.can_message ? <><TagPicker id="bu-tags" selected={mentions} onChange={setMentions} /><div className="ww-composer"><label htmlFor="bu-text" className="sr-only">Message {row.first_name}</label><Textarea id="bu-text" rows={2} maxLength={2000} value={text} onChange={e => setText(e.target.value)} onKeyDown={onKey} disabled={busy} placeholder="Write a message…" /><Button variant="editorial" size="icon" aria-label="Send" disabled={!text.trim() || busy} onClick={() => void send()}><Send /></Button></div></>
-    : <p className="private-note">{row.blocked_by_me ? 'You blocked her. Unblock to message again.' : 'Messaging isn’t available in this conversation. Between Us is only open between Direct Circle members.'}</p>}
+   {row.can_message ? <><details><summary className="form-note">Mention a trusted woman</summary><TagPicker id="bu-tags" selected={mentions} onChange={setMentions} /></details><div className="ww-composer"><label htmlFor="bu-text" className="sr-only">Message {row.first_name}</label><Textarea id="bu-text" rows={2} maxLength={2000} value={text} onChange={e => setText(e.target.value)} onKeyDown={onKey} disabled={busy} placeholder="Write a message…" /><Button variant="editorial" size="icon" aria-label="Send" disabled={!text.trim() || busy} onClick={() => void send()}><Send /></Button></div></>
+    : <p className="private-note">{row.blocked_by_me ? 'You blocked her. Unblock to message again.' : 'Messaging isn’t available in this conversation. Messaging is only open between Direct Circle members.'}</p>}
   </section>
  </>;
 }
-function Back() { return <Link to="/between-us" className="member-link mb-6 inline-flex items-center gap-2 text-sm"><ArrowLeft size={14} />Between Us</Link>; }
+function Back() { return <Link to="/between-us" className="member-link mb-6 inline-flex items-center gap-2 text-sm"><ArrowLeft size={14} />Messages</Link>; }

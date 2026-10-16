@@ -36,14 +36,14 @@ export function ExtendedCircle({ direct }: { direct: CircleEntry[] }) {
  return <section className="circle-card extended-discovery" aria-labelledby="ext-h">
   <h2 id="ext-h">Extended Circle</h2>
   <p className="form-note">Women trusted by your Direct Circle who chose to be discoverable here. Others stay counted only, never named.</p>
-  <div className="ext-filters">
+  <details><summary className="form-note">Filter women</summary><div className="ext-filters">
    <div className="field"><label htmlFor="ext-q">Search</label><Input id="ext-q" value={text} onChange={e => setText(e.target.value)} placeholder="Name, city, topic…" /></div>
    <div className="field"><label htmlFor="ext-f">Search in</label><select id="ext-f" className="ext-select" value={field} onChange={e => setField(e.target.value as Field)}><option value="all">Everything</option><option value="name">Name</option><option value="location">Location</option><option value="known">Known for</option><option value="ask">Ask me about</option></select></div>
    <div className="field"><label htmlFor="ext-v">Connected through</label><select id="ext-v" className="ext-select" value={via} onChange={e => setVia(e.target.value)}><option value="">Anyone in my Direct Circle</option>{direct.map(d => <option key={d.member_id} value={d.member_id}>{d.first_name}</option>)}</select></div>
-  </div>
+  </div></details>
   {list.isLoading ? <p role="status" className="form-note">Finding women connected through your Direct Circle…</p> : list.isError ? <p role="alert" className="form-note form-error">Extended Circle could not be loaded.</p>
    : shown.length ? <ScrollPanel label="Extended Circle" className="ext-grid">{shown.map(m => <ExtCard key={m.member_id} m={m} busy={bridge.isPending} onBridge={() => bridge.mutate(m.member_id)} />)}</ScrollPanel>
-   : list.data?.length ? <p className="form-note">No one matches these filters.</p> : <section className="empty-panel"><h2>Your Extended Circle is still quiet.</h2><p>As the women you trust add women they trust, those who choose to be discoverable will appear here.</p></section>}
+   : list.data?.length ? <p className="form-note">No one matches these filters.</p> : <p className="form-note">No one in your Extended Circle yet. <Link to="/circle" search={{ view: 'direct' }} className="member-link">Add someone you trust</Link></p>}
   {bridge.isError && <p role="alert" className="form-note form-error">{(bridge.error as { message?: string }).message || 'Request could not be sent.'}</p>}
  </section>;
 }
@@ -55,9 +55,9 @@ function ExtCard({ m, busy, onBridge }: { m: ExtendedMember; busy: boolean; onBr
  return <li className="ext-card">
   <div className="ext-head"><span className="member-avatar ext-avatar" aria-hidden>{avatar.data?.url ? <img src={avatar.data.url} alt="" /> : m.first_name.slice(0, 1).toUpperCase()}</span>
    <div className="member-meta"><Link to="/profile/$memberId" params={{ memberId: m.member_id }} className="member-link"><strong>{name}</strong></Link>{place && <span><MapPin size={12} className="inline mr-1" />{place}</span>}</div></div>
-  <span className="trust-context">Connected through {m.via}</span>
+  <span className="trust-context">Trusted by {m.via}</span>
   {m.known_for.length > 0 && <div><span className="ext-label">Known for</span><ul className="tag-list">{m.known_for.map(t => <li key={t}>{t}</li>)}</ul></div>}
   {m.ask_me_about.length > 0 && <div><span className="ext-label">Ask me about</span><ul className="tag-list">{m.ask_me_about.map(t => <li key={t}>{t}</li>)}</ul></div>}
-  {m.bridge_pending ? <span className="status-label">Trust Bridge pending</span> : <Button size="sm" variant="editorial" disabled={busy} onClick={onBridge}>Request a Trust Bridge</Button>}
+  {m.bridge_pending ? <span className="status-label">Connection pending</span> : <Button size="sm" variant="editorial" disabled={busy} onClick={onBridge}>Connect</Button>}
  </li>;
 }
