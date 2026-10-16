@@ -21,7 +21,8 @@ describe('Email account forms', () => {
  it('accepts the required signup fields without requiring optional profile fields', async () => {
   render(<Auth />);
   fireEvent.click(screen.getByRole('button', { name: 'New here? Create an account' }));
-  for (const [label, value] of [['First name','Ana'],['Last name','Test'],['Email address','new@example.com'],['Password','temporary-test-password']]) fireEvent.change(screen.getByLabelText(label), { target: { value } });
+  const fields: [string, string][] = [['First name','Ana'],['Last name','Test'],['Email address','new@example.com'],['Password','temporary-test-password']];
+  for (const [label, value] of fields) fireEvent.change(screen.getByLabelText(label), { target: { value } });
   fireEvent.click(screen.getByRole('checkbox'));
   fireEvent.submit(screen.getByRole('button', { name: 'Create your account' }).closest('form') as HTMLFormElement);
   await waitFor(() => expect(mocks.signUp).toHaveBeenCalledWith(expect.objectContaining({ email: 'new@example.com', options: expect.objectContaining({ data: { first_name: 'Ana', last_name: 'Test', woman_attested: true } }) })));
