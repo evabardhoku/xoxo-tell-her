@@ -9,6 +9,7 @@ import { TagPicker } from '@/components/tag-picker';
 import { replyLikesQuery } from '@/lib/notifications';
 import { Echo, EchoRoomEntry } from '@/components/echo';
 import { OtherSide } from '@/components/other-side';
+import { RippleFieldNotes } from '@/components/ripple-field-notes';
 import { Letters } from '@/components/letters';
 import { PerspectiveMap } from '@/components/perspective-map';
 import { PerspectiveSynthesis } from '@/components/perspective-synthesis';
@@ -83,6 +84,7 @@ function QuestionPage() {
   <OtherSide id={id} isAuthor={q.is_mine} createdAt={q.created_at} />
   {/* 6 · Letters from the Other Side */}
   <Letters id={id} />
+  <RippleFieldNotes id={id} />
   {/* 7 · Related Constellation */}
   <section className="related-constellation" aria-labelledby="related-con-title">
    <div className="eyebrow" id="related-con-title">RELATED CONSTELLATION</div>

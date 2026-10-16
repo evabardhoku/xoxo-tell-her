@@ -11,7 +11,7 @@ export const searchQuery = (q: string) => ({
  queryFn: async () => { const { data, error } = await supabase.rpc('tellher_search', { _q: q }); if (error) throw error; const rows = (data ?? []) as SearchRow[]; const qs = await withRippleIdentities(rows.filter(r => r.kind === 'question')); const byId = new Map(qs.map(r => [r.id, r])); return rows.map(r => r.kind === 'question' ? byId.get(r.id) ?? r : r); },
 });
 
-/** Topics are the fixed product vocabulary (AskHer categories + Trust Note topics), never user content. */
+/** Topics are the fixed product vocabulary (AskHer categories + Field Note topics), never user content. */
 export const allTopics = Array.from(new Set<string>([...categories, ...noteTopics]));
 export const matchTopics = (q: string) => { const s = q.trim().toLowerCase(); return s.length < 2 ? [] : allTopics.filter(t => t.toLowerCase().includes(s)); };
 export const relationLabel = (r: string | null) => r === 'direct' ? 'Direct Circle' : r === 'extended' ? 'Extended Circle' : r === 'self' ? 'You' : 'All TellHer women';

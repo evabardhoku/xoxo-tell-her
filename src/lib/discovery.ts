@@ -13,8 +13,8 @@ export function discoveryItems(s: DiscoverySignals): DiscoveryItem[] {
   { key: 'ripple', label: 'Ask other women anonymously', to: '/ripple', done: s.ripples > 0 },
   { key: 'map', label: 'See a Perspective Map form', to: '/askher', search: { view: 'ripples' }, done: s.ripplesWithReplies > 0 },
   { key: 'extended', label: 'Reach your Extended Circle', to: '/circle', search: { view: 'extended' }, done: s.extended > 0 },
-  { key: 'note', label: 'Leave a Trust Note on your shelf', to: '/profile', done: s.notes > 0 },
-  { key: 'pick', label: 'Recommend a Trusted Pick', to: '/circle', done: s.picks > 0 },
+  { key: 'note', label: 'Share a Field Note', to: '/profile', done: s.notes > 0 },
+  { key: 'pick', label: 'Recommend a Pick', to: '/circle', done: s.picks > 0 },
   { key: 'between-us', label: 'Start a Between Us conversation', to: '/circle', search: { view: 'messages' }, done: s.conversations > 0 },
  ];
 }
