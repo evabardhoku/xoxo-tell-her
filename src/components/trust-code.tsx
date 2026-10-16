@@ -55,13 +55,14 @@ export function ConnectInPerson() {
 export function RedeemTrustCode({ initial }: { initial?: string | undefined }) {
  const qc = useQueryClient();
  const [code, setCode] = useState(initial ?? ''); const [preview, setPreview] = useState<string | null>(null);
- useEffect(() => { if (initial) { try { sessionStorage.removeItem(PENDING_CODE); } catch { /* storage unavailable */ } void check(); } }, []); // eslint-disable-line react-hooks/exhaustive-deps
+ useEffect(() => { if (initial) void check(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
  const [note, setNote] = useState(''); const [busy, setBusy] = useState(false);
  const check = async () => {
   setBusy(true); setNote(''); setPreview(null);
   const { data, error } = await supabase.rpc('tellher_preview_trust_code', { _code: code });
   setBusy(false); const r = (data as { status: string; first_name: string | null }[] | null)?.[0];
   if (error || !r) return setNote('Something went wrong. Please try again.');
+  if (r.status !== 'not_ready') { try { sessionStorage.removeItem(PENDING_CODE); } catch { /* storage unavailable */ } }
   if (r.status === 'ok') setPreview(r.first_name ?? ''); else setNote(trustCodeMessage(r.status, r.first_name));
  };
  const redeem = async () => {
