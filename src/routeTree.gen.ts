@@ -16,6 +16,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAskherRouteImport } from './routes/_authenticated/askher'
 import { Route as AuthenticatedCircleRouteImport } from './routes/_authenticated/circle'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
+import { Route as AuthenticatedMyRipplesRouteImport } from './routes/_authenticated/my-ripples'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedRippleRouteImport } from './routes/_authenticated/ripple'
 import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated/search'
@@ -57,6 +58,11 @@ const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
   path: '/home',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedMyRipplesRoute = AuthenticatedMyRipplesRouteImport.update({
+  id: '/my-ripples',
+  path: '/my-ripples',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -96,6 +102,7 @@ export interface FileRoutesByFullPath {
   '/askher': typeof AuthenticatedAskherRoute
   '/circle': typeof AuthenticatedCircleRoute
   '/home': typeof AuthenticatedHomeRoute
+  '/my-ripples': typeof AuthenticatedMyRipplesRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/ripple': typeof AuthenticatedRippleRoute
   '/search': typeof AuthenticatedSearchRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/askher': typeof AuthenticatedAskherRoute
   '/circle': typeof AuthenticatedCircleRoute
   '/home': typeof AuthenticatedHomeRoute
+  '/my-ripples': typeof AuthenticatedMyRipplesRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/ripple': typeof AuthenticatedRippleRoute
   '/search': typeof AuthenticatedSearchRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/_authenticated/askher': typeof AuthenticatedAskherRoute
   '/_authenticated/circle': typeof AuthenticatedCircleRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
+  '/_authenticated/my-ripples': typeof AuthenticatedMyRipplesRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/ripple': typeof AuthenticatedRippleRoute
   '/_authenticated/search': typeof AuthenticatedSearchRoute
@@ -142,6 +151,7 @@ export interface FileRouteTypes {
     | '/askher'
     | '/circle'
     | '/home'
+    | '/my-ripples'
     | '/profile'
     | '/ripple'
     | '/search'
@@ -156,6 +166,7 @@ export interface FileRouteTypes {
     | '/askher'
     | '/circle'
     | '/home'
+    | '/my-ripples'
     | '/profile'
     | '/ripple'
     | '/search'
@@ -171,6 +182,7 @@ export interface FileRouteTypes {
     | '/_authenticated/askher'
     | '/_authenticated/circle'
     | '/_authenticated/home'
+    | '/_authenticated/my-ripples'
     | '/_authenticated/profile'
     | '/_authenticated/ripple'
     | '/_authenticated/search'
@@ -237,6 +249,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedHomeRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/my-ripples': {
+      id: '/_authenticated/my-ripples'
+      path: '/my-ripples'
+      fullPath: '/my-ripples'
+      preLoaderRoute: typeof AuthenticatedMyRipplesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/profile': {
       id: '/_authenticated/profile'
       path: '/profile'
@@ -286,6 +305,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAskherRoute: typeof AuthenticatedAskherRoute
   AuthenticatedCircleRoute: typeof AuthenticatedCircleRoute
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
+  AuthenticatedMyRipplesRoute: typeof AuthenticatedMyRipplesRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedRippleRoute: typeof AuthenticatedRippleRoute
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
@@ -298,6 +318,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAskherRoute: AuthenticatedAskherRoute,
   AuthenticatedCircleRoute: AuthenticatedCircleRoute,
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
+  AuthenticatedMyRipplesRoute: AuthenticatedMyRipplesRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedRippleRoute: AuthenticatedRippleRoute,
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
