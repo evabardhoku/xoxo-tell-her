@@ -1,3 +1,4 @@
+import { Sparkle } from 'lucide-react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery, useQueries } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
@@ -56,7 +57,7 @@ function CurrentPage() {
 
  return <>
   <div className="page-heading current-heading"><div><div className="eyebrow">THE CURRENT</div><h1>{first ? `Welcome back, ${first}.` : 'Welcome back.'}</h1><p>What useful things are moving through your trust network right now.</p></div>
-   <div className="current-actions"><Button asChild variant="editorial"><Link to="/ripple">Start a Trust Ripple<ArrowRight /></Link></Button><Button asChild variant="outline"><Link to="/wingwoman"><LockKeyhole />Talk to Wingwoman</Link></Button><Button asChild variant="ghost"><Link to="/search" search={{ q: '' }} aria-label="Search TellHer"><SearchIcon />Search</Link></Button></div></div>
+   <div className="current-actions"><Button asChild variant="editorial"><Link to="/ripple">Start a Trust Ripple<ArrowRight /></Link></Button><Button asChild variant="outline"><Link to="/wingwoman"><LockKeyhole />Talk to Wingwoman</Link></Button><Button asChild variant="ghost"><Link to="/constellations"><Sparkle />Constellations</Link></Button><Button asChild variant="ghost"><Link to="/search" search={{ q: '' }} aria-label="Search TellHer"><SearchIcon />Search</Link></Button></div></div>
   {loading ? <p role="status" className="form-note">Gathering what’s moving…</p>
    : !items.length ? <section className="empty-panel"><h2>The Current is quiet for now.</h2><p>As your Direct Circle grows, their questions, notes and picks will gather here.</p><Button asChild variant="editorial" className="mt-6"><Link to="/circle">Go to MyCircle<ArrowRight /></Link></Button></section>
    : <>

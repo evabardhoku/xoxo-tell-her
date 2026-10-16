@@ -273,3 +273,24 @@ input:focus-visible,textarea:focus-visible,select:focus-visible { outline:2px so
 .other-side-note { font-family:var(--font-editorial);font-size:16px;line-height:1.7;white-space:pre-line; }
 .other-side-chips { display:flex;flex-wrap:wrap;gap:8px; } .other-side .choice-chip[aria-pressed="true"] { background:var(--card);border-color:var(--primary);color:var(--primary); }
 .other-side .choice-chip { border:1px solid var(--border);border-radius:999px; }
+/* Constellations: a calm plum night sky */
+.sky { position:relative;aspect-ratio:16/10;min-height:420px;border-radius:24px;overflow:hidden;background:radial-gradient(ellipse at 30% 20%, color-mix(in oklab, var(--primary) 82%, var(--secondary)) 0%, var(--primary) 60%);margin-bottom:22px; }
+.sky-lines { position:absolute;inset:0;width:100%;height:100%; } .sky-lines line { stroke:var(--primary-foreground);stroke-opacity:.18;stroke-width:.15;vector-effect:non-scaling-stroke; }
+.sky-label { position:absolute;transform:translateX(-50%);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--primary-foreground);opacity:.62;white-space:nowrap;pointer-events:none; }
+.star { position:absolute;display:block;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;background:var(--primary-foreground);opacity:.75;transition:transform .5s ease, opacity .5s ease;padding:0;border:0; }
+.sky .star::before { content:"";position:absolute;inset:-12px; } /* generous tap target */
+.star[data-echo="1"] { opacity:.85;box-shadow:0 0 6px 1px color-mix(in oklab, var(--accent) 45%, transparent); }
+.star[data-echo="2"] { opacity:.95;background:color-mix(in oklab, var(--accent) 45%, var(--primary-foreground));box-shadow:0 0 10px 2px color-mix(in oklab, var(--accent) 55%, transparent); }
+.star[data-echo="3"] { opacity:1;width:12px;height:12px;margin:-6px 0 0 -6px;background:color-mix(in oklab, var(--accent) 65%, var(--primary-foreground));box-shadow:0 0 16px 4px color-mix(in oklab, var(--accent) 55%, transparent); }
+.star[data-outcome="true"]::after { content:"";position:absolute;inset:-6px;border-radius:50%;border:1px solid color-mix(in oklab, var(--primary-foreground) 55%, transparent); }
+.sky .star:hover, .sky .star[data-active="true"], .sky .star:focus-visible { transform:scale(1.5);opacity:1;outline:none; }
+.sky .star:focus-visible::after { border-color:var(--accent); }
+@media (prefers-reduced-motion: no-preference) { .sky .star { animation:twinkle 6s ease-in-out infinite; } .sky .star:nth-child(3n) { animation-delay:-2s; } .sky .star:nth-child(3n+1) { animation-delay:-4s; } }
+@keyframes twinkle { 50% { opacity:.55; } }
+.sky-card { position:absolute;transform:translateX(-50%);width:min(300px, 86%);padding:16px 18px;border-radius:16px;background:var(--card);color:var(--foreground);box-shadow:0 18px 40px -18px color-mix(in oklab, var(--primary) 70%, transparent);display:grid;gap:10px;z-index:2; }
+.sky-excerpt { font-family:var(--font-editorial);font-size:15px;line-height:1.5;color:var(--primary); }
+.sky-tags { display:flex;flex-wrap:wrap;gap:6px;font-size:12px;color:var(--muted-foreground); } .sky-tags li { padding:3px 10px;border-radius:999px;background:var(--muted); }
+.sky-legend { display:flex;flex-wrap:wrap;gap:10px 26px;font-size:13px;color:var(--muted-foreground);margin-bottom:18px; } .sky-legend div { display:flex;align-items:center;gap:10px; }
+.sky-legend dt { position:relative;width:22px;height:22px;border-radius:50%;background:var(--primary); } .sky-legend .star { left:50%;top:50%; }
+.sky-topics { display:flex;flex-wrap:wrap;gap:8px 22px;font-size:14px; }
+@media (max-width: 760px) { .sky { aspect-ratio:auto;height:520px;min-height:0; } .sky-label { font-size:9.5px; } }
