@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { errorText } from '@/lib/askher';
 import { deleteMyAccount } from '@/lib/account.functions';
 
-export function PrivacyData({ userId, discoverability, onEditDiscoverability }: { userId: string; discoverability?: string; onEditDiscoverability: () => void }) {
+export function PrivacyData({ userId, discoverability, onEditDiscoverability }: { userId: string; discoverability?: string | undefined; onEditDiscoverability: () => void }) {
  const qc = useQueryClient(); const navigate = useNavigate();
  const del = useServerFn(deleteMyAccount);
  const [note, setNote] = useState(''); const [confirm, setConfirm] = useState(''); const [busy, setBusy] = useState(false);
