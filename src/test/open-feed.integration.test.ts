@@ -52,6 +52,7 @@ describe.skipIf(!url || !key)('My Feed: open Ripples, audiences, named comments 
   const own = await c[0]!.rpc('tellher_post_open_comment', { _id: qs.community, _body: 'Thank you' }); expect(own.error).toBeNull();
   const list = await c[0]!.rpc('tellher_open_comments', { _id: qs.community });
   const friend = list.data!.find((r: { body: string }) => r.body === 'Go in spring!')!;
+  console.log('DBG', JSON.stringify(friend));
   expect(friend).toMatchObject({ first_name: names[1], profile_id: ids[1] });
   expect((await c[0]!.rpc('tellher_member_profile', { _id: ids[1] })).data?.[0]?.first_name).toBe(names[1]);
   await c[0]!.rpc('tellher_like_reply', { _reply: friend.id }); await c[0]!.rpc('tellher_like_reply', { _reply: friend.id });
