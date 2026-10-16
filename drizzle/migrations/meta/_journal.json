@@ -78,6 +78,13 @@
       "when": 1792146464338,
       "tag": "0010_fix_profile_details_validation",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1792146775145,
+      "tag": "0011_trust_notes",
+      "breakpoints": true
     }
   ]
 }
