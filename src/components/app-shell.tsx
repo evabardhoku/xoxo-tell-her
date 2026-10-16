@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Sparkle, Newspaper, Users, UserRound, LockKeyhole, LogOut, Search } from 'lucide-react';
+import { Sparkle, Newspaper, Feather, Users, UserRound, LockKeyhole, LogOut, Search } from 'lucide-react';
 import { useEffect, type ReactNode } from 'react';
 import { PENDING_CODE } from './trust-code';
 import { Brand } from './brand';
