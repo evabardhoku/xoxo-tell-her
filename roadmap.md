@@ -10,6 +10,8 @@
 - [x] Add private avatar uploads and complete account onboarding
 - [x] Verify persistent sessions, profile readback, and cross-account privacy
 # Wingwoman
+- [ ] Extend existing Ripple handoff with private source context, edited sharing preview, and cancel
+- [ ] Verify cancel/publication privacy flows, run existing checks and both demo scripts
 - [x] Private AI reflection with optional instinct, saved per owner, handing off to an editable Trust Ripple draft
 - [x] Optional AI perspective synthesis on question pages
 - [x] Integration pass and fictional demo network
