@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tansta
 import { zodValidator, fallback } from '@tanstack/zod-adapter';
 import { z } from 'zod';
 import { useMemo, useState, type FormEvent } from 'react';
-import { Check, Inbox, Search, X } from 'lucide-react';
+import { Check, Search, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,10 +37,8 @@ function Circle() {
  const easing = isNew && direct.length === 0;
  const tab = (v: View, label: string, hint?: string) => <Link to="/circle" search={{ view: v }} className="ripple-tab" role="tab" aria-selected={view === v} data-active={view === v}>{label}{hint && <span className="tab-hint"> · {hint}</span>}</Link>;
  return <>
-  <div className="page-heading"><div><div className="eyebrow">MY CIRCLE</div><h1>Trust starts close to home.</h1><p>The women you choose to trust.</p></div>
-   {pending > 0 && <Link to="/circle" search={{ view: 'requests' }} className="requests-indicator" aria-label={`${pending} pending connection ${pending === 1 ? 'request' : 'requests'}`}><Inbox size={15} /><span className="requests-count">{pending}</span>Connection requests</Link>}
-  </div>
-  <div className="ripple-tabs" role="tablist" aria-label="Circle views">{tab('direct', 'Direct')}{tab('extended', 'Extended')}{tab('messages', 'Messages')}</div>
+  <div className="page-heading"><div><h1>My Circle</h1><p>Women you chose to trust directly.</p></div></div>
+  <div className="ripple-tabs" role="tablist" aria-label="Circle views">{tab('direct', 'My Circle')}{tab('extended', 'Extended')}{tab('requests', 'Requests', pending > 0 ? String(pending) : undefined)}{tab('messages', 'Messages')}</div>
   {view === 'direct' && <DirectTab direct={direct} extendedCount={data.extendedCount} easing={easing} code={code} />}
   {view === 'extended' && easing && <p className="form-note discovery-hint">Your Direct Circle introduces new paths as it grows. <Link to="/circle" search={{ view: 'direct' }} className="member-link">Add your first trusted woman</Link></p>}
   {view === 'extended' && <ExtendedCircle direct={direct} />}
@@ -51,7 +49,7 @@ function Circle() {
 
 function DirectTab({ direct, code }: { direct: CircleEntry[]; extendedCount: number; easing: boolean; code?: string | undefined }) {
  const qc = useQueryClient();
- return <div className="circle-grid"><DirectCircle direct={direct} /><details className="add-trust-disclosure" open={direct.length === 0}><summary>Add someone you trust</summary><AddMember onSent={() => qc.invalidateQueries({ queryKey: circleQuery.queryKey })} /></details><ConnectInPerson /><RedeemTrustCode initial={code} /></div>;
+ return <div className="circle-grid">{code && <RedeemTrustCode initial={code} />}<DirectCircle direct={direct} /><ConnectInPerson /><details className="add-trust-disclosure" open={direct.length === 0}><summary>Add someone by email</summary><AddMember onSent={() => qc.invalidateQueries({ queryKey: circleQuery.queryKey })} /></details>{!code && <RedeemTrustCode />}</div>;
 }
 
 function RequestsTab() {
@@ -62,8 +60,8 @@ function RequestsTab() {
  const respond = useMutation({ mutationFn: async (v: { id: string; accept: boolean }) => { const { error } = await supabase.rpc('tellher_respond_trust', { _id: v.id, _accept: v.accept }); if (error) throw error; }, onSuccess: refresh });
  const cancel = useMutation({ mutationFn: async (id: string) => { const { error } = await supabase.rpc('tellher_cancel_trust', { _id: id }); if (error) throw error; }, onSuccess: refresh });
  return <div className="circle-grid">
-  <section className="circle-card"><h2>Requests for you</h2>{by('incoming').length ? <ul className="member-list">{by('incoming').map(m => <Member key={m.connection_id} m={m}><Button size="sm" variant="editorial" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: true })}><Check />Accept</Button><Button size="sm" variant="ghost" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: false })}>Decline</Button></Member>)}</ul> : <p className="form-note">No requests waiting.</p>}{respond.isError && <p role="alert" className="form-note form-error">{message(respond.error)}</p>}</section>
-  <section className="circle-card"><h2>Sent requests</h2>{by('outgoing').length ? <ul className="member-list">{by('outgoing').map(m => <Member key={m.connection_id} m={m}><span className="status-label">Pending</span><Button size="sm" variant="ghost" aria-label={`Withdraw request to ${memberName(m)}`} disabled={cancel.isPending} onClick={() => cancel.mutate(m.connection_id)}><X /></Button></Member>)}</ul> : <p className="form-note">Nothing pending.</p>}</section>
+  <section className="circle-card"><h2>Incoming</h2>{by('incoming').length ? <ul className="member-list">{by('incoming').map(m => <Member key={m.connection_id} m={m}><Button size="sm" variant="editorial" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: true })}><Check />Accept</Button><Button size="sm" variant="ghost" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: false })}>Decline</Button></Member>)}</ul> : <p className="form-note">No requests waiting.</p>}{respond.isError && <p role="alert" className="form-note form-error">{message(respond.error)}</p>}</section>
+  <section className="circle-card"><h2>Sent</h2>{by('outgoing').length ? <ul className="member-list">{by('outgoing').map(m => <Member key={m.connection_id} m={m}><span className="status-label">Pending</span><Button size="sm" variant="ghost" disabled={cancel.isPending} onClick={() => cancel.mutate(m.connection_id)}><X />Cancel</Button></Member>)}</ul> : <p className="form-note">Nothing pending.</p>}</section>
  </div>;
 }
 
