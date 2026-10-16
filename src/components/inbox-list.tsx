@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { LockKeyhole } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ScrollPanel } from '@/components/scroll-panel';
 import { relativeTime } from '@/lib/askher';
 import { memberAvatar } from '@/lib/member.functions';
 import { inboxQuery, type InboxRow } from '@/lib/between-us';
@@ -14,7 +15,7 @@ export function InboxList() {
   {inbox.isPending ? <p role="status" className="form-note">Opening your conversations…</p>
    : inbox.isError ? <p role="alert" className="form-note form-error">Your conversations couldn’t be loaded. Please try again.</p>
    : !inbox.data.length ? <section className="empty-panel"><h2>No conversations yet.</h2><p>Open the profile of a woman in your Direct Circle and choose “Message her”.</p></section>
-   : <ul className="bu-inbox">{inbox.data.map(r => <InboxItem key={r.conversation_id} r={r} />)}</ul>}
+   : <ScrollPanel label="Conversations" className="bu-inbox">{inbox.data.map(r => <InboxItem key={r.conversation_id} r={r} />)}</ScrollPanel>}
  </>;
 }
 

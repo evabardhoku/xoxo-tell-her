@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { errorText, relativeTime } from '@/lib/askher';
+import { ScrollPanel } from './scroll-panel';
 
 type Letter = { id: string; body: string; where_now: string | null; created_at: string; mine: boolean; helped: boolean; help_count: number | null };
 export const LETTER_MAX = 600;
@@ -32,14 +33,14 @@ export function Letters({ id }: { id: string }) {
  return <section className="letters" aria-labelledby="letters-title">
   <div className="eyebrow" id="letters-title">LETTERS FROM THE OTHER SIDE</div>
   <p className="form-note">Written by women who have lived something similar. Testimony, not advice.</p>
-  {letters.length > 0 && <ul className="letter-list">{letters.map(l => <li key={l.id} className={`letter-card ${l.mine ? 'letter-card--mine' : ''}`}>
+  {letters.length > 0 && <ScrollPanel label="Letters from the Other Side" className="letter-list">{letters.map(l => <li key={l.id} className={`letter-card ${l.mine ? 'letter-card--mine' : ''}`}>
    <p className="letter-body">{l.body}</p>
    <p className="letter-sign">— {l.mine ? 'You' : 'A woman who has been there'}{l.where_now ? `, ${l.where_now}` : ''}</p>
    <div className="letter-foot"><span className="form-note">{relativeTime(l.created_at)}</span>
     {l.mine ? <>{l.help_count ? <span className="like-count"><Heart size={12} />{l.help_count} found this helpful <LockKeyhole size={11} aria-label="only you see this" /></span> : null}<Button size="sm" variant="ghost" onClick={() => setWriting(true)}>Edit</Button><Button size="sm" variant="ghost" onClick={() => remove(l)}><Trash2 />Remove</Button></>
      : <><button type="button" className={`like-btn ${l.helped ? 'is-liked' : ''}`} aria-pressed={l.helped} onClick={() => help(l)}><Heart size={13} />This helped</button><button type="button" className="room-report" onClick={() => report(l)}><Flag size={12} />Report</button></>}
    </div>
-  </li>)}</ul>}
+  </li>)}</ScrollPanel>}
   {note && <p role={note.error ? 'alert' : 'status'} className={`form-note ${note.error ? 'form-error' : 'form-success'}`}>{note.text}</p>}
   {canWrite && (writing ? <LetterForm id={id} initial={mine} onDone={() => { setWriting(false); refresh(); }} onCancel={() => setWriting(false)} />
    : !mine && <Button variant="soft" onClick={() => setWriting(true)}>Write a letter</Button>)}

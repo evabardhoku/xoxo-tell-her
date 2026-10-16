@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { instincts } from '@/lib/askher';
 import { outcomeStatuses } from '@/lib/outcome';
 import { Button } from '@/components/ui/button';
+import { ScrollPanel } from '@/components/scroll-panel';
 
 export const Route = createFileRoute('/_authenticated/profile')({ loader: ({ context }) => context.queryClient.ensureQueryData(profileQuery), head: () => pageHead('Me', 'Your private TellHer account and profile.'), component: Profile });
 
@@ -84,14 +85,14 @@ function Profile() {
    <h2 id="instinct-title">My Instinct history</h2>
    <p className="form-note"><LockKeyhole size={12} /> Only you see this. Your instincts stay unlinked from your anonymous Ripples.</p>
    {withOutcomes.length > 0 && <p className="instinct-insight"><Compass size={14} aria-hidden /> Your instinct matched what happened {impact.data.instinct_matched} {impact.data.instinct_matched === 1 ? 'time' : 'times'}.</p>}
-   <ul className="instinct-history">
+   <ScrollPanel label="My Instinct history" className="instinct-history">
     {impact.data.instincts.map(i => <li key={i.question_id}>
      <div className="question-meta"><span className="question-category">{i.category}</span><span>{new Date(i.created_at).toLocaleDateString()}</span></div>
      <p className="instinct-line">You started here: <strong>{instincts.find(x => x.value === i.instinct)?.label ?? '—'}</strong></p>
      {i.note && <p className="form-note">{i.note}</p>}
      {i.outcome && <p className="form-note">In the end: {outcomeStatuses.find(o => o.value === i.outcome)?.label ?? i.outcome}</p>}
     </li>)}
-   </ul>
+   </ScrollPanel>
   </section>}
 
   <div className="mt-6"><SignOut /></div>
