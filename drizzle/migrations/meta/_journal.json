@@ -134,6 +134,13 @@
       "when": 1792151940406,
       "tag": "0018_ripple_echoes",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1792152407369,
+      "tag": "0019_echo_rooms",
+      "breakpoints": true
     }
   ]
 }

@@ -65,6 +65,81 @@ export type Database = {
         }
         Relationships: []
       }
+      echo_room_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          question_id: string
+          sender_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          question_id: string
+          sender_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          question_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "echo_room_messages_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "echo_room_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      echo_room_voices: {
+        Row: {
+          created_at: string
+          member_id: string
+          question_id: string
+          voice: number
+        }
+        Insert: {
+          created_at?: string
+          member_id: string
+          question_id: string
+          voice: number
+        }
+        Update: {
+          created_at?: string
+          member_id?: string
+          question_id?: string
+          voice?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "echo_room_voices_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "echo_room_voices_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       member_blocks: {
         Row: {
           blocked_id: string
@@ -356,6 +431,7 @@ export type Database = {
           reason: string
           reply_id: string | null
           reporter_id: string
+          room_message_id: string | null
           status: string
         }
         Insert: {
@@ -366,6 +442,7 @@ export type Database = {
           reason: string
           reply_id?: string | null
           reporter_id: string
+          room_message_id?: string | null
           status?: string
         }
         Update: {
@@ -376,6 +453,7 @@ export type Database = {
           reason?: string
           reply_id?: string | null
           reporter_id?: string
+          room_message_id?: string | null
           status?: string
         }
         Relationships: [
@@ -405,6 +483,13 @@ export type Database = {
             columns: ["reporter_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_room_message_id_fkey"
+            columns: ["room_message_id"]
+            isOneToOne: false
+            referencedRelation: "echo_room_messages"
             referencedColumns: ["id"]
           },
         ]
@@ -677,6 +762,28 @@ export type Database = {
       tellher_delete_question: { Args: { _id: string }; Returns: undefined }
       tellher_delete_reply: { Args: { _id: string }; Returns: undefined }
       tellher_echo: { Args: { _id: string }; Returns: undefined }
+      tellher_echo_room: {
+        Args: { _q: string }
+        Returns: {
+          body: string
+          created_at: string
+          id: string
+          mine: boolean
+          voice: number
+        }[]
+      }
+      tellher_echo_room_can_enter: { Args: { _q: string }; Returns: boolean }
+      tellher_echo_room_post: {
+        Args: { _body: string; _q: string }
+        Returns: string
+      }
+      tellher_echo_room_status: {
+        Args: { _q: string }
+        Returns: {
+          can_enter: boolean
+          unlocked: boolean
+        }[]
+      }
       tellher_echo_signal: {
         Args: { _id: string }
         Returns: {
@@ -840,6 +947,10 @@ export type Database = {
         Returns: undefined
       }
       tellher_report_question: {
+        Args: { _id: string; _reason: string }
+        Returns: undefined
+      }
+      tellher_report_room_message: {
         Args: { _id: string; _reason: string }
         Returns: undefined
       }

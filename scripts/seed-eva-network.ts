@@ -103,6 +103,8 @@ await ask('amira', 'Everyday Life', 'A new neighbour asked me to sign for her pa
 // Echoes from fictional members only (never Eva): 3+ on the landlord Ripple, more on the voice-notes one, 1 on the taxi one.
 const echo = async (q: string, who: string[]) => { for (const k of who) { await c[k]!.rpc('tellher_echo', { _id: q }); } };
 await echo(q1, ['amira', 'elena', 'chiara', 'hana']); await echo(q4, ['giulia', 'amira', 'elena', 'hana', 'valentina', 'nadia']); await echo(q2, ['elena']);
+// Echo Room on the voice-notes Ripple (fresh each run with the question): anonymous voices only.
+for (const [k, b] of [['chiara', 'I didn’t expect anyone else to recognise this. Thank you.'], ['amira', 'A conference contact did this to me too. One short, polite message ended it.'], ['hana', 'I muted the chat first, then replied the next morning. Distance helped me sound calm.']] as const) await c[k]!.rpc('tellher_echo_room_post', { _q: q4, _body: b });
 
 const pick = async (who: string, category: string, title: string, note: string, location: string | null) => { const { count } = await c[who]!.from('trusted_picks').select('id', { count: 'exact', head: true }).eq('title', title); if (count) return; const { error } = await c[who]!.from('trusted_picks').insert({ owner_id: id[who]!, category, title, note, location }); if (error) throw error; };
 await pick('giulia', 'Housing & Moving', 'A tenants’ advice desk that answers emails', 'They read my contract for free and told me exactly which clauses mattered.', 'Rome · Pigneto');
