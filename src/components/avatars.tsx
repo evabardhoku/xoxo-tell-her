@@ -36,7 +36,7 @@ export function AnonymousAvatar({ avatar, size = 40 }: { avatar: unknown; size?:
 }
 
 /** A member's Open Avatar: illustrated config, her protected photo, or her initial. Viewer-checked. */
-export function MemberAvatar({ id, name, hasPhoto, size = 40 }: { id: string | null | undefined; name: string | null | undefined; hasPhoto?: boolean; size?: number }) {
+export function MemberAvatar({ id, name, hasPhoto, size = 40 }: { id: string | null | undefined; name: string | null | undefined; hasPhoto?: boolean | undefined; size?: number }) {
  const open = useQuery(openAvatarQuery(id));
  const photo = useQuery({ queryKey: ['member-avatar', id], enabled: Boolean(id && hasPhoto && open.data?.kind !== 'illustrated'), queryFn: () => memberAvatar({ data: { id: id! } }), staleTime: 240000 });
  const style = { width: size, height: size };
