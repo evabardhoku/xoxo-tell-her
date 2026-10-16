@@ -1,0 +1,2 @@
+ALTER TABLE public.reports DROP CONSTRAINT reports_message_id_fkey;
+ALTER TABLE public.reports ADD CONSTRAINT reports_message_id_fkey FOREIGN KEY (message_id) REFERENCES public.messages(id) ON DELETE CASCADE;
