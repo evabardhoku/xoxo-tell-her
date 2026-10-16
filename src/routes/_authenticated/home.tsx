@@ -1,23 +1,15 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useQuery, useQueries } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
-import { ArrowRight, LockKeyhole, MapPin } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { ArrowRight, LockKeyhole } from 'lucide-react';
 import { ConstellationSky } from '@/components/constellation-sky';
 import { placeTitle, skyQuery } from '@/lib/constellations';
 import { useDiscovery } from '@/hooks/discovery';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { QuestionCard } from '@/components/question-feed';
-import { PickItem, picksQuery } from '@/components/trusted-picks';
-import { shelfQuery } from '@/components/trust-shelf';
-import { FieldNoteContext } from '@/components/field-note-context';
-import type { ExtendedMember } from '@/components/extended-circle';
 import { pageHead } from '@/lib/metadata';
-import { profileQuery } from '@/lib/profile';
-import { circleQuery, memberName } from '@/lib/circle';
-import { feedQuery, relativeTime } from '@/lib/askher';
+import { feedQuery } from '@/lib/askher';
 import { feedMapQuery } from '@/lib/perspectives';
-import { availableFilters, applyFilter, questionProvenance, questionTier, rankCurrent, type CurrentFilter, type CurrentItem } from '@/lib/current';
 
 export const Route = createFileRoute('/_authenticated/home')({
  validateSearch: (s: Record<string, unknown>): { view?: 'ripples' | 'constellations' } => (s['view'] === 'ripples' ? { view: 'ripples' } : s['view'] === 'constellations' ? { view: 'constellations' } : {}),
@@ -25,7 +17,6 @@ export const Route = createFileRoute('/_authenticated/home')({
  component: SkyHub,
 });
 
-const SHELF_LIMIT = 12;
 
 function SkyHub() {
  const { view } = Route.useSearch();
