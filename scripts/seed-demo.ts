@@ -38,7 +38,53 @@ const seedMessages = async () => {
  }
  console.log('Seeded Between Us demo conversations.');
 };
-if (list.users.some(u => u.email === 'maya.demo@example.com')) { await seedMessages(); console.log('Demo already seeded; profile details refreshed.'); process.exit(0); }
+// Extras (idempotent, demo accounts only): a duplicate second-degree path, a pending Trust Bridge,
+// Trust Notes for the Lisbon network, and two private Wingwoman sessions for Maya (one multi-turn).
+const seedExtras = async () => {
+ const sign = async (k: string) => { const cl = createClient(url, pub, { auth: { persistSession: false } }); const s = await cl.auth.signInWithPassword({ email: `${k}.demo@example.com`, password: PASSWORD }); if (s.error) throw s.error; return { cl, uid: s.data.user.id }; };
+ const m: Record<string, { cl: SupabaseClient; uid: string }> = {};
+ for (const k of ['maya', 'lina', 'sofia', 'noor', 'iris']) m[k] = await sign(k);
+ const edge = async (a: string, b: string) => (await admin.from('trust_connections').select('id').eq('requester_id', m[a]!.uid).eq('recipient_id', m[b]!.uid).in('status', ['pending', 'accepted'])).data?.length;
+ // Noor also trusts Iris, so Iris reaches Maya through both Lina and Noor (counted once).
+ if (!(await edge('noor', 'iris'))) {
+  const r = await m['noor']!.cl.rpc('tellher_send_trust', { _recipient: m['iris']!.uid }); if (r.error) throw r.error;
+  const { data } = await m['iris']!.cl.rpc('tellher_my_circle'); const req = (data as { connection_id: string; kind: string; member_id: string }[]).find(x => x.kind === 'incoming' && x.member_id === m['noor']!.uid);
+  if (req) { const a = await m['iris']!.cl.rpc('tellher_respond_trust', { _id: req.connection_id, _accept: true }); if (a.error) throw a.error; }
+ }
+ // Maya has asked Iris (Extended Circle) for a Trust Bridge; left pending for Iris to answer.
+ if (!(await edge('maya', 'iris')) && !(await edge('iris', 'maya'))) { const r = await m['maya']!.cl.rpc('tellher_send_trust', { _recipient: m['iris']!.uid }); if (r.error) throw r.error; }
+ const notes: Record<string, [string, string, string, string | null]> = {
+  lina: ['Preparing for a difficult conversation', 'Work', 'I write down what happened, what I need, and one sentence I can repeat if I get flustered. Then I ask for ten minutes, not “a chat”.', 'Porto'],
+  sofia: ['First month after moving countries', 'Housing & Moving', 'Register your address early, open a local bank account before you need it, and keep paper copies of your rental contract. Everything else can wait.', 'Madrid'],
+  noor: ['Finding a flatmate as a student', 'Study', 'Meet in a café first, ask how they split bills and cleaning, and talk to the current flatmate alone if you can.', 'Lyon'],
+  iris: ['Pricing illustration work fairly', 'Money', 'I quote per project, not per hour, include two rounds of changes, and ask for 30% upfront from new clients.', 'Ghent'],
+ };
+ for (const [k, [title, topic, body, location]] of Object.entries(notes)) {
+  const { count } = await m[k]!.cl.from('trust_notes').select('id', { count: 'exact', head: true }).eq('title', title); if (count) continue;
+  const r = await m[k]!.cl.from('trust_notes').insert({ author_id: m[k]!.uid, title, topic, body, location }); if (r.error) throw r.error;
+ }
+ const maya = m['maya']!;
+ const { count: ww } = await maya.cl.from('wingwoman_sessions').select('id', { count: 'exact', head: true }); if (ww) return;
+ // Legacy-style one-shot reflection.
+ const one = await maya.cl.from('wingwoman_sessions').insert({ owner_id: maya.uid, title: 'A friend keeps cancelling at the last minute', context: 'Friendship', instinct: 'unsure',
+  situation: 'A close friend has cancelled our plans at the last minute four times in two months. She always apologises, but I’m starting to feel like I’m the only one making an effort.',
+  reflection: { what_stands_out: ['The cancellations have become a pattern over two months.', 'She apologises each time, so she seems aware of it.', 'You are noticing an imbalance in effort.'], questions: ['Do you know what is going on in her life right now?', 'What would feel fair to you going forward?'], next_step: 'You might consider telling her, kindly, how the cancellations land for you and asking what would work better for her.', safety_note: null } });
+ if (one.error) throw one.error;
+ // Multi-turn conversation.
+ const s = await maya.cl.from('wingwoman_sessions').insert({ owner_id: maya.uid, title: 'Asked to cover a colleague’s project again', context: 'Work', instinct: 'feels_off',
+  situation: 'My team lead asked me, for the third time, to quietly finish a colleague’s project before a deadline. The colleague gets the credit in the review.',
+  reflection: { what_stands_out: ['This is the third time, so it is a pattern rather than a one-off.', 'The work is done quietly, which makes your contribution hard to see.', 'Credit goes to someone else in a formal review.'], questions: ['What do you want your lead to understand about this?', 'Is there a record of the work you did?'], next_step: 'You might consider keeping a short written note of what you delivered each time, before deciding whether to raise it.', safety_note: null } }).select('id').single();
+ if (s.error) throw s.error;
+ const turns: [string, string][] = [
+  ['user', 'I do have emails showing I sent the final files. I just don’t want to look like I’m complaining.'],
+  ['assistant', 'That makes sense — and having the emails changes things. Pointing to what you delivered isn’t complaining; it’s making your work visible. What would you want your lead to do differently next time?'],
+  ['user', 'Honestly, just ask me openly instead of making it a secret favour.'],
+  ['assistant', 'That’s a clear, reasonable ask. You could put it almost exactly like that: “Happy to help when I can — I’d just like it to be visible on my side too.” Does that sound like you?'],
+ ];
+ for (const [role, content] of turns) { const r = await maya.cl.from('wingwoman_messages').insert({ session_id: s.data.id, owner_id: maya.uid, role, content }); if (r.error) throw r.error; }
+ console.log('Seeded demo extras.');
+};
+if (list.users.some(u => u.email === 'maya.demo@example.com')) { await seedMessages(); await seedExtras(); console.log('Demo already seeded; profile details refreshed.'); process.exit(0); }
 const id: Record<string, string> = {}; const c: Record<string, SupabaseClient> = {};
 for (const [k, first, last, city] of people) {
  const email = `${k}.demo@example.com`;
@@ -78,5 +124,5 @@ const pick = async (who: string, category: string, title: string, note: string, 
 await pick('lina', 'Services', 'A locksmith who quotes before starting', 'She told me the price on the phone, arrived on time and didn’t upsell anything.', 'Rome · Trastevere');
 await pick('sofia', 'Health & Care', 'A GP who listens without rushing', 'She took my questions seriously and explained the options plainly.', null);
 await pick('sofia', 'Travel', 'Women-run guesthouse with clear check-in', 'They sent written check-in instructions and never asked for flight details.', 'Lisbon');
-await seedMessages();
+await seedMessages(); await seedExtras();
 console.log('Seeded demo. Sign in as maya.demo@example.com /', PASSWORD);
