@@ -4,14 +4,11 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import { memberAvatar } from '@/lib/member.functions';
+import { MemberAvatar } from '@/components/avatars';
 import { errorText, feedQuery, relativeTime } from '@/lib/askher';
 import { openCommentsQuery, type OpenComment } from '@/lib/open-feed';
 
-function Avatar({ c }: { c: OpenComment }) {
- const avatar = useQuery({ queryKey: ['member-avatar', c.profile_id], enabled: Boolean(c.profile_id && c.has_avatar), queryFn: () => memberAvatar({ data: { id: c.profile_id! } }), staleTime: 240000 });
- return <span className="member-initial open-comment-avatar" aria-hidden>{avatar.data?.url ? <img className="h-full w-full rounded-full object-cover" src={avatar.data.url} alt="" /> : (c.first_name ?? 'T').slice(0, 1)}</span>;
-}
+function Avatar({ c }: { c: OpenComment }) { return <MemberAvatar id={c.profile_id} name={c.first_name} hasPhoto={c.has_avatar} size={32} />; }
 
 /** Named comments on an open Ripple. Older replies from before open comments stay anonymous. */
 export function OpenComments({ id, preview = 0, isAuthor = false }: { id: string; preview?: number; isAuthor?: boolean }) {

@@ -1,3 +1,4 @@
+import { MemberAvatar } from '@/components/avatars';
 import { ConnectInPerson, RedeemTrustCode } from '@/components/trust-code';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
@@ -66,7 +67,7 @@ function RequestsTab() {
 }
 
 function Member({ m, children, known }: { m: CircleEntry; children?: React.ReactNode; known?: string[] | undefined }) {
- return <li className="member-row"><span className="member-initial" aria-hidden>{m.first_name.slice(0, 1).toUpperCase()}</span><div className="member-meta"><Link to="/profile/$memberId" params={{ memberId: m.member_id }} className="member-link"><strong>{memberName(m)}</strong></Link>{m.city && <span>{m.city}</span>}{known && known.length > 0 && <span className="member-known">{known.slice(0, 3).join(' · ')}</span>}</div>{children && <div className="member-actions">{children}</div>}</li>;
+ return <li className="member-row"><MemberAvatar id={m.member_id} name={m.first_name} hasPhoto size={36} /><div className="member-meta"><Link to="/profile/$memberId" params={{ memberId: m.member_id }} className="member-link"><strong>{memberName(m)}</strong></Link>{m.city && <span>{m.city}</span>}{known && known.length > 0 && <span className="member-known">{known.slice(0, 3).join(' · ')}</span>}</div>{children && <div className="member-actions">{children}</div>}</li>;
 }
 
 function AddMember({ onSent }: { onSent: () => void }) {
