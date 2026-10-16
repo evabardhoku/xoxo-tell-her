@@ -6,12 +6,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { TagPicker } from '@/components/tag-picker';
 import { replyLikesQuery } from '@/lib/notifications';
-import { Echo } from '@/components/echo';
+import { Echo, EchoRoomEntry } from '@/components/echo';
 import { OtherSide } from '@/components/other-side';
 import { Letters } from '@/components/letters';
 import { PerspectiveMap } from '@/components/perspective-map';
 import { PerspectiveSynthesis } from '@/components/perspective-synthesis';
 import { pageHead } from '@/lib/metadata';
+import { placeTitle } from '@/lib/constellations';
 import { errorText, feedQuery, instincts, reachContext, relativeTime } from '@/lib/askher';
 import { feedMapQuery, perspectiveLabel, perspectives, questionQuery, tally, type Perspective } from '@/lib/perspectives';
 
