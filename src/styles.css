@@ -230,3 +230,5 @@ input:focus-visible,textarea:focus-visible,select:focus-visible { outline:2px so
 .feed-filters { display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:12px;align-items:end;margin-bottom:20px; } .feed-check { display:flex;gap:8px;align-items:center;font-size:.9rem;min-height:40px; }
 .shelf-filters { display:flex;flex-wrap:wrap;gap:12px;margin:8px 0 14px; } .shelf-filters .field { min-width:180px; }
 @media (max-width:720px) { .feed-filters { grid-template-columns:1fr; } .search-bar { flex-direction:column; } }
+.ripple-tabs { display:flex;gap:8px;border-bottom:1px solid var(--border);margin-bottom:20px; } .ripple-tab { padding:10px 14px;min-height:44px;font-size:.95rem;color:var(--muted-foreground);border-bottom:2px solid transparent;margin-bottom:-1px; } .ripple-tab[data-active=true] { color:var(--primary);border-bottom-color:var(--primary);font-weight:600; }
+.feed-filters { grid-template-columns:2fr repeat(5,1fr); } @media (max-width:900px) { .feed-filters { grid-template-columns:1fr 1fr; } } @media (max-width:560px) { .feed-filters { grid-template-columns:1fr; } }

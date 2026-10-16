@@ -39,8 +39,10 @@ export function relativeTime(iso: string, now = Date.now()) {
 }
 export const errorText = (e: unknown) => (e as { message?: string } | null)?.message || 'Something went wrong.';
 
-export function filterFeed(list: FeedQuestion[], f: { kw: string; cat: string; reach: string; sort: 'newest' | 'oldest'; unanswered: boolean }) {
+export type FeedFilter = { kw: string; cat: string; reach: string; sort: 'newest' | 'oldest'; status: '' | 'awaiting' | 'answered'; days: number };
+export function filterFeed(list: FeedQuestion[], f: FeedFilter, now = Date.now()) {
  const k = f.kw.trim().toLowerCase();
- return list.filter(q => (!k || q.body.toLowerCase().includes(k) || q.category.toLowerCase().includes(k)) && (!f.cat || q.category === f.cat) && (!f.reach || q.audience_scope === f.reach) && (!f.unanswered || q.reply_count === 0))
+ return list.filter(q => (!k || q.body.toLowerCase().includes(k) || q.category.toLowerCase().includes(k)) && (!f.cat || q.category === f.cat) && (!f.reach || q.audience_scope === f.reach)
+  && (!f.status || (f.status === 'awaiting' ? q.reply_count === 0 : q.reply_count > 0)) && (!f.days || now - Date.parse(q.created_at) <= f.days * 86400000))
   .sort((a, b) => (f.sort === 'newest' ? -1 : 1) * (Date.parse(a.created_at) - Date.parse(b.created_at)));
 }
