@@ -267,6 +267,13 @@
       "when": 1792190355540,
       "tag": "0037_trust_code_joined_copy",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1792190737827,
+      "tag": "0038_dual_avatars",
+      "breakpoints": true
     }
   ]
 }

@@ -359,6 +359,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          anonymous_style_config: Json | null
           ask_me_about: string[]
           avatar_path: string | null
           bio: string | null
@@ -373,10 +374,13 @@ export type Database = {
           languages: string[]
           last_name: string
           occupation: string | null
+          open_avatar_config: Json | null
+          open_avatar_type: string
           updated_at: string
           woman_attested_at: string | null
         }
         Insert: {
+          anonymous_style_config?: Json | null
           ask_me_about?: string[]
           avatar_path?: string | null
           bio?: string | null
@@ -391,10 +395,13 @@ export type Database = {
           languages?: string[]
           last_name?: string
           occupation?: string | null
+          open_avatar_config?: Json | null
+          open_avatar_type?: string
           updated_at?: string
           woman_attested_at?: string | null
         }
         Update: {
+          anonymous_style_config?: Json | null
           ask_me_about?: string[]
           avatar_path?: string | null
           bio?: string | null
@@ -409,6 +416,8 @@ export type Database = {
           languages?: string[]
           last_name?: string
           occupation?: string | null
+          open_avatar_config?: Json | null
+          open_avatar_type?: string
           updated_at?: string
           woman_attested_at?: string | null
         }
@@ -491,6 +500,7 @@ export type Database = {
       }
       questions: {
         Row: {
+          anonymous_avatar: Json | null
           audience_scope: string
           author_visibility: string
           body: string
@@ -502,6 +512,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          anonymous_avatar?: Json | null
           audience_scope?: string
           author_visibility?: string
           body: string
@@ -513,6 +524,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          anonymous_avatar?: Json | null
           audience_scope?: string
           author_visibility?: string
           body?: string
@@ -1178,6 +1190,13 @@ export type Database = {
         }
         Returns: boolean
       }
+      tellher_anonymous_avatars: {
+        Args: { _ids: string[] }
+        Returns: {
+          avatar: Json
+          question_id: string
+        }[]
+      }
       tellher_block: { Args: { _member: string }; Returns: undefined }
       tellher_can_message: { Args: { _member: string }; Returns: boolean }
       tellher_can_view: { Args: { _q: string }; Returns: boolean }
@@ -1432,6 +1451,14 @@ export type Database = {
         }
         Returns: undefined
       }
+      tellher_open_avatars: {
+        Args: { _ids: string[] }
+        Returns: {
+          config: Json
+          kind: string
+          member_id: string
+        }[]
+      }
       tellher_open_comments: {
         Args: { _id: string }
         Returns: {
@@ -1561,6 +1588,10 @@ export type Database = {
       tellher_report_room_message: {
         Args: { _id: string; _reason: string }
         Returns: undefined
+      }
+      tellher_resolve_anonymous_avatar: {
+        Args: { _style: Json }
+        Returns: Json
       }
       tellher_respond_trust: {
         Args: { _accept: boolean; _id: string }
