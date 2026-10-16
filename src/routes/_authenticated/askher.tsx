@@ -1,3 +1,4 @@
+import { SentRipple } from '@/components/sent-ripple';
 import { SectionTabs } from '@/components/app-shell';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
@@ -23,6 +24,7 @@ function AskHer() {
  const { f, setF, shown } = useFeedFilter(data, initial);
  return <>
   <div className="page-heading"><div><div className="eyebrow">ASKHER</div><h1>Room for another perspective.</h1><p>Questions that reached you through trust. No names, no rankings.</p></div></div>
+  <SentRipple />
   <SectionTabs label="AskHer sections"><Link to="/askher" activeOptions={{ exact: true, includeSearch: false }}>Community</Link><Link to="/my-ripples" activeOptions={{ includeSearch: false }}>My Ripples</Link><Link to="/ripple">Start a Trust Ripple</Link></SectionTabs>
   {data.length === 0 ? <section className="empty-panel"><EmptyRipple /><h2>A quieter kind of conversation.</h2><p>When a question reaches you through your circle or the community, it will appear here.</p></section>
    : <><FeedFilters f={f} setF={setF} />
