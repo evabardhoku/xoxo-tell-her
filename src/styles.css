@@ -391,3 +391,13 @@ a.bell-item:hover { background:color-mix(in oklab, var(--secondary) 12%, transpa
  .hub-tabs { justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;gap:22px;padding:0 20px; } .hub-tabs a { white-space:nowrap; }
  .mind-fab { display:grid;place-items:center;position:fixed;right:18px;bottom:calc(92px + env(safe-area-inset-bottom));width:54px;height:54px;border-radius:50%;background:var(--primary);color:var(--primary-foreground);box-shadow:0 8px 24px -10px var(--primary);z-index:21; }
 }
+
+/* Letters from the Other Side */
+.letters { margin:36px 0;display:grid;gap:14px;max-width:720px; }
+.letter-list { display:grid;gap:16px; }
+.letter-card { padding:26px 30px;border-radius:4px 20px 20px 20px;background:var(--card);border:1px solid var(--border);box-shadow:0 10px 30px -24px var(--primary); }
+.letter-card--mine { border-left:3px solid var(--secondary);background:var(--muted); }
+.letter-body { font-family:var(--font-editorial);font-size:17px;line-height:1.75;white-space:pre-line; }
+.letter-sign { margin-top:12px;font-family:var(--font-editorial);font-style:italic;color:var(--primary); }
+.letter-foot { display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:14px; }
+@media (prefers-reduced-motion: no-preference) { .letter-card { animation:th-rise .6s var(--ease-calm) both; } .letter-card:nth-child(2){animation-delay:.08s} .letter-card:nth-child(3){animation-delay:.16s} }
