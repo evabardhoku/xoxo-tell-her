@@ -27,9 +27,9 @@ function SearchPage() {
  const submit = (e: FormEvent) => { e.preventDefault(); navigate({ search: { q: text.trim() } }); };
  const rows = res.data ?? []; const of = (k: SearchRow['kind']) => rows.filter(r => r.kind === k);
  const topics = matchTopics(term);
- const groups: [string, SearchRow['kind']][] = [['People', 'person'], ['Field Notes', 'note'], ['Picks', 'pick'], ['Trust Ripples', 'question']];
+ const groups: [string, SearchRow['kind']][] = [['People', 'person'], ['Field Notes', 'note'], ['Picks', 'pick'], ['Ripples', 'question']];
  return <>
-  <div className="page-heading"><div><div className="eyebrow">SEARCH</div><h1>Find what’s already shared with you.</h1><p>Only people, notes, picks and questions you can already see. Never emails, private instincts or Wingwoman.</p></div></div>
+  <div className="page-heading"><div><div className="eyebrow">SEARCH</div><h1>Search</h1><p>Find what’s already shared with you.</p></div></div>
   <form className="search-bar" onSubmit={submit} role="search"><label htmlFor="global-q" className="sr-only">Search TellHer</label><Input id="global-q" value={text} maxLength={80} onChange={e => setText(e.target.value)} placeholder="A name, a city, a topic…" autoFocus /><Button type="submit" variant="editorial"><SearchIcon />Search</Button></form>
   {term.trim().length < 2 ? <p className="form-note">Type at least two characters.</p>
    : res.isPending ? <p role="status" className="form-note">Searching…</p>
@@ -50,9 +50,9 @@ function Result({ r }: { r: SearchRow }) {
 }
 
 function PersonResult({ r }: { r: SearchRow }) {
- const avatar = useQuery({ queryKey: ['member-avatar', r.member_id], enabled: Boolean(r.has_avatar), queryFn: () => memberAvatar({ data: { id: r.member_id! } }), staleTime: 240000 });
+ const avatar = useQuery({ queryKey: ['member-avatar', r.member_id], enabled: Boolean(r.has_avatar), queryFn: () => memberAvatar({ data: { id: r.member_id ?? '' } }), staleTime: 240000 });
  const [first, last = ''] = (r.title ?? '').split(' ');
  return <li className="search-item search-person"><span className="member-avatar ext-avatar" aria-hidden>{avatar.data?.url ? <img src={avatar.data.url} alt="" /> : first?.slice(0, 1).toUpperCase()}</span>
-  <div className="member-meta"><Link to="/profile/$memberId" params={{ memberId: r.member_id! }} className="member-link"><strong>{first} {last.length === 1 ? `${last}.` : last}</strong></Link>{r.location && <span><MapPin size={12} className="inline mr-1" />{r.location}</span>}
-   <span className="trust-context">{relationLabel(r.relation)}</span>{(r.known_for?.length ?? 0) > 0 && <span className="form-note">Known for {r.known_for!.join(', ')}</span>}</div></li>;
+  <div className="member-meta"><Link to="/profile/$memberId" params={{ memberId: r.member_id ?? '' }} className="member-link"><strong>{first} {last.length === 1 ? `${last}.` : last}</strong></Link>{r.location && <span><MapPin size={12} className="inline mr-1" />{r.location}</span>}
+   <span className="trust-context">{relationLabel(r.relation)}</span>{(r.known_for?.length ?? 0) > 0 && <span className="form-note">Known for {(r.known_for ?? []).join(', ')}</span>}</div></li>;
 }

@@ -46,7 +46,7 @@ function Profile() {
     <Button size="sm" variant="outline" onClick={() => setEditing(e => !e)}><Pencil />{editing ? 'Close editor' : 'Edit profile'}</Button>
     <Link to="/profile/$memberId" params={{ memberId: data.id }} className="member-link text-sm self-center">See your member profile as others do</Link>
    </div>
-   <p className="form-note mt-3" hidden>Discoverability: <strong>{discovery?.label}</strong> — {discovery?.hint} <button type="button" className="member-link" onClick={() => setEditing(true)}>Change</button></p>
+
   </section>
 
   {editing && <ProfileEditor profile={data} onSaved={async () => { await refetch(); setEditing(false); }} />}
