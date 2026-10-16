@@ -33,13 +33,13 @@ function Wingwoman() {
  const { s } = Route.useSearch();
  const sessions = useQuery(sessionsQuery);
  return <>
-  <div className="page-heading"><div><div className="eyebrow">WINGWOMAN</div><h1>Talk it through, privately.</h1><p>A thoughtful second voice. Not a therapist, judge, or emergency service.</p></div></div>
+  <div className="page-heading"><div><div className="eyebrow">WINGWOMAN</div><h1>Wingwoman</h1><p className="form-note">Private AI perspective, not professional or emergency support.</p></div></div>
   <div className="ww-layout">
-   <aside className="ww-sessions" aria-label="Your conversations">
+   <details className="ww-sessions"><summary>Conversation history</summary>
     <Button asChild variant="editorial" size="sm" className="w-full"><Link to="/wingwoman" search={{}}><Plus />New conversation</Link></Button>
     <p className="private-note"><LockKeyhole size={12} />Only you can see these.</p>
     <ul>{(sessions.data ?? []).map(x => <li key={x.id}><Link to="/wingwoman" search={{ s: x.id }} className="ww-session" aria-current={s === x.id ? 'page' : undefined}><span className="question-category">{x.context ?? 'Other'}</span><span className="ww-session-title">{x.title || 'Untitled'}</span><span className="form-note">{relativeTime(x.updated_at)}</span></Link></li>)}</ul>
-   </aside>
+   </details>
    <div className="ww-main">{s ? <Thread key={s} id={s} /> : <Start />}</div>
   </div>
  </>;
@@ -58,7 +58,7 @@ function Start() {
  return <section className="composer-card"><div className="composer-body">
   <fieldset className="field"><legend className="field-legend">Context</legend><div className="choice-row">{wingwomanContexts.map(c => <button type="button" key={c} className="choice-chip" aria-pressed={ctx === c} onClick={() => setCtx(c)} disabled={busy}>{c}</button>)}</div></fieldset>
   <div className="field"><label htmlFor="ww-situation">What happened?</label><Textarea id="ww-situation" maxLength={4000} value={situation} disabled={busy} onChange={e => setSituation(e.target.value)} placeholder="In your own words…" /><span className="form-note">{situation.trim().length < 10 ? 'At least 10 characters.' : `${situation.length}/4000`}</span></div>
-  <fieldset className="field"><legend className="field-legend">My Instinct (optional, private) — before anything else, how does it feel?</legend><div className="choice-row">{instincts.map(i => <button type="button" key={i.value} className="choice-chip" aria-pressed={instinct === i.value} disabled={busy} onClick={() => setInstinct(instinct === i.value ? null : i.value)}>{i.label}</button>)}</div></fieldset>
+  <details><summary className="form-note">Add a private first instinct</summary><fieldset className="field"><legend className="field-legend">My first instinct (optional, private)</legend><div className="choice-row">{instincts.map(i => <button type="button" key={i.value} className="choice-chip" aria-pressed={instinct === i.value} disabled={busy} onClick={() => setInstinct(instinct === i.value ? null : i.value)}>{i.label}</button>)}</div></fieldset></details>
   {error && <p role="alert" className="form-note form-error">{error}</p>}
   <div className="composer-actions"><span /><Button variant="editorial" disabled={!ctx || situation.trim().length < 10 || busy} onClick={go}>{busy ? 'Thinking it through…' : 'Start talking with Wingwoman'}</Button></div>
  </div></section>;
@@ -100,7 +100,7 @@ function Thread({ id }: { id: string }) {
  const showChips = replied && !chipsGone && !pending;
  return <section className="ww-thread" aria-label="Conversation">
   <div className="ww-thread-head"><div className="question-meta"><span className="question-category">{session.context ?? 'Other'}</span><span>{relativeTime(session.created_at)}</span>{instinct && <span className="private-note"><LockKeyhole size={12} />Your instinct · {instinct}</span>}</div>
-   <Button variant="outline" size="sm" onClick={() => navigate({ to: '/ripple', search: { from: id } })}>Send as a Trust Ripple<ArrowRight /></Button></div>
+</div>
   <ol className="ww-messages">
    <li className="ww-msg ww-user"><p>{session.situation}</p></li>
    {session.reflection && <li className="ww-msg ww-assistant"><span className="ww-voice">Wingwoman</span><ReflectionBody r={session.reflection as Reflection} /></li>}
@@ -108,10 +108,9 @@ function Thread({ id }: { id: string }) {
    {pending && <><li className="ww-msg ww-user"><p>{pending}</p></li><li className="ww-msg ww-assistant" role="status"><span className="ww-voice">Wingwoman</span><p className="ww-typing">Thinking it over…</p></li></>}
   </ol>
   {showChips && <div className="ww-chips" aria-label="Where to go from here">
-   <button type="button" className="choice-chip" onClick={() => { setChipsGone(true); box.current?.focus(); }}>Just keep talking</button>
-   <button type="button" className="choice-chip" onClick={() => navigate({ to: '/ripple', search: { from: id } })}>Ask other women anonymously</button>
-   {r && r.constellations > 0 && <button type="button" className="choice-chip" onClick={() => navigate({ to: '/constellations/$topic', params: { topic: r.topic } })}>Has this happened to others?</button>}
-   {r?.lettersRippleId && <button type="button" className="choice-chip" onClick={() => navigate({ to: '/askher/$id', params: { id: r.lettersRippleId! } })}>Hear from women who’ve been through this</button>}
+   <button type="button" className="member-link ww-context-link" onClick={() => navigate({ to: '/ripple', search: { from: id } })}>Ask women anonymously</button>
+   {r && r.constellations > 0 && <button type="button" className="member-link ww-context-link" onClick={() => navigate({ to: '/constellations/$topic', params: { topic: r.topic } })}>Explore similar stories</button>}
+   {r?.lettersRippleId && <button type="button" className="member-link ww-context-link" onClick={() => navigate({ to: '/askher/$id', params: { id: r.lettersRippleId ?? '' } })}>Read relevant Letters</button>}
   </div>}
   <div ref={end} />
   {error && <p role="alert" className="form-note form-error">{error}</p>}

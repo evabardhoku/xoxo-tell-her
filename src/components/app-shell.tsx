@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Sparkle, MessageCircle, Users, UserRound, LockKeyhole, LogOut, Search, Feather } from 'lucide-react';
+import { Sparkle, MessageCircle, Users, UserRound, LockKeyhole, LogOut, Search } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Brand } from './brand';
 import { Button } from './ui/button';
@@ -30,13 +30,11 @@ export function AppShell({ children }: { children: ReactNode }) {
  const area = areaOf(pathname);
  const link = (item: (typeof navigation)[number]) => { const active = area === item; return <Link key={item.to} to={item.to} className="nav-link" data-active={active} aria-current={active ? 'page' : undefined}><item.icon /><span>{item.label}</span></Link>; };
  return <><header className="app-header"><Brand /><nav className="desktop-nav" aria-label="Main navigation">{navigation.map(link)}</nav><div className="app-header-actions">
-  <Button asChild variant="editorial" className="mind-button"><Link to="/wingwoman"><Feather />What's on your mind?</Link></Button>
   <Link to="/search" search={{ q: '' }} className="avatar-link search-link" aria-label="Search TellHer" data-active={pathname === '/search'}><Search size={17} /></Link>
   <NotificationBell />
   <UserMenu initial={profile.data.first_name.slice(0, 1).toUpperCase()} active={pathname === '/profile'} />
  </div></header>
  <main className="app-main">{children}<p className="app-footnote"><LockKeyhole size={12} />A little space. A little perspective. Always your choice.</p></main>
- <Link to="/wingwoman" className="mind-fab" aria-label="What's on your mind? Talk to Wingwoman"><Feather size={22} /></Link>
  <nav className="mobile-nav" aria-label="Mobile navigation">{navigation.map(link)}</nav></>;
 }
 
