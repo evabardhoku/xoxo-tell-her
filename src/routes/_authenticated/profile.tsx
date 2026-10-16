@@ -63,6 +63,7 @@ function Profile() {
  const withOutcomes = impact.data?.instincts.filter(i => i.outcome) ?? [];
  return <>
   <div className="page-heading"><div><div className="eyebrow">ME</div><h1>A space that’s yours.</h1><p>Your name, your account, your own pace.</p></div></div>
+  <DiscoveryProgress />
 
   <section className="circle-card me-header" aria-labelledby="me-title">
    <div className="me-identity">

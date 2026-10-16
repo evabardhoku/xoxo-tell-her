@@ -449,3 +449,11 @@ a.bell-item:hover { background:color-mix(in oklab, var(--secondary) 12%, transpa
 .instinct-insight { display:flex;align-items:center;gap:8px;font-size:14px;color:var(--primary);background:var(--muted);border-radius:12px;padding:10px 14px;margin:10px 0; } .instinct-history { display:grid;gap:10px;list-style:none;margin:12px 0 0;padding:0; } .instinct-history li { border:1px dashed var(--border);border-radius:12px;padding:12px 16px;display:grid;gap:4px; }
 @media (max-width: 760px) { .impact-row { grid-template-columns:1fr 1fr; } }
 @media (max-width: 760px) { .mind-card { padding:26px 22px; } .mind-card-input { font-size:20px; } .place-hero h1 { font-size:29px; } .sky--large { height:62vh;min-height:380px; } .segmented { justify-self:stretch; } .segmented-option { flex:1;justify-content:center;padding:9px 12px; } }
+
+/* Progressive discovery (new accounts only) — quiet, never blocking */
+.discovery-hint { margin: 0.75rem 0 1rem; padding: 0.6rem 0.85rem; border-left: 2px solid var(--border); color: var(--muted-foreground); }
+.tab-hint { font-size: 0.72em; opacity: 0.7; font-weight: 400; }
+.discovery-progress { margin: 0 0 1rem; }
+.discovery-list { list-style: none; padding: 0; margin: 0.6rem 0 0; display: grid; gap: 0.35rem; font-size: 0.875rem; }
+.discovery-list li { display: flex; align-items: center; gap: 0.5rem; color: var(--muted-foreground); }
+.discovery-list li[data-done="true"] { opacity: 0.65; }
