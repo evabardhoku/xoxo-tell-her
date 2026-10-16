@@ -22,7 +22,7 @@ const navigation = [
  { to: '/profile', label: 'Profile', icon: UserRound, match: [] },
 ] as const;
 const isIn = (pathname: string, paths: readonly string[]) => paths.some(p => p.endsWith('/') ? pathname.startsWith(p) : pathname === p || pathname.startsWith(`${p}/`));
-const areaOf = (pathname: string) => pathname === '/profile' ? navigation[3] : navigation.find(i => isIn(pathname, i.match));
+const areaOf = (pathname: string) => pathname === '/profile' ? navigation.find(i => i.to === '/profile') : navigation.find(i => isIn(pathname, i.match));
 
 export function AppShell({ children }: { children: ReactNode }) {
  const { pathname } = useLocation(); const { user } = useAccount();

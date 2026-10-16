@@ -5,7 +5,7 @@ import { MapPin } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { memberAvatar } from '@/lib/member.functions';
+import { MemberAvatar } from '@/components/avatars';
 import { circleQuery, type CircleEntry } from '@/lib/circle';
 import { ScrollPanel } from './scroll-panel';
 
@@ -49,11 +49,10 @@ export function ExtendedCircle({ direct }: { direct: CircleEntry[] }) {
 }
 
 function ExtCard({ m, busy, onBridge }: { m: ExtendedMember; busy: boolean; onBridge: () => void }) {
- const avatar = useQuery({ queryKey: ['member-avatar', m.member_id], enabled: m.has_avatar, queryFn: () => memberAvatar({ data: { id: m.member_id } }), staleTime: 240000 });
  const place = [m.city, m.country].filter(Boolean).join(', ');
  const name = `${m.first_name} ${m.last_initial ? `${m.last_initial}.` : ''}`.trim();
  return <li className="ext-card">
-  <div className="ext-head"><span className="member-avatar ext-avatar" aria-hidden>{avatar.data?.url ? <img src={avatar.data.url} alt="" /> : m.first_name.slice(0, 1).toUpperCase()}</span>
+  <div className="ext-head"><MemberAvatar id={m.member_id} name={m.first_name} hasPhoto={m.has_avatar} size={44} className="ext-avatar" />
    <div className="member-meta"><Link to="/profile/$memberId" params={{ memberId: m.member_id }} className="member-link"><strong>{name}</strong></Link>{place && <span><MapPin size={12} className="inline mr-1" />{place}</span>}</div></div>
   <span className="trust-context">Connected through {m.via}</span>
   {m.known_for.length > 0 && <div><span className="ext-label">Known for</span><ul className="tag-list">{m.known_for.map(t => <li key={t}>{t}</li>)}</ul></div>}

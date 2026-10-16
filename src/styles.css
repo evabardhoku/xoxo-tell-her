@@ -587,6 +587,8 @@ details[open] > summary::before { content:'−'; }
 .open-ripple-body { font-family:var(--font-display, inherit);font-size:19px;line-height:1.45;color:var(--foreground);overflow-wrap:anywhere; }
 .open-comments { display:grid;gap:8px;border-top:1px solid var(--border);padding-top:10px; }
 .open-comment-list { list-style:none;padding:0;display:grid;gap:10px; }
+.open-comments-toggle { justify-self:start; }
+.open-comment-list--feed { max-height:360px;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding-right:6px; }
 .open-comment { display:grid;grid-template-columns:32px 1fr auto;gap:10px;align-items:start; }
 .open-comment-avatar { width:32px;height:32px;font-size:13px; }
 .open-comment-main { min-width:0; } .open-comment-head { display:flex;gap:8px;font-size:13px;align-items:baseline; } .open-comment-head span { color:var(--muted-foreground);font-size:12px; }
@@ -619,7 +621,7 @@ details[open] > summary::before { content:'−'; }
 .studio-card { display:grid;gap:10px;align-content:start;padding:18px;border:1px solid var(--border);border-radius:16px;background:var(--card); } .studio-card h3 { font-family:var(--font-editorial);font-size:20px;color:var(--primary); }
 .studio-preview { display:flex;align-items:center;gap:14px;padding:10px;border-radius:14px;background:var(--muted); } .studio-big { width:88px;height:88px; }
 .studio-traits { border:0;padding:0;margin:0; } .studio-traits legend { font-size:12px;color:var(--muted-foreground);margin-bottom:4px; }
-.studio-options { display:flex;gap:6px;overflow-x:auto;padding-bottom:2px; }
+.studio-options { display:flex;flex-wrap:wrap;gap:6px;min-width:0;padding:2px; }
 .studio-chip { flex:none;min-height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--border);background:var(--background);font-size:13px; } .studio-chip[aria-pressed=true] { border-color:var(--primary);background:var(--primary);color:var(--primary-foreground); }
 .studio-swatch { flex:none;width:36px;height:36px;border-radius:999px;border:2px solid var(--background);box-shadow:0 0 0 1px var(--border); } .studio-swatch[aria-pressed=true] { box-shadow:0 0 0 2px var(--primary); }
 .ripple-author--anonymous { display:flex;align-items:center;gap:8px; }

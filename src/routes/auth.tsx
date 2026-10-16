@@ -22,14 +22,14 @@ function Auth() {
    const email = emailSchema.parse(fields.get('email'));
    if (mode === 'forgot') { const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/reset-password` }); if (error) throw error; setMessage('If an account exists for this email, you’ll receive a password reset link.'); }
    else if (mode === 'signup') {
-    const details = profileSchema.parse({ first_name: fields.get('first_name'), last_name: fields.get('last_name'), city: '', country: '', bio: '', woman_attested: fields.get('woman_attested') === 'on' });
+    const details = profileSchema.parse({ first_name: fields.get('first_name'), last_name: fields.get('last_name'), city: '', country: '', bio: '', occupation: '', languages: '', known_for: '', ask_me_about: '', discoverability: 'direct', woman_attested: fields.get('woman_attested') === 'on' });
     if (password.length < 8 || password.length > 128) throw new Error('Choose a password between 8 and 128 characters.');
     const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin, data: { first_name: details.first_name, last_name: details.last_name, woman_attested: true } } }); if (error) throw error; setMessage('Check your email to confirm your account. Your space will be here when you return.');
    }
-   else { const { error } = await supabase.auth.signInWithPassword({ email, password }); if (error) throw error; await navigate({ to: '/feed', replace: true }); }
+   else { const { error } = await supabase.auth.signInWithPassword({ email, password }); if (error) throw error; }
   } catch (err) { setError(err instanceof Error ? err.message : 'We couldn’t complete that. Please try again.'); } finally { setBusy(false); }
  }
- async function social(provider: 'google' | 'lovable') { setError(''); setBusy(true); try { const result = await lovable.auth.signInWithOAuth(provider, { redirect_uri: `${window.location.origin}/auth` }); if (result.error) throw result.error; if (!result.redirected) await navigate({ to: '/feed', replace: true }); } catch (err) { setError(err instanceof Error ? err.message : 'Sign-in couldn’t be completed.'); } finally { setBusy(false); } }
+ async function social(provider: 'google' | 'lovable') { setError(''); setBusy(true); try { const result = await lovable.auth.signInWithOAuth(provider, { redirect_uri: `${window.location.origin}/auth` }); if (result.error) throw result.error; } catch (err) { setError(err instanceof Error ? err.message : 'Sign-in couldn’t be completed.'); } finally { setBusy(false); } }
  const changeMode = (next: typeof mode) => { setMode(next); setError(''); setMessage(''); };
  return <main className="auth-page"><Brand /><section className="auth-panel"><div className="eyebrow">A space built on trust</div><h1>{mode === 'signup' ? 'Your circle starts with you.' : mode === 'forgot' ? 'Find your way back.' : 'Welcome to TellHer.'}</h1><p>{mode === 'forgot' ? 'We’ll send a link to reset your password.' : 'A little closer. A little wiser. A space to be yourself.'}</p><form className="account-form" onSubmit={submit}>
  {mode === 'signup' && <div className="grid gap-5 sm:grid-cols-2">{(['first_name', 'last_name'] as const).map(key => <div className="field" key={key}><label htmlFor={key}>{key === 'first_name' ? 'First name' : 'Last name'}</label><Input id={key} name={key} autoComplete={key === 'first_name' ? 'given-name' : 'family-name'} required maxLength={80} /></div>)}</div>}
