@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Heart } from 'lucide-react';
+import { Heart, MessageCircle, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { MemberAvatar } from '@/components/avatars';
@@ -20,25 +20,24 @@ export function OpenComments({ id, preview = 0, isAuthor = false }: { id: string
  const like = async (c: OpenComment) => { const { error } = await supabase.rpc(c.liked ? 'tellher_unlike_reply' : 'tellher_like_reply', { _reply: c.id }); if (error) setError(errorText(error)); refresh(); };
  const send = async (e: React.FormEvent) => { e.preventDefault(); if (!body.trim() || busy) return; setBusy(true); setError(''); const { error } = await supabase.rpc('tellher_post_open_comment', { _id: id, _body: body }); setBusy(false); if (error) return setError(errorText(error)); setBody(''); setAll(true); refresh(); };
  const list = comments.data ?? [];
- const shown = all ? list : list.slice(-preview);
+ const shown = all ? list : [];
  return <div className="open-comments">
   {comments.isPending ? <p role="status" className="form-note">Loading comments…</p> : comments.isError ? <p role="alert" className="form-note form-error">Comments could not be loaded.</p> : <>
-   {list.length > 0 && <p className="form-note">{list.length} {list.length === 1 ? 'comment' : 'comments'}</p>}
-   <ul className="open-comment-list">{shown.map(c => <li key={c.id} className={`open-comment ${c.is_mine ? 'open-comment--mine' : ''}`}>
+   {preview > 0 && <Button variant="ghost" size="sm" className="open-comments-toggle" aria-expanded={all} aria-controls={`comments-${id}`} onClick={() => setAll(value => !value)}><MessageCircle size={16} />{list.length} {list.length === 1 ? 'comment' : 'comments'}{all && <ChevronUp size={16} />}</Button>}
+   {(all || preview === 0) && <ul id={`comments-${id}`} className={`open-comment-list ${preview > 0 ? 'open-comment-list--feed' : ''}`}>{shown.map(c => <li key={c.id} className={`open-comment ${c.is_mine ? 'open-comment--mine' : ''}`}>
     <Avatar c={c} />
     <div className="open-comment-main">
      <p className="open-comment-head">{c.is_mine ? <strong>You</strong> : c.profile_id ? <Link to="/profile/$memberId" params={{ memberId: c.profile_id }} className="member-link"><strong>{c.first_name}</strong></Link> : <strong>{c.first_name ?? 'A TellHer woman'}</strong>}<span>{relativeTime(c.created_at)}</span></p>
      <p className="reply-body">{c.body}</p>
     </div>
     <Button variant="ghost" size="sm" className="open-comment-like" disabled={c.is_mine} aria-pressed={c.liked} aria-label={`${c.liked ? 'Unlike' : 'Like'} comment, ${c.likes} likes`} onClick={() => like(c)}><Heart size={15} fill={c.liked ? 'currentColor' : 'none'} />{c.likes > 0 && <span>{c.likes}</span>}</Button>
-   </li>)}</ul>
-   {!all && list.length > preview && <Button variant="ghost" size="sm" onClick={() => setAll(true)}>View all {list.length} comments</Button>}
+   </li>)}</ul>}
   </>}
-  <form onSubmit={send} className="open-comment-form">
+  {(all || preview === 0) && <form onSubmit={send} className="open-comment-form">
    <label htmlFor={`comment-${id}`} className="sr-only">Add a comment</label>
    <input id={`comment-${id}`} className="field-input" maxLength={1000} placeholder={isAuthor ? 'Reply in the comments…' : 'Add a comment…'} value={body} onChange={e => setBody(e.target.value)} />
    <Button type="submit" variant="editorial" size="sm" disabled={busy || !body.trim()}>{busy ? 'Posting…' : 'Post'}</Button>
-  </form>
+  </form>}
   {error && <p role="alert" className="form-note form-error">{error}</p>}
  </div>;
 }
