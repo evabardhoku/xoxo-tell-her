@@ -266,3 +266,10 @@ input:focus-visible,textarea:focus-visible,select:focus-visible { outline:2px so
 .room-voice { font-family:var(--font-editorial);font-style:italic;color:var(--primary); }
 .room-report { display:inline-flex;align-items:center;gap:4px;margin-left:auto;font-size:12px;color:var(--muted-foreground); } .room-report:hover { color:var(--primary); }
 .room-composer { display:grid;gap:10px;max-width:640px; } .room-composer button { justify-self:start; }
+/* The Other Side */
+.other-side { margin:36px 0;padding:32px 34px;border-radius:20px;background:var(--muted);border-left:3px solid var(--accent);display:grid;gap:12px;max-width:720px; }
+.other-side-status { font-size:13px;letter-spacing:.02em;color:var(--success, var(--primary)); }
+.other-side-summary { font-family:var(--font-editorial);font-size:21px;line-height:1.45;color:var(--primary); }
+.other-side-note { font-family:var(--font-editorial);font-size:16px;line-height:1.7;white-space:pre-line; }
+.other-side-chips { display:flex;flex-wrap:wrap;gap:8px; } .other-side .choice-chip[aria-pressed="true"] { background:var(--card);border-color:var(--primary);color:var(--primary); }
+.other-side .choice-chip { border:1px solid var(--border);border-radius:999px; }

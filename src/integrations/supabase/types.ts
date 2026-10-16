@@ -527,6 +527,44 @@ export type Database = {
           },
         ]
       }
+      ripple_outcomes: {
+        Row: {
+          created_at: string
+          note: string | null
+          question_id: string
+          shared: boolean
+          status: string | null
+          summary: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          note?: string | null
+          question_id: string
+          shared?: boolean
+          status?: string | null
+          summary: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          note?: string | null
+          question_id?: string
+          shared?: boolean
+          status?: string | null
+          summary?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ripple_outcomes_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: true
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trust_connections: {
         Row: {
           created_at: string
@@ -759,6 +797,7 @@ export type Database = {
         }[]
       }
       tellher_conversation_partner: { Args: { _c: string }; Returns: string }
+      tellher_delete_outcome: { Args: { _q: string }; Returns: undefined }
       tellher_delete_question: { Args: { _id: string }; Returns: undefined }
       tellher_delete_reply: { Args: { _id: string }; Returns: undefined }
       tellher_echo: { Args: { _id: string }; Returns: undefined }
@@ -859,6 +898,7 @@ export type Database = {
       tellher_is_blocked: { Args: { _a: string; _b: string }; Returns: boolean }
       tellher_is_direct: { Args: { _a: string; _b: string }; Returns: boolean }
       tellher_is_participant: { Args: { _c: string }; Returns: boolean }
+      tellher_is_question_author: { Args: { _q: string }; Returns: boolean }
       tellher_mark_read: { Args: { _c: string }; Returns: undefined }
       tellher_member_profile: {
         Args: { _id: string }
@@ -903,6 +943,17 @@ export type Database = {
         }[]
       }
       tellher_open_conversation: { Args: { _member: string }; Returns: string }
+      tellher_outcome: {
+        Args: { _q: string }
+        Returns: {
+          is_mine: boolean
+          note: string
+          shared: boolean
+          status: string
+          summary: string
+          updated_at: string
+        }[]
+      }
       tellher_post_reply: {
         Args: { _body: string; _id: string; _tag: string }
         Returns: string
@@ -990,6 +1041,16 @@ export type Database = {
         Returns: string
       }
       tellher_send_trust: { Args: { _recipient: string }; Returns: undefined }
+      tellher_set_outcome: {
+        Args: {
+          _note: string
+          _q: string
+          _shared: boolean
+          _status: string
+          _summary: string
+        }
+        Returns: undefined
+      }
       tellher_unblock: { Args: { _member: string }; Returns: undefined }
       tellher_unecho: { Args: { _id: string }; Returns: undefined }
     }

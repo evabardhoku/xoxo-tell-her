@@ -141,6 +141,13 @@
       "when": 1792152407369,
       "tag": "0019_echo_rooms",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1792152663800,
+      "tag": "0020_ripple_outcomes",
+      "breakpoints": true
     }
   ]
 }
