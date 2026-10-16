@@ -1,3 +1,4 @@
+import { OpenComments } from '@/components/open-comments';
 import { RippleAuthor } from '@/components/ripple-author';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
@@ -50,8 +51,9 @@ function QuestionPage() {
    <p className="question-body">{q.body}</p>
    <RippleAuthor identity={q} showAnonymous />
    <div className="question-meta"><span className="question-category">{q.category}</span><span>{reachContext(q.audience_scope)}</span><span>{relativeTime(q.created_at)}</span>{q.is_mine && <span className="mine-label">Your Ripple</span>}</div>
-   <div className="ripple-core-actions"><Echo id={id} isAuthor={q.is_mine} compact />{!q.is_mine && !q.my_reply_id && <Button variant="editorial" onClick={() => { setAdding(true); setTimeout(() => document.getElementById('reply-body')?.focus(), 0); }}>Add perspective</Button>}</div>
+   <div className="ripple-core-actions">{q.author_visibility !== 'named' && <Echo id={id} isAuthor={q.is_mine} compact />}{q.author_visibility !== 'named' && !q.is_mine && !q.my_reply_id && <Button variant="editorial" onClick={() => { setAdding(true); setTimeout(() => document.getElementById('reply-body')?.focus(), 0); }}>Add perspective</Button>}</div>
   </article>
+  {q.author_visibility === 'named' ? <section aria-labelledby="comments-title" className="reply-section"><h2 id="comments-title">Comments</h2><OpenComments id={id} isAuthor={q.is_mine} /></section> : <>
   <section aria-labelledby="replies-title" className="reply-section">
    <h2 id="replies-title">Perspectives</h2>
    {adding && !q.is_mine && !q.my_reply_id && <ReplyForm id={id} onDone={() => { setAdding(false); setNote({ text: 'Thank you. Your perspective was added.' }); refresh(); }} />}
@@ -68,6 +70,7 @@ function QuestionPage() {
   {q.is_mine && q.my_instinct && <aside className="first-instinct" aria-label="My first instinct"><p className="private-note"><LockKeyhole size={12} />My first instinct · only you</p><p className="instinct-line">{instincts.find(i => i.value === q.my_instinct)?.label}</p>{q.my_note && <p className="form-note">{q.my_note}</p>}</aside>}
   <div className="afterwards"><h2>Afterwards</h2><OtherSide id={id} isAuthor={q.is_mine} createdAt={q.created_at} /><Letters id={id} /><RippleFieldNotes id={id} /></div>
   <section className="women-here"><Echo id={id} isAuthor={q.is_mine} signalOnly /><EchoRoomEntry id={id} /></section>
+  </>}
   {(sky.data ?? []).some(r => r.category === q.category) && <Link to="/constellations/$topic" params={{ topic: q.category }} className="member-link related-constellation">Explore similar stories in Constellations</Link>}
  </div>;
 }

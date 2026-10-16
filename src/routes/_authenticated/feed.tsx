@@ -30,7 +30,7 @@ function MyFeed() {
  const first = profile.data?.first_name;
  return <div className="open-feed">
   <Link to="/ripple" className="mind-entry open-feed-mind"><span className="member-initial" aria-hidden>{first?.slice(0, 1) ?? 'T'}</span><span>What’s on your mind{first ? `, ${first}` : ''}?</span></Link>
-  <div className="segmented open-feed-filter" role="group" aria-label="Filter My Feed">{filters.map(f => <button key={f.value} type="button" aria-pressed={mode === f.value} onClick={() => { setMode(f.value); setLimit(6); }}>{f.label}</button>)}</div>
+  <div className="segmented open-feed-filter" role="group" aria-label="Filter My Feed">{filters.map(f => <button key={f.value} type="button" className="segmented-option" aria-pressed={mode === f.value} onClick={() => { setMode(f.value); setLimit(6); }}>{f.label}</button>)}</div>
   {feed.isPending ? <p role="status" className="form-note">Gathering your feed…</p>
    : feed.isError ? <p role="alert" className="form-note form-error">Your feed could not be loaded. Please refresh.</p>
    : <>
