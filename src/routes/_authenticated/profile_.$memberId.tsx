@@ -59,7 +59,7 @@ function MemberProfile() {
  </>;
 }
 
-function BackLink() { return <Link to="/circle" className="member-link mb-6 inline-flex items-center gap-2 text-sm"><ArrowLeft size={14} />MyCircle</Link>; }
+function BackLink() { return <Link to="/circle" className="member-link mb-6 inline-flex items-center gap-2 text-sm"><ArrowLeft size={14} />My Circle</Link>; }
 
 /** Between Us is offered only when the checked database rule allows it (accepted Direct Circle, no block). */
 function MessageHer({ memberId }: { memberId: string }) {
