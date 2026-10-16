@@ -609,6 +609,26 @@ export type Database = {
           trust_distance: number
         }[]
       }
+      tellher_search: {
+        Args: { _q: string }
+        Returns: {
+          audience_scope: string
+          body: string
+          category: string
+          created_at: string
+          has_avatar: boolean
+          id: string
+          kind: string
+          known_for: string[]
+          location: string
+          member_id: string
+          member_name: string
+          rank: number
+          relation: string
+          reply_count: number
+          title: string
+        }[]
+      }
       tellher_send_trust: { Args: { _recipient: string }; Returns: undefined }
     }
     Enums: {
