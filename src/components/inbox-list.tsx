@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { LockKeyhole } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ScrollPanel } from '@/components/scroll-panel';
 import { relativeTime } from '@/lib/askher';
 import { memberAvatar } from '@/lib/member.functions';
 import { inboxQuery, type InboxRow } from '@/lib/between-us';

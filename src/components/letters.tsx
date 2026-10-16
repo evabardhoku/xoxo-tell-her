@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { errorText, relativeTime } from '@/lib/askher';
+import { ScrollPanel } from './scroll-panel';
 
 type Letter = { id: string; body: string; where_now: string | null; created_at: string; mine: boolean; helped: boolean; help_count: number | null };
 export const LETTER_MAX = 600;

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { memberAvatar } from '@/lib/member.functions';
 import { circleQuery, type CircleEntry } from '@/lib/circle';
+import { ScrollPanel } from './scroll-panel';
 
 export type ExtendedMember = { member_id: string; first_name: string; last_initial: string; city: string | null; country: string | null; known_for: string[]; ask_me_about: string[]; has_avatar: boolean; via: string; via_id: string; bridge_pending: boolean };
 type Field = 'all' | 'name' | 'location' | 'known' | 'ask';

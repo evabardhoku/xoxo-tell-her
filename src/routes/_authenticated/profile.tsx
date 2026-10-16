@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { instincts } from '@/lib/askher';
 import { outcomeStatuses } from '@/lib/outcome';
 import { Button } from '@/components/ui/button';
+import { ScrollPanel } from '@/components/scroll-panel';
 
 export const Route = createFileRoute('/_authenticated/profile')({ loader: ({ context }) => context.queryClient.ensureQueryData(profileQuery), head: () => pageHead('Me', 'Your private TellHer account and profile.'), component: Profile });
 
@@ -91,7 +92,7 @@ function Profile() {
      {i.note && <p className="form-note">{i.note}</p>}
      {i.outcome && <p className="form-note">In the end: {outcomeStatuses.find(o => o.value === i.outcome)?.label ?? i.outcome}</p>}
     </li>)}
-   </ul>
+   </ScrollPanel>
   </section>}
 
   <div className="mt-6"><SignOut /></div>

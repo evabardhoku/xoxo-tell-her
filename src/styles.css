@@ -115,6 +115,8 @@ h1,h2,h3,p { margin:0; } h1,h2,h3 { font-family:var(--font-editorial); font-weig
 .scroll-panel.pick-list .scroll-track { display:grid;gap:0.75rem; }
 .scroll-arrows { display:flex;flex-direction:column;justify-content:center;gap:6px;flex-shrink:0; }
 .scroll-arrow { border-radius:50%; } .scroll-arrow:disabled { opacity:0.35; }
+.scroll-panel.shelf-list, .scroll-panel.ext-grid, .scroll-panel.bu-inbox, .scroll-panel.letter-list, .scroll-panel.pick-list, .scroll-panel.member-list, .scroll-panel.instinct-history { display:flex; }
+.scroll-panel.shelf-list .scroll-track { gap:1rem; } .scroll-panel.letter-list .scroll-track { gap:16px; } .scroll-panel.bu-inbox .scroll-track { gap:10px; }
 .member-initial { width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--muted);color:var(--primary);font-size:13px;flex-shrink:0; } .member-meta { display:grid;flex:1;font-size:13px; } .member-meta span { font-size:11px;color:var(--muted-foreground); } .member-actions { display:flex;gap:6px;align-items:center; }
 .add-member { display:flex;align-items:flex-end;gap:10px;margin:14px 0 8px; } .add-member .field { flex:1; } .add-member button { height:46px; } .found-member { margin-top:8px; }
 @media (max-width: 760px) { .circle-summary { flex-direction:column;gap:20px;padding:24px; } .reach-rings { width:180px;height:180px; } .circle-grid { grid-template-columns:1fr; } .reach-stats { gap:16px; } }
