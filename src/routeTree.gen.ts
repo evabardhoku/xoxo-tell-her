@@ -24,6 +24,7 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedRippleRouteImport } from './routes/_authenticated/ripple'
 import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated/search'
 import { Route as AuthenticatedWingwomanRouteImport } from './routes/_authenticated/wingwoman'
+import { Route as ConnectCodeRouteImport } from './routes/connect.$code'
 import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin.reports'
 import { Route as AuthenticatedAskherIdRouteImport } from './routes/_authenticated/askher_.$id'
 import { Route as AuthenticatedBetweenUsConversationIdRouteImport } from './routes/_authenticated/between-us_.$conversationId'
@@ -106,6 +107,11 @@ const AuthenticatedWingwomanRoute = AuthenticatedWingwomanRouteImport.update({
   path: '/wingwoman',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ConnectCodeRoute = ConnectCodeRouteImport.update({
+  id: '/connect/$code',
+  path: '/connect/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminReportsRoute =
   AuthenticatedAdminReportsRouteImport.update({
     id: '/admin/reports',
@@ -157,6 +163,7 @@ export interface FileRoutesByFullPath {
   '/ripple': typeof AuthenticatedRippleRoute
   '/search': typeof AuthenticatedSearchRoute
   '/wingwoman': typeof AuthenticatedWingwomanRoute
+  '/connect/$code': typeof ConnectCodeRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/askher/$id': typeof AuthenticatedAskherIdRoute
   '/between-us/$conversationId': typeof AuthenticatedBetweenUsConversationIdRoute
@@ -179,6 +186,7 @@ export interface FileRoutesByTo {
   '/ripple': typeof AuthenticatedRippleRoute
   '/search': typeof AuthenticatedSearchRoute
   '/wingwoman': typeof AuthenticatedWingwomanRoute
+  '/connect/$code': typeof ConnectCodeRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/askher/$id': typeof AuthenticatedAskherIdRoute
   '/between-us/$conversationId': typeof AuthenticatedBetweenUsConversationIdRoute
@@ -203,6 +211,7 @@ export interface FileRoutesById {
   '/_authenticated/ripple': typeof AuthenticatedRippleRoute
   '/_authenticated/search': typeof AuthenticatedSearchRoute
   '/_authenticated/wingwoman': typeof AuthenticatedWingwomanRoute
+  '/connect/$code': typeof ConnectCodeRoute
   '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/_authenticated/askher_/$id': typeof AuthenticatedAskherIdRoute
   '/_authenticated/between-us_/$conversationId': typeof AuthenticatedBetweenUsConversationIdRoute
@@ -227,6 +236,7 @@ export interface FileRouteTypes {
     | '/ripple'
     | '/search'
     | '/wingwoman'
+    | '/connect/$code'
     | '/admin/reports'
     | '/askher/$id'
     | '/between-us/$conversationId'
@@ -249,6 +259,7 @@ export interface FileRouteTypes {
     | '/ripple'
     | '/search'
     | '/wingwoman'
+    | '/connect/$code'
     | '/admin/reports'
     | '/askher/$id'
     | '/between-us/$conversationId'
@@ -272,6 +283,7 @@ export interface FileRouteTypes {
     | '/_authenticated/ripple'
     | '/_authenticated/search'
     | '/_authenticated/wingwoman'
+    | '/connect/$code'
     | '/_authenticated/admin/reports'
     | '/_authenticated/askher_/$id'
     | '/_authenticated/between-us_/$conversationId'
@@ -285,6 +297,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ConnectCodeRoute: typeof ConnectCodeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -394,6 +407,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWingwomanRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/connect/$code': {
+      id: '/connect/$code'
+      path: '/connect/$code'
+      fullPath: '/connect/$code'
+      preLoaderRoute: typeof ConnectCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin/reports': {
       id: '/_authenticated/admin/reports'
       path: '/admin/reports'
@@ -488,6 +508,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ConnectCodeRoute: ConnectCodeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
