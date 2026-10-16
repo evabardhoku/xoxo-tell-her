@@ -822,6 +822,109 @@ export type Database = {
           },
         ]
       }
+      trust_code_attempts: {
+        Row: {
+          created_at: string
+          id: string
+          member_id: string
+          ok: boolean
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          member_id: string
+          ok: boolean
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          member_id?: string
+          ok?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trust_code_attempts_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trust_code_redemptions: {
+        Row: {
+          code_id: string
+          created_at: string
+          redeemer_id: string
+        }
+        Insert: {
+          code_id: string
+          created_at?: string
+          redeemer_id: string
+        }
+        Update: {
+          code_id?: string
+          created_at?: string
+          redeemer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trust_code_redemptions_code_id_fkey"
+            columns: ["code_id"]
+            isOneToOne: false
+            referencedRelation: "trust_codes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trust_code_redemptions_redeemer_id_fkey"
+            columns: ["redeemer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trust_codes: {
+        Row: {
+          cancelled_at: string | null
+          code_hash: string
+          created_at: string
+          creator_id: string
+          expires_at: string
+          id: string
+          max_uses: number
+          uses: number
+        }
+        Insert: {
+          cancelled_at?: string | null
+          code_hash: string
+          created_at?: string
+          creator_id: string
+          expires_at: string
+          id?: string
+          max_uses?: number
+          uses?: number
+        }
+        Update: {
+          cancelled_at?: string | null
+          code_hash?: string
+          created_at?: string
+          creator_id?: string
+          expires_at?: string
+          id?: string
+          max_uses?: number
+          uses?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trust_codes_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trust_connections: {
         Row: {
           created_at: string
@@ -1077,6 +1180,7 @@ export type Database = {
       tellher_can_view: { Args: { _q: string }; Returns: boolean }
       tellher_can_write_letter: { Args: { _q: string }; Returns: boolean }
       tellher_cancel_trust: { Args: { _id: string }; Returns: undefined }
+      tellher_cancel_trust_code: { Args: { _id: string }; Returns: undefined }
       tellher_circle_picks: {
         Args: never
         Returns: {
@@ -1106,6 +1210,15 @@ export type Database = {
         Returns: number
       }
       tellher_conversation_partner: { Args: { _c: string }; Returns: string }
+      tellher_create_trust_code: {
+        Args: { _group?: boolean }
+        Returns: {
+          code: string
+          expires_at: string
+          id: string
+          max_uses: number
+        }[]
+      }
       tellher_delete_letter: { Args: { _id: string }; Returns: undefined }
       tellher_delete_outcome: { Args: { _q: string }; Returns: undefined }
       tellher_delete_question: { Args: { _id: string }; Returns: undefined }
@@ -1336,6 +1449,13 @@ export type Database = {
         Args: { _body: string; _id: string; _mentions: string[]; _tag: string }
         Returns: string
       }
+      tellher_preview_trust_code: {
+        Args: { _code: string }
+        Returns: {
+          first_name: string
+          status: string
+        }[]
+      }
       tellher_publish_question: {
         Args: {
           _body: string
@@ -1372,6 +1492,13 @@ export type Database = {
         }[]
       }
       tellher_reach_preview: { Args: { _scope: string }; Returns: number }
+      tellher_redeem_trust_code: {
+        Args: { _code: string }
+        Returns: {
+          first_name: string
+          status: string
+        }[]
+      }
       tellher_replies: {
         Args: { _id: string }
         Returns: {
@@ -1510,6 +1637,8 @@ export type Database = {
           where_now: string
         }[]
       }
+      tellher_trust_code_allowed: { Args: never; Returns: boolean }
+      tellher_trust_code_hash: { Args: { _code: string }; Returns: string }
       tellher_unblock: { Args: { _member: string }; Returns: undefined }
       tellher_unecho: { Args: { _id: string }; Returns: undefined }
       tellher_unhelp_letter: { Args: { _id: string }; Returns: undefined }
