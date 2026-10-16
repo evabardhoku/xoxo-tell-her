@@ -15,9 +15,22 @@ export function echoLine(s: Signal, isAuthor: boolean): string | null {
  return null;
 }
 
+export const echoRoomQuery = (id: string) => ({ queryKey: ['echo', id, 'room'], queryFn: async () => { const { data, error } = await supabase.rpc('tellher_echo_room_status', { _q: id }); if (error) throw error; return (data ?? [])[0] as { unlocked: boolean; can_enter: boolean } | undefined; } });
+
+/** Echo Room entry, shown only when the viewer is eligible to enter. */
+export function EchoRoomEntry({ id }: { id: string }) {
+ const room = useQuery(echoRoomQuery(id));
+ if (!room.data?.can_enter) return null;
+ return <section className="echo-room-entry" aria-labelledby="echo-room-entry-title">
+  <div className="eyebrow" id="echo-room-entry-title">ECHO ROOM</div>
+  <p className="form-note">A quiet room for the women who echoed this experience.</p>
+  <Link to="/askher/$id/room" params={{ id }} className="member-link text-sm echo-room-link">Open Echo Room</Link>
+ </section>;
+}
+
 export function Echo({ id, isAuthor }: { id: string; isAuthor: boolean }) {
  const qc = useQueryClient(); const q = useQuery(echoQuery(id));
- const room = useQuery({ queryKey: ['echo', id, 'room'], queryFn: async () => { const { data, error } = await supabase.rpc('tellher_echo_room_status', { _q: id }); if (error) throw error; return (data ?? [])[0] as { unlocked: boolean; can_enter: boolean } | undefined; } });
+ const room = useQuery(echoRoomQuery(id));
  const [busy, setBusy] = useState(false); const [note, setNote] = useState<{ text: string; error?: boolean } | null>(null);
  if (!q.data) return null;
  const s = q.data; const line = echoLine(s, isAuthor);
@@ -36,7 +49,7 @@ export function Echo({ id, isAuthor }: { id: string; isAuthor: boolean }) {
    {line && <p className="echo-line">{line}</p>}
    {!isAuthor && <p className="form-note">An Echo means “this happened to me too.” It’s anonymous and separate from perspectives.</p>}
    {note && <p role={note.error ? 'alert' : 'status'} className={`form-note ${note.error ? 'form-error' : ''}`}>{note.text}</p>}
-   {room.data?.can_enter ? <Link to="/askher/$id/room" params={{ id }} className="member-link text-sm echo-room-link">Open Echo Room</Link> : !room.data?.unlocked && !isAuthor ? <p className="form-note">Echo Room unlocks when enough women have shared this experience.</p> : null}
+   {!room.data?.can_enter && !room.data?.unlocked && !isAuthor ? <p className="form-note">Echo Room unlocks when enough women have shared this experience.</p> : null}
   </div>
   {!isAuthor && <button type="button" className="echo-button" aria-pressed={s.mine} disabled={busy} onClick={toggle}>{s.mine ? 'You echoed this · Remove' : 'This happened to me too'}</button>}
  </section>;
