@@ -14,7 +14,7 @@ export const Route = createFileRoute('/auth')({ head: () => pageHead('Welcome', 
 function Auth() {
  const [mode, setMode] = useState<'signin' | 'signup' | 'forgot'>('signin'); const [error, setError] = useState(''); const [message, setMessage] = useState(''); const [busy, setBusy] = useState(false);
  const { user, ready } = useAccount(); const navigate = useNavigate();
- useEffect(() => { if (ready && user) void navigate({ to: '/home', replace: true }); }, [user, ready, navigate]);
+ useEffect(() => { if (ready && user) void navigate({ to: '/feed', replace: true }); }, [user, ready, navigate]);
  async function submit(event: FormEvent<HTMLFormElement>) {
   event.preventDefault(); setBusy(true); setError(''); setMessage('');
   const fields = new FormData(event.currentTarget); const password = String(fields.get('password') || '');
@@ -26,10 +26,10 @@ function Auth() {
     if (password.length < 8 || password.length > 128) throw new Error('Choose a password between 8 and 128 characters.');
     const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin, data: { first_name: details.first_name, last_name: details.last_name, woman_attested: true } } }); if (error) throw error; setMessage('Check your email to confirm your account. Your space will be here when you return.');
    }
-   else { const { error } = await supabase.auth.signInWithPassword({ email, password }); if (error) throw error; await navigate({ to: '/home', replace: true }); }
+   else { const { error } = await supabase.auth.signInWithPassword({ email, password }); if (error) throw error; await navigate({ to: '/feed', replace: true }); }
   } catch (err) { setError(err instanceof Error ? err.message : 'We couldn’t complete that. Please try again.'); } finally { setBusy(false); }
  }
- async function social(provider: 'google' | 'lovable') { setError(''); setBusy(true); try { const result = await lovable.auth.signInWithOAuth(provider, { redirect_uri: `${window.location.origin}/auth` }); if (result.error) throw result.error; if (!result.redirected) await navigate({ to: '/home', replace: true }); } catch (err) { setError(err instanceof Error ? err.message : 'Sign-in couldn’t be completed.'); } finally { setBusy(false); } }
+ async function social(provider: 'google' | 'lovable') { setError(''); setBusy(true); try { const result = await lovable.auth.signInWithOAuth(provider, { redirect_uri: `${window.location.origin}/auth` }); if (result.error) throw result.error; if (!result.redirected) await navigate({ to: '/feed', replace: true }); } catch (err) { setError(err instanceof Error ? err.message : 'Sign-in couldn’t be completed.'); } finally { setBusy(false); } }
  const changeMode = (next: typeof mode) => { setMode(next); setError(''); setMessage(''); };
  return <main className="auth-page"><Brand /><section className="auth-panel"><div className="eyebrow">A space built on trust</div><h1>{mode === 'signup' ? 'Your circle starts with you.' : mode === 'forgot' ? 'Find your way back.' : 'Welcome to TellHer.'}</h1><p>{mode === 'forgot' ? 'We’ll send a link to reset your password.' : 'A little closer. A little wiser. A space to be yourself.'}</p><form className="account-form" onSubmit={submit}>
  {mode === 'signup' && <div className="grid gap-5 sm:grid-cols-2">{(['first_name', 'last_name'] as const).map(key => <div className="field" key={key}><label htmlFor={key}>{key === 'first_name' ? 'First name' : 'Last name'}</label><Input id={key} name={key} autoComplete={key === 'first_name' ? 'given-name' : 'family-name'} required maxLength={80} /></div>)}</div>}
