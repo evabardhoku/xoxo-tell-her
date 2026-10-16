@@ -64,7 +64,7 @@ const seedExtras = async () => {
   const r = await m[k]!.cl.from('trust_notes').insert({ author_id: m[k]!.uid, title, topic, body, location }); if (r.error) throw r.error;
  }
  const maya = m['maya']!;
- const { count: ww } = await maya.cl.from('wingwoman_sessions').select('id', { count: 'exact', head: true }); if (ww) return;
+ const { count: ww } = await maya.cl.from('wingwoman_sessions').select('id', { count: 'exact', head: true }).eq('title', 'Asked to cover a colleague’s project again'); if (ww) return;
  // Legacy-style one-shot reflection.
  const one = await maya.cl.from('wingwoman_sessions').insert({ owner_id: maya.uid, title: 'A friend keeps cancelling at the last minute', context: 'Friendship', instinct: 'unsure',
   situation: 'A close friend has cancelled our plans at the last minute four times in two months. She always apologises, but I’m starting to feel like I’m the only one making an effort.',
