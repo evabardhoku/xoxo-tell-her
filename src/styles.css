@@ -432,7 +432,7 @@ a.bell-item:hover { background:color-mix(in oklab, var(--secondary) 12%, transpa
 .sky-wrap { width:100% !important;border-radius:24px;overflow:hidden;touch-action:none; } .sky-content { width:100% !important; }
 .sky--large { width:100%;height:min(72vh,640px);min-height:440px;margin:0; }
 .sky-label--link { pointer-events:auto;text-decoration:none;cursor:pointer; } .sky-label--link:hover { text-decoration:underline; }
-.sky-zoom { position:absolute;top:14px;right:14px;z-index:5;display:grid;gap:6px; }
+.sky-zoom { position:absolute;right:14px;bottom:14px;z-index:5;display:flex;gap:6px; }
 .sky-zoom button { width:40px;height:40px;display:grid;place-items:center;border-radius:50%;background:var(--card);color:var(--primary);border:1px solid var(--border); }
 .sky-card--docked { position:absolute;left:16px;right:16px;bottom:16px;top:auto;transform:none;max-width:460px;margin:auto;z-index:6; }
 .star[data-letters="true"]::after { content:"";position:absolute;inset:-6px;border-radius:50%;border:1px dashed color-mix(in oklab, var(--accent) 70%, transparent); }

@@ -74,7 +74,7 @@ function CurrentPage() {
  const loading = circle.isPending || feed.isPending || picks.isPending || ext.isPending;
  const items = useMemo(() => {
   const out: CurrentItem[] = [];
-  for (const e of circle.data?.entries ?? []) if (e.kind === 'incoming') out.push({ kind: 'request', key: `r-${e.connection_id}`, tier: 0, topic: null, at: e.created_at, provenance: `${e.first_name} · wants to add you to her Direct Circle`, connection_id: e.connection_id, member_id: e.member_id, name: memberName(e) });
+
   for (const q of feed.data ?? []) out.push({ kind: 'question', key: `q-${q.id}`, tier: q.is_mine ? 0 : questionTier(q.audience_scope), topic: q.category, at: q.created_at, provenance: questionProvenance(q), q });
   for (const p of picks.data?.circle ?? []) out.push({ kind: 'pick', key: `p-${p.id}`, tier: 0, topic: p.category, at: (p as { created_at?: string }).created_at ?? new Date(0).toISOString(), provenance: `${p.recommender} · Direct Circle`, p });
   shelves.forEach((s, i) => { const o = shelfOwners[i]; if (!o) return; for (const n of s.data?.notes ?? []) out.push({ kind: 'note', key: `n-${n.id}`, tier: o.tier, topic: n.category, at: n.created_at, provenance: o.prov, id: n.id, title: n.title, body: n.body, location: n.location, member_id: o.id }); });
@@ -88,7 +88,7 @@ function CurrentPage() {
  const first = profile.data?.first_name;
 
  return <>
-  <div className="current-heading"><h2 className="current-welcome">{first ? `Welcome back, ${first}.` : 'Welcome back.'}</h2><p className="form-note">What useful things are moving through your trust network right now.</p></div>
+  <div className="current-heading"><h2 className="current-welcome">{first ? `Welcome back, ${first}.` : 'Welcome back.'}</h2><p className="form-note"></p></div>
   {loading ? <p role="status" className="form-note">Gathering what’s moving…</p>
    : !items.length ? <section className="empty-panel"><h2>The Current is quiet for now.</h2><p>As your Direct Circle grows, their questions, notes and picks will gather here.</p><Button asChild variant="editorial" className="mt-6"><Link to="/circle">Go to Circle<ArrowRight /></Link></Button></section>
    : <>

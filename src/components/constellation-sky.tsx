@@ -23,7 +23,7 @@ export function ConstellationSky({ rows }: { rows: SkyRow[] }) {
       <svg className="sky-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden>
        {sky.map(c => c.stars.slice(1).map((s, i) => <line key={s.id} x1={c.stars[i]?.x} y1={c.stars[i]?.y} x2={s.x} y2={s.y} />))}
       </svg>
-      {sky.map(c => <div key={c.category} role="group" aria-label={`${placeTitle(c.category)}, ${c.stars.length} ${c.stars.length === 1 ? 'Ripple' : 'Ripples'}`}>
+      {sky.map(c => <div key={c.category} role="group" aria-label={placeTitle(c.category)}>
        <Link to="/constellations/$topic" params={{ topic: c.category }} className="sky-label sky-label--link" style={{ left: `${c.x}%`, top: `${Math.max(2, c.y - 15)}%` }}>{placeTitle(c.category)}</Link>
        {c.stars.map(s => <button key={s.id} type="button" className="star" data-echo={s.echo_level} data-outcome={s.has_outcome} data-letters={Boolean(s.has_letters)} data-active={sel?.id === s.id}
         style={{ left: `${s.x}%`, top: `${s.y}%` }} aria-label={`${c.category}: ${s.excerpt}`} onClick={() => setSel(s)} onFocus={() => setSel(s)} />)}

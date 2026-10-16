@@ -36,7 +36,7 @@ function Circle() {
  const easing = isNew && direct.length === 0;
  const tab = (v: View, label: string, hint?: string) => <Link to="/circle" search={{ view: v }} className="ripple-tab" role="tab" aria-selected={view === v} data-active={view === v}>{label}{hint && <span className="tab-hint"> · {hint}</span>}</Link>;
  return <>
-  <div className="page-heading"><div><div className="eyebrow">CIRCLE</div><h1>Trust starts close to home.</h1><p>The women you choose to trust. Only accepted trust shapes how far a Trust Ripple can travel.</p></div>
+  <div className="page-heading"><div><div className="eyebrow">CIRCLE</div><h1>Trust starts close to home.</h1><p>The women you choose to trust.</p></div>
    {pending > 0 && <Link to="/circle" search={{ view: 'requests' }} className="requests-indicator" aria-label={`${pending} pending connection ${pending === 1 ? 'request' : 'requests'}`}><Inbox size={15} /><span className="requests-count">{pending}</span>Connection requests</Link>}
   </div>
   <div className="ripple-tabs" role="tablist" aria-label="Circle views">{tab('direct', 'Direct')}{tab('extended', 'Extended')}{tab('messages', 'Messages')}</div>
