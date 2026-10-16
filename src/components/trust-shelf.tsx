@@ -67,7 +67,7 @@ function NoteForm({ note, authorId, onDone, onCancel }: { note: ShelfItem | null
  const ripple = linkChoice ?? original.data?.linked_ripple_id ?? '';
  const changed = ripple !== (original.data?.linked_ripple_id ?? '');
  const save = useMutation({ mutationFn: async ({ values, confirm }: { values: Values; confirm: boolean }) => {
-  const r = await supabase.rpc('tellher_save_field_note', { _id: note?.id, _title: values.title, _body: values.body, _topic: values.topic, _location: values.location, _ripple: ripple || undefined, _confirm_reveal: confirm });
+  const r = await supabase.rpc('tellher_save_field_note', { ...(note ? { _id: note.id } : {}), _title: values.title, _body: values.body, _topic: values.topic, _location: values.location, ...(ripple ? { _ripple: ripple } : {}), _confirm_reveal: confirm });
   if (r.error) throw new Error(r.error.message);
  }, onSuccess: onDone, onError: e => { setPending(null); setError(e.message); } });
  const submit = (e: FormEvent<HTMLFormElement>) => {

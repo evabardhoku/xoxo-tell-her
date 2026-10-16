@@ -21,7 +21,7 @@ describe.skipIf(!url || !key)('Field Note links and identity consent', () => {
    const r = await c(owner).rpc('tellher_publish_question_identity', { _category: 'Housing & Moving', _body: 'Fieldnotetest what helped you prepare for moving abroad?', _scope: 'community', _instinct: 'unsure', _note: '', _author_visibility: visibility });
    if (r.error) throw r.error; qs.push(r.data);
   }
-  [anon, named, other] = qs;
+  const [a, n, o] = qs; if (!a || !n || !o) throw new Error('Missing test Ripples'); anon = a; named = n; other = o;
  }, 60000);
  afterAll(async () => { for (const q of qs) await c(q === other ? 1 : 0).rpc('tellher_delete_question', { _id: q }); if (admin) { await admin.from('trust_connections').delete().in('requester_id', ids); for (const id of ids) await admin.auth.admin.deleteUser(id); } });
  it('reuses the existing note in the profile shelf', async () => { expect((await c(1).rpc('tellher_member_shelf', { _id: ids[0] })).data?.find((n: { id: string }) => n.id === legacy)?.title).toBe('Legacy Field Note'); });
