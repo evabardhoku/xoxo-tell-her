@@ -25,6 +25,7 @@ import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedWingwomanRouteImport } from './routes/_authenticated/wingwoman'
 import { Route as AuthenticatedAskherIdRouteImport } from './routes/_authenticated/askher_.$id'
 import { Route as AuthenticatedBetweenUsConversationIdRouteImport } from './routes/_authenticated/between-us_.$conversationId'
+import { Route as AuthenticatedConstellationsTopicRouteImport } from './routes/_authenticated/constellations_.$topic'
 import { Route as AuthenticatedProfileMemberIdRouteImport } from './routes/_authenticated/profile_.$memberId'
 import { Route as AuthenticatedAskherIdRoomRouteImport } from './routes/_authenticated/askher_.$id_.room'
 
@@ -109,6 +110,12 @@ const AuthenticatedBetweenUsConversationIdRoute =
     path: '/between-us/$conversationId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedConstellationsTopicRoute =
+  AuthenticatedConstellationsTopicRouteImport.update({
+    id: '/constellations_/$topic',
+    path: '/constellations/$topic',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedProfileMemberIdRoute =
   AuthenticatedProfileMemberIdRouteImport.update({
     id: '/profile_/$memberId',
@@ -138,6 +145,7 @@ export interface FileRoutesByFullPath {
   '/wingwoman': typeof AuthenticatedWingwomanRoute
   '/askher/$id': typeof AuthenticatedAskherIdRoute
   '/between-us/$conversationId': typeof AuthenticatedBetweenUsConversationIdRoute
+  '/constellations/$topic': typeof AuthenticatedConstellationsTopicRoute
   '/profile/$memberId': typeof AuthenticatedProfileMemberIdRoute
   '/askher/$id/room': typeof AuthenticatedAskherIdRoomRoute
 }
@@ -157,6 +165,7 @@ export interface FileRoutesByTo {
   '/wingwoman': typeof AuthenticatedWingwomanRoute
   '/askher/$id': typeof AuthenticatedAskherIdRoute
   '/between-us/$conversationId': typeof AuthenticatedBetweenUsConversationIdRoute
+  '/constellations/$topic': typeof AuthenticatedConstellationsTopicRoute
   '/profile/$memberId': typeof AuthenticatedProfileMemberIdRoute
   '/askher/$id/room': typeof AuthenticatedAskherIdRoomRoute
 }
@@ -178,6 +187,7 @@ export interface FileRoutesById {
   '/_authenticated/wingwoman': typeof AuthenticatedWingwomanRoute
   '/_authenticated/askher_/$id': typeof AuthenticatedAskherIdRoute
   '/_authenticated/between-us_/$conversationId': typeof AuthenticatedBetweenUsConversationIdRoute
+  '/_authenticated/constellations_/$topic': typeof AuthenticatedConstellationsTopicRoute
   '/_authenticated/profile_/$memberId': typeof AuthenticatedProfileMemberIdRoute
   '/_authenticated/askher_/$id_/room': typeof AuthenticatedAskherIdRoomRoute
 }
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/wingwoman'
     | '/askher/$id'
     | '/between-us/$conversationId'
+    | '/constellations/$topic'
     | '/profile/$memberId'
     | '/askher/$id/room'
   fileRoutesByTo: FileRoutesByTo
@@ -218,6 +229,7 @@ export interface FileRouteTypes {
     | '/wingwoman'
     | '/askher/$id'
     | '/between-us/$conversationId'
+    | '/constellations/$topic'
     | '/profile/$memberId'
     | '/askher/$id/room'
   id:
@@ -238,6 +250,7 @@ export interface FileRouteTypes {
     | '/_authenticated/wingwoman'
     | '/_authenticated/askher_/$id'
     | '/_authenticated/between-us_/$conversationId'
+    | '/_authenticated/constellations_/$topic'
     | '/_authenticated/profile_/$memberId'
     | '/_authenticated/askher_/$id_/room'
   fileRoutesById: FileRoutesById
@@ -363,6 +376,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBetweenUsConversationIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/constellations_/$topic': {
+      id: '/_authenticated/constellations_/$topic'
+      path: '/constellations/$topic'
+      fullPath: '/constellations/$topic'
+      preLoaderRoute: typeof AuthenticatedConstellationsTopicRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/profile_/$memberId': {
       id: '/_authenticated/profile_/$memberId'
       path: '/profile/$memberId'
@@ -393,6 +413,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedWingwomanRoute: typeof AuthenticatedWingwomanRoute
   AuthenticatedAskherIdRoute: typeof AuthenticatedAskherIdRoute
   AuthenticatedBetweenUsConversationIdRoute: typeof AuthenticatedBetweenUsConversationIdRoute
+  AuthenticatedConstellationsTopicRoute: typeof AuthenticatedConstellationsTopicRoute
   AuthenticatedProfileMemberIdRoute: typeof AuthenticatedProfileMemberIdRoute
   AuthenticatedAskherIdRoomRoute: typeof AuthenticatedAskherIdRoomRoute
 }
@@ -411,6 +432,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAskherIdRoute: AuthenticatedAskherIdRoute,
   AuthenticatedBetweenUsConversationIdRoute:
     AuthenticatedBetweenUsConversationIdRoute,
+  AuthenticatedConstellationsTopicRoute: AuthenticatedConstellationsTopicRoute,
   AuthenticatedProfileMemberIdRoute: AuthenticatedProfileMemberIdRoute,
   AuthenticatedAskherIdRoomRoute: AuthenticatedAskherIdRoomRoute,
 }
