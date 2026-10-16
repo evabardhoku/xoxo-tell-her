@@ -567,3 +567,5 @@ details[open] > summary::before { content:'−'; }
 .mod-list { display:grid; gap:1rem; }
 .mod-content { margin-top:.5rem; padding-left:.75rem; border-left:2px solid var(--border); white-space:pre-wrap; }
 @media (max-width:640px){ .quick-exit span { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); } }
+.trust-code { display:grid; justify-items:start; gap:.5rem; margin-top:.75rem; color:var(--foreground); }
+.trust-code-text { font-family:ui-monospace, monospace; font-size:1.5rem; letter-spacing:.12em; }

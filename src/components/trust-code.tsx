@@ -1,0 +1,77 @@
+import { useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { QRCodeSVG } from 'qrcode.react';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { errorText } from '@/lib/askher';
+import { trustCodeMessage } from '@/lib/trust-code';
+
+type Created = { id: string; code: string; expires_at: string; max_uses: number };
+
+function useNow() { const [n, setN] = useState(Date.now()); useEffect(() => { const t = setInterval(() => setN(Date.now()), 1000); return () => clearInterval(t); }, []); return n; }
+const left = (iso: string, now: number) => { const s = Math.max(0, Math.round((Date.parse(iso) - now) / 1000)); return s >= 3600 ? `${Math.floor(s / 3600)}h ${Math.floor((s % 3600) / 60)}m` : `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+
+/** Connect in person: a short-lived, cancellable code that creates an ordinary Direct Circle connection. */
+export function ConnectInPerson() {
+ const qc = useQueryClient(); const now = useNow();
+ const [created, setCreated] = useState<Created | null>(null); const [error, setError] = useState(''); const [busy, setBusy] = useState(false);
+ const active = useQuery({ queryKey: ['trust-codes'], queryFn: async () => {
+  const { data, error } = await supabase.from('trust_codes').select('id, max_uses, uses, expires_at, cancelled_at').is('cancelled_at', null).gt('expires_at', new Date().toISOString()).order('created_at', { ascending: false }).limit(5);
+  if (error) throw error; return (data ?? []).filter(c => c.uses < c.max_uses);
+ } });
+ const create = async (group: boolean) => {
+  setBusy(true); setError('');
+  const { data, error } = await supabase.rpc('tellher_create_trust_code', { _group: group });
+  setBusy(false); if (error) return setError(errorText(error));
+  setCreated((data as Created[])[0] ?? null); void qc.invalidateQueries({ queryKey: ['trust-codes'] });
+ };
+ const cancel = async (id: string) => {
+  const { error } = await supabase.rpc('tellher_cancel_trust_code', { _id: id });
+  if (error) return setError(errorText(error));
+  if (created?.id === id) setCreated(null); void qc.invalidateQueries({ queryKey: ['trust-codes'] });
+ };
+ const shown = created && Date.parse(created.expires_at) > now ? created : null;
+ const live = active.data?.find(c => c.id === shown?.id);
+ const others = (active.data ?? []).filter(c => c.id !== shown?.id);
+ return <details className="add-trust-disclosure"><summary>Connect in person</summary>
+  <p className="form-note">Share a temporary code with someone you’re with. Whoever uses it joins your Direct Circle.</p>
+  {shown ? <div className="trust-code">
+   <QRCodeSVG value={`${window.location.origin}/circle?code=${shown.code}`} size={168} bgColor="transparent" fgColor="currentColor" aria-label="QR code for your Trust Code" />
+   <p className="trust-code-text" aria-label={`Code ${shown.code.split('').join(' ')}`}>{shown.code}</p>
+   <p className="form-note">Expires in {left(shown.expires_at, now)} · {(live ? live.max_uses - live.uses : shown.max_uses)} {shown.max_uses === 1 ? 'use' : 'uses'} left</p>
+   <Button variant="ghost" size="sm" onClick={() => void cancel(shown.id)}>Cancel code</Button>
+  </div> : <div className="flex gap-2 flex-wrap">
+   <Button variant="outline" size="sm" disabled={busy} onClick={() => void create(false)}>Create a code for one person</Button>
+   <Button variant="ghost" size="sm" disabled={busy} onClick={() => void create(true)}>Small group (up to 5, 2 hours)</Button>
+  </div>}
+  {others.length > 0 && <ul className="form-note">{others.map(c => <li key={c.id}>Active code · {c.max_uses - c.uses} left · expires in {left(c.expires_at, now)} <Button variant="ghost" size="sm" onClick={() => void cancel(c.id)}>Cancel</Button></li>)}</ul>}
+  {error && <p role="alert" className="form-note form-error">{error}</p>}
+ </details>;
+}
+
+export function RedeemTrustCode({ initial }: { initial?: string | undefined }) {
+ const qc = useQueryClient();
+ const [code, setCode] = useState(initial ?? ''); const [preview, setPreview] = useState<string | null>(null);
+ const [note, setNote] = useState(''); const [busy, setBusy] = useState(false);
+ const check = async () => {
+  setBusy(true); setNote(''); setPreview(null);
+  const { data, error } = await supabase.rpc('tellher_preview_trust_code', { _code: code });
+  setBusy(false); const r = (data as { status: string; first_name: string | null }[] | null)?.[0];
+  if (error || !r) return setNote('Something went wrong. Please try again.');
+  if (r.status === 'ok') setPreview(r.first_name ?? ''); else setNote(trustCodeMessage(r.status, r.first_name));
+ };
+ const redeem = async () => {
+  setBusy(true);
+  const { data, error } = await supabase.rpc('tellher_redeem_trust_code', { _code: code });
+  setBusy(false); setPreview(null); const r = (data as { status: string; first_name: string | null }[] | null)?.[0];
+  if (error || !r) return setNote('Something went wrong. Please try again.');
+  setNote(trustCodeMessage(r.status, r.first_name)); if (r.status === 'connected') { setCode(''); void qc.invalidateQueries(); }
+ };
+ return <details className="add-trust-disclosure" open={Boolean(initial)}><summary>Have a Trust Code?</summary>
+  <div className="field"><label htmlFor="tc-in">Trust Code</label><Input id="tc-in" value={code} autoComplete="off" autoCapitalize="characters" maxLength={20} onChange={e => { setCode(e.target.value); setPreview(null); }} placeholder="ABCDE-FGH23" /></div>
+  {preview === null ? <Button variant="outline" size="sm" disabled={busy || code.replace(/[^a-z0-9]/gi, '').length < 10} onClick={() => void check()}>Check code</Button>
+   : <div><p className="form-note">This code is from {preview}. Connect with her?</p><div className="flex gap-2"><Button variant="editorial" size="sm" disabled={busy} onClick={() => void redeem()}>Connect with {preview}</Button><Button variant="ghost" size="sm" onClick={() => setPreview(null)}>Not now</Button></div></div>}
+  {note && <p role="status" className="form-note">{note}</p>}
+ </details>;
+}

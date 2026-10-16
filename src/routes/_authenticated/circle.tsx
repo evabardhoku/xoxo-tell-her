@@ -1,3 +1,4 @@
+import { ConnectInPerson, RedeemTrustCode } from '@/components/trust-code';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { zodValidator, fallback } from '@tanstack/zod-adapter';
@@ -16,7 +17,7 @@ import { ScrollPanel } from '@/components/scroll-panel';
 import { useDiscovery } from '@/hooks/discovery';
 
 export const Route = createFileRoute('/_authenticated/circle')({
- validateSearch: zodValidator(z.object({ view: fallback(z.string(), 'direct').default('direct') })),
+ validateSearch: zodValidator(z.object({ view: fallback(z.string(), 'direct').default('direct'), code: fallback(z.string().max(20).optional(), undefined) })),
  loader: ({ context }) => context.queryClient.ensureQueryData(circleQuery),
  head: () => pageHead('Circle', 'Your small circle of trusted women on TellHer.'),
  errorComponent: () => <p role="alert" className="form-note form-error">Your circle could not be loaded. Please refresh.</p>,
@@ -40,7 +41,7 @@ function Circle() {
    {pending > 0 && <Link to="/circle" search={{ view: 'requests' }} className="requests-indicator" aria-label={`${pending} pending connection ${pending === 1 ? 'request' : 'requests'}`}><Inbox size={15} /><span className="requests-count">{pending}</span>Connection requests</Link>}
   </div>
   <div className="ripple-tabs" role="tablist" aria-label="Circle views">{tab('direct', 'Direct')}{tab('extended', 'Extended')}{tab('messages', 'Messages')}</div>
-  {view === 'direct' && <DirectTab direct={direct} extendedCount={data.extendedCount} easing={easing} />}
+  {view === 'direct' && <DirectTab direct={direct} extendedCount={data.extendedCount} easing={easing} code={code} />}
   {view === 'extended' && easing && <p className="form-note discovery-hint">Your Direct Circle introduces new paths as it grows. <Link to="/circle" search={{ view: 'direct' }} className="member-link">Add your first trusted woman</Link></p>}
   {view === 'extended' && <ExtendedCircle direct={direct} />}
   {view === 'messages' && <InboxList />}
@@ -48,9 +49,9 @@ function Circle() {
  </>;
 }
 
-function DirectTab({ direct }: { direct: CircleEntry[]; extendedCount: number; easing: boolean }) {
+function DirectTab({ direct, code }: { direct: CircleEntry[]; extendedCount: number; easing: boolean; code?: string | undefined }) {
  const qc = useQueryClient();
- return <div className="circle-grid"><DirectCircle direct={direct} /><details className="add-trust-disclosure" open={direct.length === 0}><summary>Add someone you trust</summary><AddMember onSent={() => qc.invalidateQueries({ queryKey: circleQuery.queryKey })} /></details></div>;
+ return <div className="circle-grid"><DirectCircle direct={direct} /><details className="add-trust-disclosure" open={direct.length === 0}><summary>Add someone you trust</summary><AddMember onSent={() => qc.invalidateQueries({ queryKey: circleQuery.queryKey })} /></details><ConnectInPerson /><RedeemTrustCode initial={code} /></div>;
 }
 
 function RequestsTab() {
