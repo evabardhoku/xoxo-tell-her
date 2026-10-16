@@ -23,6 +23,7 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedRippleRouteImport } from './routes/_authenticated/ripple'
 import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated/search'
 import { Route as AuthenticatedWingwomanRouteImport } from './routes/_authenticated/wingwoman'
+import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin.reports'
 import { Route as AuthenticatedAskherIdRouteImport } from './routes/_authenticated/askher_.$id'
 import { Route as AuthenticatedBetweenUsConversationIdRouteImport } from './routes/_authenticated/between-us_.$conversationId'
 import { Route as AuthenticatedConstellationsTopicRouteImport } from './routes/_authenticated/constellations_.$topic'
@@ -99,6 +100,12 @@ const AuthenticatedWingwomanRoute = AuthenticatedWingwomanRouteImport.update({
   path: '/wingwoman',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminReportsRoute =
+  AuthenticatedAdminReportsRouteImport.update({
+    id: '/admin/reports',
+    path: '/admin/reports',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAskherIdRoute = AuthenticatedAskherIdRouteImport.update({
   id: '/askher_/$id',
   path: '/askher/$id',
@@ -143,6 +150,7 @@ export interface FileRoutesByFullPath {
   '/ripple': typeof AuthenticatedRippleRoute
   '/search': typeof AuthenticatedSearchRoute
   '/wingwoman': typeof AuthenticatedWingwomanRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/askher/$id': typeof AuthenticatedAskherIdRoute
   '/between-us/$conversationId': typeof AuthenticatedBetweenUsConversationIdRoute
   '/constellations/$topic': typeof AuthenticatedConstellationsTopicRoute
@@ -163,6 +171,7 @@ export interface FileRoutesByTo {
   '/ripple': typeof AuthenticatedRippleRoute
   '/search': typeof AuthenticatedSearchRoute
   '/wingwoman': typeof AuthenticatedWingwomanRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/askher/$id': typeof AuthenticatedAskherIdRoute
   '/between-us/$conversationId': typeof AuthenticatedBetweenUsConversationIdRoute
   '/constellations/$topic': typeof AuthenticatedConstellationsTopicRoute
@@ -185,6 +194,7 @@ export interface FileRoutesById {
   '/_authenticated/ripple': typeof AuthenticatedRippleRoute
   '/_authenticated/search': typeof AuthenticatedSearchRoute
   '/_authenticated/wingwoman': typeof AuthenticatedWingwomanRoute
+  '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/_authenticated/askher_/$id': typeof AuthenticatedAskherIdRoute
   '/_authenticated/between-us_/$conversationId': typeof AuthenticatedBetweenUsConversationIdRoute
   '/_authenticated/constellations_/$topic': typeof AuthenticatedConstellationsTopicRoute
@@ -207,6 +217,7 @@ export interface FileRouteTypes {
     | '/ripple'
     | '/search'
     | '/wingwoman'
+    | '/admin/reports'
     | '/askher/$id'
     | '/between-us/$conversationId'
     | '/constellations/$topic'
@@ -227,6 +238,7 @@ export interface FileRouteTypes {
     | '/ripple'
     | '/search'
     | '/wingwoman'
+    | '/admin/reports'
     | '/askher/$id'
     | '/between-us/$conversationId'
     | '/constellations/$topic'
@@ -248,6 +260,7 @@ export interface FileRouteTypes {
     | '/_authenticated/ripple'
     | '/_authenticated/search'
     | '/_authenticated/wingwoman'
+    | '/_authenticated/admin/reports'
     | '/_authenticated/askher_/$id'
     | '/_authenticated/between-us_/$conversationId'
     | '/_authenticated/constellations_/$topic'
@@ -362,6 +375,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWingwomanRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/reports': {
+      id: '/_authenticated/admin/reports'
+      path: '/admin/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AuthenticatedAdminReportsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/askher_/$id': {
       id: '/_authenticated/askher_/$id'
       path: '/askher/$id'
@@ -411,6 +431,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedRippleRoute: typeof AuthenticatedRippleRoute
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
   AuthenticatedWingwomanRoute: typeof AuthenticatedWingwomanRoute
+  AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
   AuthenticatedAskherIdRoute: typeof AuthenticatedAskherIdRoute
   AuthenticatedBetweenUsConversationIdRoute: typeof AuthenticatedBetweenUsConversationIdRoute
   AuthenticatedConstellationsTopicRoute: typeof AuthenticatedConstellationsTopicRoute
@@ -429,6 +450,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedRippleRoute: AuthenticatedRippleRoute,
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
   AuthenticatedWingwomanRoute: AuthenticatedWingwomanRoute,
+  AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
   AuthenticatedAskherIdRoute: AuthenticatedAskherIdRoute,
   AuthenticatedBetweenUsConversationIdRoute:
     AuthenticatedBetweenUsConversationIdRoute,

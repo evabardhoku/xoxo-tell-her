@@ -15,6 +15,7 @@ import { pageHead } from '@/lib/metadata';
 import { categories, errorText, feedQuery, instincts, reachPreview, reaches, type Reach } from '@/lib/askher';
 import { useServerFn } from '@tanstack/react-start';
 import { conversationExcerpt, rippleIdentityPublication } from '@/lib/ripple-draft';
+import { detectPii } from '@/lib/safety';
 import { proposeRippleDraft } from '@/lib/wingwoman.functions';
 
 export const Route = createFileRoute('/_authenticated/ripple')({ validateSearch: (s: Record<string, unknown>): { from?: string } => (typeof s['from'] === 'string' ? { from: s['from'] } : {}), head: () => pageHead('Start a Trust Ripple', 'Choose who sees your question and whether to ask anonymously or with your name.'), component: Composer });
@@ -104,7 +105,7 @@ function Composer() {
    {step === 3 && scope && <div key="s3" className="composer-body review">
     <section className="ripple-shared-preview" aria-label="What other members will see"><h2 className="field-legend">What other members will see</h2><div className="question-meta"><span className="question-category">{category}</span><span>{reaches.find(r => r.value === scope)?.label}</span></div><RippleAuthor identity={{ author_visibility: visibility, first_name: visibility === 'named' ? profile.data?.first_name ?? null : null }} /><p className="question-body">{body.trim()}</p></section>
     <dl><div><dt>Who will see this</dt><dd>{reaches.find(r => r.value === scope)?.label}</dd></div><div><dt>How you’ll appear</dt><dd>{visibility === 'anonymous' ? 'Anonymous' : profile.data?.first_name ?? 'With my name'}</dd></div><div><dt>My first instinct · private</dt><dd>{instincts.find(i => i.value === instinct)?.label}{note.trim() && ` — ${note.trim()}`}</dd></div><div><dt>Reach</dt><dd>{reachPreview(scope, count(scope), preview.data?.circle)}</dd></div></dl>
-    <IdentityChoice value={visibility} onChange={setVisibility} /><p className="form-note">Your identity choice is locked after sending. Replies, Echoes and Letters stay anonymous; your instinct stays private. Your profile’s discoverability does not change.</p>
+    {detectPii(body).length > 0 && <p role="alert" className="safety-panel">This looks like it may include information that could identify someone ({detectPii(body).join(', ')}). Review it before sharing. This check can’t catch every name or address.</p>}<IdentityChoice value={visibility} onChange={setVisibility} /><p className="form-note">Your identity choice is locked after sending. Replies, Echoes and Letters stay anonymous; your instinct stays private. Your profile’s discoverability does not change.</p>
    </div>}
    {error && <p role="alert" className="form-note form-error">{error}</p>}
    {step === 3 && source !== null && <p className="private-note ripple-sharing-note"><LockKeyhole size={13} />Only the Ripple below will be shared. Your Wingwoman conversation stays private.</p>}

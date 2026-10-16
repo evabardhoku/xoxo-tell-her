@@ -557,3 +557,13 @@ details[open] > summary::before { content:'−'; }
 
 .owner-picks { margin-top:0; } .owner-picks h2,.owner-picks .picks-sub { display:none; } .owner-picks .pick-item { border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent;padding:16px 0; }
 .sky-label--link { display:block;animation:none;opacity:1;z-index:1; }
+
+/* Safety */
+.quick-exit { display:inline-flex; align-items:center; gap:.35rem; min-height:44px; padding:0 .75rem; border-radius:999px; font-size:.8rem; color:var(--muted-foreground); background:transparent; border:1px solid var(--border); }
+.quick-exit:hover, .quick-exit:focus-visible { color:var(--foreground); outline:2px solid var(--ring); outline-offset:2px; }
+.safety-panel { margin:1rem 0; padding:1rem; border-radius:var(--radius); background:var(--secondary); color:var(--foreground); font-size:.9rem; line-height:1.5; }
+.safety-panel ul { margin:.5rem 0; }
+.danger-zone { margin-top:1rem; }
+.mod-list { display:grid; gap:1rem; }
+.mod-content { margin-top:.5rem; padding-left:.75rem; border-left:2px solid var(--border); white-space:pre-wrap; }
+@media (max-width:640px){ .quick-exit span { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); } }

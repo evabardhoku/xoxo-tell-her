@@ -281,6 +281,41 @@ export type Database = {
           },
         ]
       }
+      moderation_actions: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          moderator_id: string
+          report_id: string | null
+          target_type: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          moderator_id: string
+          report_id?: string | null
+          target_type: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          moderator_id?: string
+          report_id?: string | null
+          target_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "moderation_actions_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           body: string
@@ -487,6 +522,24 @@ export type Database = {
           reach?: string
           status?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      rate_limits: {
+        Row: {
+          action: string
+          max_count: number
+          window_seconds: number
+        }
+        Insert: {
+          action: string
+          max_count: number
+          window_seconds: number
+        }
+        Update: {
+          action?: string
+          max_count?: number
+          window_seconds?: number
         }
         Relationships: []
       }
@@ -903,6 +956,24 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       wingwoman_messages: {
         Row: {
           content: string
@@ -994,6 +1065,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       tellher_block: { Args: { _member: string }; Returns: undefined }
       tellher_can_message: { Args: { _member: string }; Returns: boolean }
       tellher_can_view: { Args: { _q: string }; Returns: boolean }
@@ -1140,6 +1218,7 @@ export type Database = {
       }
       tellher_is_blocked: { Args: { _a: string; _b: string }; Returns: boolean }
       tellher_is_direct: { Args: { _a: string; _b: string }; Returns: boolean }
+      tellher_is_moderator: { Args: never; Returns: boolean }
       tellher_is_participant: { Args: { _c: string }; Returns: boolean }
       tellher_is_question_author: { Args: { _q: string }; Returns: boolean }
       tellher_letters: {
@@ -1185,6 +1264,22 @@ export type Database = {
           kind: string
           location: string
           title: string
+        }[]
+      }
+      tellher_mod_act: {
+        Args: { _action: string; _report: string }
+        Returns: undefined
+      }
+      tellher_mod_reports: {
+        Args: never
+        Returns: {
+          content: string
+          created_at: string
+          id: string
+          reason: string
+          ripple_id: string
+          status: string
+          target_type: string
         }[]
       }
       tellher_my_circle: {
@@ -1426,7 +1521,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1553,6 +1648,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const

@@ -8,6 +8,7 @@ import { SignOut } from '@/components/app-shell';
 import { TrustShelf } from '@/components/trust-shelf';
 import { pageHead } from '@/lib/metadata';
 import { supabase } from '@/integrations/supabase/client';
+import { PrivacyData } from '@/components/privacy-data';
 
 import { Button } from '@/components/ui/button';
 
@@ -26,6 +27,7 @@ function Profile() {
   },
  });
  const discovery = discoverabilityOptions.find(o => o.value === data.discoverability);
+ const isMod = useQuery({ queryKey: ['is-moderator'], queryFn: async () => (await supabase.rpc('tellher_is_moderator')).data === true });
  return <>
   <div className="page-heading"><div><div className="eyebrow">ME</div><h1>A space that’s yours.</h1><p>Your name, your account, your own pace.</p></div></div>
 
@@ -53,6 +55,8 @@ function Profile() {
 
   <TrustShelf memberId={data.id} firstName={data.first_name} editable />
 
-  <section className="account-settings"><h2>Privacy &amp; account</h2><p className="form-note">Discoverability: {discovery?.label}</p><Button variant="ghost" onClick={() => setEditing(true)}>Privacy / Discoverability</Button><SignOut /></section>
+  <PrivacyData userId={data.id} discoverability={discovery?.label} onEditDiscoverability={() => setEditing(true)} />
+  {isMod.data && <p className="form-note"><Link to="/admin/reports" className="member-link">Moderation reports</Link></p>}
+  <section className="account-settings"><SignOut /></section>
  </>;
 }

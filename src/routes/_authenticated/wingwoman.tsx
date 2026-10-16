@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { pageHead } from '@/lib/metadata';
 import { instincts, errorText, relativeTime } from '@/lib/askher';
+import { SafetyPanel } from '@/components/safety';
+import { mentionsImmediateRisk } from '@/lib/safety';
 import { createReflection, sendWingwomanMessage, wingwomanContexts, wingwomanRelated, type Reflection } from '@/lib/wingwoman.functions';
 
 export const Route = createFileRoute('/_authenticated/wingwoman')({
@@ -33,7 +35,7 @@ function Wingwoman() {
  const { s } = Route.useSearch();
  const sessions = useQuery(sessionsQuery);
  return <>
-  <div className="page-heading"><div><div className="eyebrow">WINGWOMAN</div><h1>Wingwoman</h1><p className="form-note">Private AI perspective, not professional or emergency support.</p></div></div>
+  <div className="page-heading"><div><div className="eyebrow">WINGWOMAN</div><h1>Wingwoman</h1><p className="form-note">Wingwoman is a reflection tool, not a therapist, lawyer or emergency service.</p></div></div>
   <div className="ww-layout">
    <details className="ww-sessions"><summary>Conversation history</summary>
     <Button asChild variant="editorial" size="sm" className="w-full"><Link to="/wingwoman" search={{}}><Plus />New conversation</Link></Button>
@@ -94,12 +96,20 @@ function Thread({ id }: { id: string }) {
  };
  const onKey = (e: KeyboardEvent) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); void submit(); } };
  const instinct = instincts.find(i => i.value === session.instinct)?.label;
+ const atRisk = Boolean((session.reflection as Reflection | null)?.safety_note) || [session.situation ?? '', ...messages.filter(m => m.role === 'user').map(m => m.content)].some(mentionsImmediateRisk);
+ const remove = async () => {
+  if (!window.confirm('Delete this conversation? This cannot be undone.')) return;
+  const { error } = await supabase.from('wingwoman_sessions').delete().eq('id', id);
+  if (error) return setError(errorText(error));
+  qc.removeQueries({ queryKey: ['ww-thread', id] }); await qc.invalidateQueries({ queryKey: sessionsQuery.queryKey }); navigate({ to: '/wingwoman', search: {} });
+ };
  // Gentle next-step chips appear once Wingwoman has replied; each hides when it has nothing to show.
  const replied = Boolean(session.reflection) || messages.some(m => m.role !== 'user');
  const r = rel.data;
  const showChips = replied && !chipsGone && !pending;
  return <section className="ww-thread" aria-label="Conversation">
   <div className="ww-thread-head"><div className="question-meta"><span className="question-category">{session.context ?? 'Other'}</span><span>{relativeTime(session.created_at)}</span>{instinct && <span className="private-note"><LockKeyhole size={12} />Your instinct · {instinct}</span>}</div>
+  <Button variant="ghost" size="sm" onClick={() => void remove()}>Delete conversation</Button>
 </div>
   <ol className="ww-messages">
    <li className="ww-msg ww-user"><p>{session.situation}</p></li>
@@ -112,6 +122,7 @@ function Thread({ id }: { id: string }) {
    {r && r.constellations > 0 && <button type="button" className="member-link ww-context-link" onClick={() => navigate({ to: '/constellations/$topic', params: { topic: r.topic } })}>Explore similar stories</button>}
    {r?.lettersRippleId && <button type="button" className="member-link ww-context-link" onClick={() => navigate({ to: '/askher/$id', params: { id: r.lettersRippleId ?? '' } })}>Read relevant Letters</button>}
   </div>}
+  {atRisk && <SafetyPanel />}
   <div ref={end} />
   {error && <p role="alert" className="form-note form-error">{error}</p>}
   <div className="ww-composer"><label htmlFor="ww-reply" className="sr-only">Reply to Wingwoman</label><Textarea id="ww-reply" ref={box} rows={2} maxLength={4000} value={text} onChange={e => setText(e.target.value)} onKeyDown={onKey} disabled={!!pending} placeholder="Say what’s on your mind…" /><Button variant="editorial" size="icon" aria-label="Send" disabled={!text.trim() || !!pending} onClick={() => void submit()}><Send /></Button></div>
