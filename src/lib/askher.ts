@@ -8,16 +8,20 @@ export const instincts = [
 ] as const;
 export const reaches = [
  { value: 'circle', label: 'MyCircle', hint: 'Only women you trust directly.' },
- { value: 'extended', label: 'Extended circle', hint: 'Your circle and the women they trust. Two layers at most.' },
+ { value: 'extended', label: 'Extended Circle', hint: 'Travels through your Direct Circle to the women they trust. Two layers at most.' },
  { value: 'community', label: 'TellHer community', hint: 'Signed-in TellHer members.' },
 ] as const;
 export type Reach = (typeof reaches)[number]['value'];
-export const reachContext = (s: string) => (s === 'circle' ? 'Direct circle' : s === 'extended' ? '2 trust layers' : 'TellHer community');
+export const reachContext = (s: string) => (s === 'circle' ? 'Direct circle' : s === 'extended' ? 'Extended Circle' : 'TellHer community');
 
-export function reachPreview(scope: Reach, count: number | null | undefined) {
+const women = (n: number) => `${n} ${n === 1 ? 'woman' : 'women'}`;
+/** Extended reach = Direct Circle + additional Extended Circle; counts stay separate in wording. */
+export function reachPreview(scope: Reach, count: number | null | undefined, direct?: number | null) {
  if (scope === 'community') return 'TellHer community';
- const n = count ?? 0; const w = n === 1 ? 'woman' : 'women';
- return scope === 'circle' ? `${n} ${w} in your direct circle` : `${n} ${w} across two trust layers`;
+ const n = count ?? 0;
+ if (scope === 'circle') return `${women(n)} in your Direct Circle`;
+ const d = Math.min(direct ?? 0, n);
+ return `Up to ${women(n)} through your trust network · ${d} Direct Circle + ${n - d} additional Extended Circle`;
 }
 
 export type FeedQuestion = { id: string; category: string; body: string; audience_scope: string; created_at: string; reply_count: number; is_mine: boolean; my_instinct: string | null; my_note: string | null };

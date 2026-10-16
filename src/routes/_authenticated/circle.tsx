@@ -32,12 +32,13 @@ function Circle() {
   <section className="circle-summary" aria-label="Your reach">
    <ReachRings direct={direct.length} extended={data.extendedCount} />
    <dl className="reach-stats">
-    <div><dt>Direct circle</dt><dd>{direct.length}</dd><p>Women you trust who accepted.</p></div>
-    <div><dt>Extended reach</dt><dd>{data.extendedCount}</dd><p>Women trusted by your circle. Shown only as a number.</p></div>
+    <div><dt>Direct Circle</dt><dd>{direct.length}</dd><p>{direct.length === 1 ? 'Woman' : 'Women'} you trust who accepted.</p></div>
+    <div><dt>Extended Circle</dt><dd>{data.extendedCount}</dd><p>Additional women trusted by your Direct Circle, counted once and never including your Direct Circle. Shown only as a number.</p></div>
+    <div><dt>Extended reach</dt><dd>Up to {direct.length + data.extendedCount}</dd><p>Women an Extended Circle Ripple can travel to through your trust network.</p></div>
    </dl>
   </section>
   <div className="circle-grid">
-   <section className="circle-card"><h2>Direct circle</h2>{direct.length ? <ul className="member-list">{direct.map(m => <Member key={m.connection_id} m={m} />)}</ul> : <p className="form-note">No one yet. Invite a woman you trust below.</p>}</section>
+   <section className="circle-card"><h2>Direct Circle</h2>{direct.length ? <ul className="member-list">{direct.map(m => <Member key={m.connection_id} m={m} />)}</ul> : <p className="form-note">No one yet. Invite a woman you trust below.</p>}</section>
    <AddMember onSent={refresh} />
    <section className="circle-card"><h2>Requests for you</h2>{by('incoming').length ? <ul className="member-list">{by('incoming').map(m => <Member key={m.connection_id} m={m}><Button size="sm" variant="editorial" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: true })}><Check />Accept</Button><Button size="sm" variant="ghost" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: false })}>Decline</Button></Member>)}</ul> : <p className="form-note">No requests waiting.</p>}{respond.isError && <p role="alert" className="form-note form-error">{message(respond.error)}</p>}</section>
    <section className="circle-card"><h2>Sent requests</h2>{by('outgoing').length ? <ul className="member-list">{by('outgoing').map(m => <Member key={m.connection_id} m={m}><span className="status-label">Pending</span><Button size="sm" variant="ghost" aria-label={`Withdraw request to ${memberName(m)}`} disabled={cancel.isPending} onClick={() => cancel.mutate(m.connection_id)}><X /></Button></Member>)}</ul> : <p className="form-note">Nothing pending.</p>}</section>
@@ -76,7 +77,7 @@ function AddMember({ onSent }: { onSent: () => void }) {
 }
 
 function ReachRings({ direct, extended }: { direct: number; extended: number }) {
- return <svg className="reach-rings" viewBox="0 0 240 240" role="img" aria-label={`You, ${direct} in your direct circle, ${extended} in extended reach`}>
+ return <svg className="reach-rings" viewBox="0 0 240 240" role="img" aria-label={`You, ${direct} in your Direct Circle, ${extended} more in your Extended Circle`}>
   <circle cx="120" cy="120" r="100" className="ring-extended" /><circle cx="120" cy="120" r="68" className="ring-direct" /><circle cx="120" cy="120" r="9" className="ring-you" />
   <text x="120" y="146" className="ring-label">You</text><text x="120" y="47" className="ring-label">Direct · {direct}</text><text x="120" y="236" className="ring-label">Extended · {extended}</text>
  </svg>;
