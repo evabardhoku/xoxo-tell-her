@@ -11,12 +11,12 @@ import { profileQuery } from '@/lib/profile';
 import { ProfileEditor } from './profile-editor';
 import { NotificationBell } from './notification-bell';
 
-// The four primary areas (same list on desktop and mobile). `match` lists every route that belongs to the area; `hub` is the thin in-area link row that keeps each sub-page reachable.
+// The four primary areas (same list on desktop and mobile). `match` lists every route that belongs to the area; each hub page's segmented control keeps its sub-pages reachable.
 const navigation = [
- { to: '/home', label: 'Sky', icon: Sparkle, match: ['/home', '/constellations'], hub: [] },
- { to: '/askher', label: 'Ask', icon: MessageCircle, match: ['/wingwoman', '/askher', '/my-ripples', '/ripple'], hub: [{ to: '/wingwoman', label: 'Wingwoman' }, { to: '/askher', label: 'Ask hub' }, { to: '/ripple', label: 'Ask anonymously' }] },
- { to: '/circle', label: 'Circle', icon: Users, match: ['/circle', '/between-us', '/profile/'], hub: [{ to: '/circle', label: 'Circle' }, { to: '/circle', label: 'Messages', search: { view: 'messages' } }] },
- { to: '/profile', label: 'Me', icon: UserRound, match: [], hub: [] },
+ { to: '/home', label: 'Sky', icon: Sparkle, match: ['/home', '/constellations'] },
+ { to: '/askher', label: 'Ask', icon: MessageCircle, match: ['/wingwoman', '/askher', '/my-ripples', '/ripple'] },
+ { to: '/circle', label: 'Circle', icon: Users, match: ['/circle', '/between-us', '/profile/'] },
+ { to: '/profile', label: 'Me', icon: UserRound, match: [] },
 ] as const;
 const isIn = (pathname: string, paths: readonly string[]) => paths.some(p => p.endsWith('/') ? pathname.startsWith(p) : pathname === p || pathname.startsWith(`${p}/`));
 const areaOf = (pathname: string) => pathname === '/profile' ? navigation[3] : navigation.find(i => isIn(pathname, i.match));
@@ -29,14 +29,12 @@ export function AppShell({ children }: { children: ReactNode }) {
  if (!profile.data.woman_attested_at) return <><header className="app-header"><Brand /><SignOut /></header><main className="app-main"><ProfileEditor profile={profile.data} onSaved={profile.refetch} /></main></>;
  const area = areaOf(pathname);
  const link = (item: (typeof navigation)[number]) => { const active = area === item; return <Link key={item.to} to={item.to} className="nav-link" data-active={active} aria-current={active ? 'page' : undefined}><item.icon /><span>{item.label}</span></Link>; };
- const hub = area?.hub ?? [];
  return <><header className="app-header"><Brand /><nav className="desktop-nav" aria-label="Main navigation">{navigation.map(link)}</nav><div className="app-header-actions">
   <Button asChild variant="editorial" className="mind-button"><Link to="/wingwoman"><Feather />What's on your mind?</Link></Button>
   <Link to="/search" search={{ q: '' }} className="avatar-link search-link" aria-label="Search TellHer" data-active={pathname === '/search'}><Search size={17} /></Link>
   <NotificationBell />
   <UserMenu initial={profile.data.first_name.slice(0, 1).toUpperCase()} active={pathname === '/profile'} />
  </div></header>
- {hub.length > 0 && <nav className="hub-tabs" aria-label={`${area!.label} sections`}>{hub.map(h => { const on = pathname === h.to || pathname.startsWith(`${h.to}/`); return <Link key={h.label} to={h.to} {...('search' in h ? { search: h.search } : {})} data-active={on} aria-current={on ? 'page' : undefined}>{h.label}</Link>; })}</nav>}
  <main className="app-main">{children}<p className="app-footnote"><LockKeyhole size={12} />A little space. A little perspective. Always your choice.</p></main>
  <Link to="/wingwoman" className="mind-fab" aria-label="What's on your mind? Talk to Wingwoman"><Feather size={22} /></Link>
  <nav className="mobile-nav" aria-label="Mobile navigation">{navigation.map(link)}</nav></>;

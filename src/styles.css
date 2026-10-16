@@ -457,3 +457,7 @@ a.bell-item:hover { background:color-mix(in oklab, var(--secondary) 12%, transpa
 .discovery-list { list-style: none; padding: 0; margin: 0.6rem 0 0; display: grid; gap: 0.35rem; font-size: 0.875rem; }
 .discovery-list li { display: flex; align-items: center; gap: 0.5rem; color: var(--muted-foreground); }
 .discovery-list li[data-done="true"] { opacity: 0.65; }
+
+/* Tap targets: keep small inline links at least 24px tall (WCAG 2.5.8) */
+.question-foot > a, .back-link, .member-list .member-link, .search-item .member-link, .me-header .member-link { min-height: 1.75rem; display: inline-flex; align-items: center; }
+.sky-label--link { min-height: 1.5rem; padding-block: 0.2rem; }

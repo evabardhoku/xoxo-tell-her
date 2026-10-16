@@ -41,9 +41,9 @@ export function ExtendedCircle({ direct }: { direct: CircleEntry[] }) {
    <div className="field"><label htmlFor="ext-f">Search in</label><select id="ext-f" className="ext-select" value={field} onChange={e => setField(e.target.value as Field)}><option value="all">Everything</option><option value="name">Name</option><option value="location">Location</option><option value="known">Known for</option><option value="ask">Ask me about</option></select></div>
    <div className="field"><label htmlFor="ext-v">Connected through</label><select id="ext-v" className="ext-select" value={via} onChange={e => setVia(e.target.value)}><option value="">Anyone in my Direct Circle</option>{direct.map(d => <option key={d.member_id} value={d.member_id}>{d.first_name}</option>)}</select></div>
   </div>
-  {list.isLoading ? <p className="form-note">Loading…</p> : list.isError ? <p role="alert" className="form-note form-error">Extended Circle could not be loaded.</p>
+  {list.isLoading ? <p role="status" className="form-note">Finding women connected through your Direct Circle…</p> : list.isError ? <p role="alert" className="form-note form-error">Extended Circle could not be loaded.</p>
    : shown.length ? <ScrollPanel label="Extended Circle" className="ext-grid">{shown.map(m => <ExtCard key={m.member_id} m={m} busy={bridge.isPending} onBridge={() => bridge.mutate(m.member_id)} />)}</ScrollPanel>
-   : <p className="form-note">{list.data?.length ? 'No one matches these filters.' : 'No discoverable women in your Extended Circle yet.'}</p>}
+   : list.data?.length ? <p className="form-note">No one matches these filters.</p> : <section className="empty-panel"><h2>Your Extended Circle is still quiet.</h2><p>As the women you trust add women they trust, those who choose to be discoverable will appear here.</p></section>}
   {bridge.isError && <p role="alert" className="form-note form-error">{(bridge.error as { message?: string }).message || 'Request could not be sent.'}</p>}
  </section>;
 }
