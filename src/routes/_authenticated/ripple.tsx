@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import { profileQuery } from '@/lib/profile';
 import { RippleAuthor } from '@/components/ripple-author';
 import type { AuthorVisibility } from '@/lib/ripple-identity';
