@@ -594,3 +594,4 @@ details[open] > summary::before { content:'−'; }
 .open-comment-like { min-height:44px;min-width:44px;gap:4px; }
 .open-comment-form { display:flex;gap:8px; } .open-comment-form input { flex:1;min-width:0;min-height:44px; }
 @media (max-width:480px) { .open-ripple { padding:16px 14px 14px 18px; } .open-ripple-body { font-size:17px; } }
+.open-feed-filter .segmented-option { white-space:nowrap; } .open-ripple .question-category { font-size:12px; }
