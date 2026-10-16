@@ -103,7 +103,7 @@ function ReachRings({ direct, extended }: { direct: number; extended: number }) 
 
 type Field = 'all' | 'name' | 'location' | 'known' | 'ask';
 function DirectCircle({ direct }: { direct: CircleEntry[] }) {
- const [text, setText] = useState(''); const [field, setField] = useState<Field>('all');
+ const [text, setText] = useState(''); const [field] = useState<Field>('all');
  // Details come only from the viewer-checked member profile function, one call per Direct Circle member.
  const details = useQuery({ queryKey: ['direct-details', direct.map(d => d.member_id).join()], enabled: direct.length > 0, queryFn: async () => Object.fromEntries(await Promise.all(direct.map(async d => [d.member_id, (await supabase.rpc('tellher_member_profile', { _id: d.member_id })).data?.[0] ?? null] as const))) });
  const shown = useMemo(() => {
