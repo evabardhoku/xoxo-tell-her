@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { pageHead } from '@/lib/metadata';
 import { instincts, errorText, relativeTime } from '@/lib/askher';
+import { SafetyPanel } from '@/components/safety';
+import { mentionsImmediateRisk } from '@/lib/safety';
 import { createReflection, sendWingwomanMessage, wingwomanContexts, wingwomanRelated, type Reflection } from '@/lib/wingwoman.functions';
 
 export const Route = createFileRoute('/_authenticated/wingwoman')({
@@ -33,7 +35,7 @@ function Wingwoman() {
  const { s } = Route.useSearch();
  const sessions = useQuery(sessionsQuery);
  return <>
-  <div className="page-heading"><div><div className="eyebrow">WINGWOMAN</div><h1>Wingwoman</h1><p className="form-note">Private AI perspective, not professional or emergency support.</p></div></div>
+  <div className="page-heading"><div><div className="eyebrow">WINGWOMAN</div><h1>Wingwoman</h1><p className="form-note">Wingwoman is a reflection tool, not a therapist, lawyer or emergency service.</p></div></div>
   <div className="ww-layout">
    <details className="ww-sessions"><summary>Conversation history</summary>
     <Button asChild variant="editorial" size="sm" className="w-full"><Link to="/wingwoman" search={{}}><Plus />New conversation</Link></Button>
