@@ -1347,13 +1347,13 @@ export type Database = {
       }
       tellher_save_field_note: {
         Args: {
-          _body: string
+          _body?: string
           _confirm_reveal?: boolean
-          _id: string
-          _location: string
+          _id?: string
+          _location?: string
           _ripple?: string
-          _title: string
-          _topic: string
+          _title?: string
+          _topic?: string
         }
         Returns: string
       }
