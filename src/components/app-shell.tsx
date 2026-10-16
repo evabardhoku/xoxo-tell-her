@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Sparkle, Newspaper, Users, UserRound, LockKeyhole, LogOut, Search } from 'lucide-react';
+import { Sparkle, Newspaper, Feather, Users, UserRound, LockKeyhole, LogOut, Search } from 'lucide-react';
 import { useEffect, type ReactNode } from 'react';
 import { PENDING_CODE } from './trust-code';
 import { Brand } from './brand';
@@ -16,7 +16,8 @@ import { QuickExit } from './safety';
 // The four primary areas (same list on desktop and mobile). `match` lists every route that belongs to the area; each hub page's segmented control keeps its sub-pages reachable.
 const navigation = [
  { to: '/feed', label: 'My Feed', icon: Newspaper, match: ['/feed'] },
- { to: '/home', label: 'Sky', icon: Sparkle, match: ['/home', '/constellations', '/wingwoman', '/askher', '/my-ripples', '/ripple'] },
+ { to: '/wingwoman', label: 'Wingwoman', icon: Feather, match: ['/wingwoman'] },
+ { to: '/home', label: 'Sky', icon: Sparkle, match: ['/home', '/constellations', '/askher', '/my-ripples', '/ripple'] },
  { to: '/circle', label: 'My Circle', icon: Users, match: ['/circle', '/between-us', '/profile/'] },
  { to: '/profile', label: 'Profile', icon: UserRound, match: [] },
 ] as const;
