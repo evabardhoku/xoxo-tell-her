@@ -24,3 +24,4 @@
 - Trusted Picks are owner-written rows readable by others only through a function limited to the reader's accepted direct circle, exposing just the recommender's first name; no ratings or ranking, so provenance is the only signal.
 - Member profiles are read only through the viewer-checked tellher_member_profile function (owner discoverability + viewer trust context); avatars are signed server-side after that check, so raw profiles stay owner-only and storage paths never leave the server.
 - Extended Circle discovery lists only discoverable second-degree members through the checked tellher_extended_circle function (one trust path shown); Trust Bridges are ordinary trust requests, so there is a single relationship model.
+- Global search (tellher_search) only composes the viewer-checked profile, shelf and feed functions and matches fields they already return; section filters run client-side over data those same functions return.
