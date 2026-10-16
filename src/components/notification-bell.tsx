@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Bell } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from './ui/dropdown-menu';
-import { notificationsQuery, unreadQuery } from '@/lib/notifications';
+import { notificationsQuery, unreadQuery, notificationTarget, notificationTitle } from '@/lib/notifications';
 import { relativeTime } from '@/lib/askher';
 
 /** Header bell: unread badge + a calm list of recent notifications. Opening marks all read. */
@@ -26,8 +26,8 @@ export function NotificationBell() {
    <p className="bell-title">Notifications</p>
    {!list.data?.length ? <p className="form-note bell-empty">Nothing new yet.</p>
     : <ul className="bell-list">{list.data.map(n => <li key={n.id} className={n.read ? '' : 'is-unread'}>
-      {n.link ? <Link to={n.link as '/askher'} className="bell-item"><strong>{n.title}</strong><em>{relativeTime(n.created_at)}</em></Link>
-       : <span className="bell-item"><strong>{n.title}</strong><em>{relativeTime(n.created_at)}</em></span>}
+      {notificationTarget(n) ? <Link to={notificationTarget(n)!.to as '/askher'} search={notificationTarget(n)!.search as never} className="bell-item"><strong>{notificationTitle(n.title)}</strong><em>{relativeTime(n.created_at)}</em></Link>
+       : <span className="bell-item"><strong>{notificationTitle(n.title)}</strong><em>{relativeTime(n.created_at)}</em></span>}
      </li>)}</ul>}
   </DropdownMenuContent>
  </DropdownMenu>;

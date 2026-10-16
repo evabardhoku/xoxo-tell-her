@@ -32,3 +32,13 @@ export const replyLikesQuery = (questionId: string) => ({
   return out;
  },
 });
+
+/** Maps stored notification links/titles onto the current four-area structure, so older rows never dead-end or show retired names. */
+export function notificationTarget(n: Pick<Notification, 'kind' | 'link'>): { to: string; search?: Record<string, string> } | null {
+ if (!n.link) return null;
+ if (n.kind === 'trust_request') return { to: '/circle', search: { view: 'requests' } };
+ if (n.link === '/circle') return { to: '/circle', search: { view: 'direct' } };
+ if (n.link === '/between-us') return { to: '/circle', search: { view: 'messages' } };
+ return { to: n.link };
+}
+export const notificationTitle = (title: string) => title.replace(/Between Us/g, 'Messages').replace(/Direct Circle/g, 'My Circle').replace(/trust request/gi, m => m[0] === 'T' ? 'Circle request' : 'circle request');
