@@ -1,7 +1,8 @@
 import { Link, useLocation, useNavigate } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Sparkle, Newspaper, Users, UserRound, LockKeyhole, LogOut, Search } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
+import { PENDING_CODE } from './trust-code';
 import { Brand } from './brand';
 import { Button } from './ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
@@ -25,6 +26,9 @@ const areaOf = (pathname: string) => pathname === '/profile' ? navigation[3] : n
 export function AppShell({ children }: { children: ReactNode }) {
  const { pathname } = useLocation(); const { user } = useAccount();
  const profile = useQuery({ ...profileQuery, enabled: Boolean(user) });
+ const go = useNavigate(); const ready = Boolean(profile.data?.woman_attested_at);
+ // A QR scanned before sign-in waits until onboarding is complete, then returns to the confirmation.
+ useEffect(() => { if (!ready || pathname === '/circle') return; let code: string | null = null; try { code = sessionStorage.getItem(PENDING_CODE); } catch { /* storage unavailable */ } if (code) void go({ to: '/circle', search: { view: 'direct', code } }); }, [ready, pathname, go]);
  if (!user || profile.isPending) return <main className="app-main"><p role="status" className="form-note">Opening your space…</p></main>;
  if (profile.isError) return <main className="app-main"><p role="alert" className="form-note form-error">Your profile could not be loaded.</p><Button variant="outline" onClick={() => profile.refetch()}>Try again</Button><SignOut /></main>;
  if (!profile.data.woman_attested_at) return <><header className="app-header"><Brand /><SignOut /></header><main className="app-main"><ProfileEditor profile={profile.data} onSaved={profile.refetch} /></main></>;
