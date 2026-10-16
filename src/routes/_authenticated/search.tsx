@@ -1,3 +1,4 @@
+import { RippleAuthor } from '@/components/ripple-author';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { zodValidator, fallback } from '@tanstack/zod-adapter';
@@ -42,7 +43,7 @@ function SearchPage() {
 
 function Result({ r }: { r: SearchRow }) {
  if (r.kind === 'person') return <PersonResult r={r} />;
- if (r.kind === 'question') return <li className="search-item"><div className="question-meta"><span className="question-category">{r.category}</span><span>{reachContext(r.audience_scope ?? '')}</span>{r.created_at && <span>{relativeTime(r.created_at)}</span>}</div><Link to="/askher/$id" params={{ id: r.id }} className="question-link"><p>{r.body}</p></Link><span className="form-note">{r.reply_count ?? 0} perspectives</span></li>;
+ if (r.kind === 'question') return <li className="search-item"><div className="question-meta"><span className="question-category">{r.category}</span><span>{reachContext(r.audience_scope ?? '')}</span>{r.created_at && <span>{relativeTime(r.created_at)}</span>}</div><RippleAuthor identity={r} /><Link to="/askher/$id" params={{ id: r.id }} className="question-link"><p>{r.body}</p></Link><span className="form-note">{r.reply_count ?? 0} perspectives</span></li>;
  const who = r.relation === 'self' ? <span>Yours</span> : <Link to="/profile/$memberId" params={{ memberId: r.member_id! }} className="member-link">{r.kind === 'pick' ? `Recommended by ${r.member_name}` : `From ${r.member_name}`}</Link>;
  return <li className="search-item"><div className="question-meta"><span className="question-category">{r.category}</span>{r.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{r.location}</span>}<span>{relationLabel(r.relation)}</span></div><strong>{r.title}</strong><p className="search-snippet">{r.body}</p>{who}</li>;
 }

@@ -1,3 +1,4 @@
+import { seedNamedRipples } from './seed-named-ripples';
 // One-off: fictional members (@example.com) connected to the project owner's account, with Ripples, replies and picks.
 // Uses member functions for everything members can do themselves; only trust edges where the owner is the requester are written with the admin key.
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
@@ -27,6 +28,7 @@ const details: Record<string, Record<string, unknown>> = {
 };
 const { data: list } = await admin.auth.admin.listUsers({ perPage: 1000 });
 const resume = list.users.some(u => u.email === 'giulia.demo@example.com');
+if (resume) { await seedNamedRipples(); console.log('Historical demo network preserved.'); process.exit(0); }
 const c: Record<string, SupabaseClient> = {}; const id: Record<string, string> = { eva: EVA };
 // Demo sessions are cached in /tmp (refresh tokens only) so re-runs don't hit the sign-in rate limit.
 const CACHE = '/tmp/tellher-demo-sessions.json';
@@ -80,7 +82,7 @@ const ins = await admin.from('trust_connections').insert(edges); if (ins.error) 
 await trust('giulia', 'nadia'); await trust('amira', 'hana'); await trust('elena', 'nadia');
 // A pending request for Eva to answer
 await trust('valentina', 'eva');
-} else { for (const k of ['giulia', 'amira', 'elena', 'chiara', 'nadia']) { const { data: mine } = await c[k]!.rpc('tellher_feed'); for (const q of (mine ?? []) as { id: string; is_mine: boolean }[]) if (q.is_mine) await c[k]!.rpc('tellher_delete_question', { _id: q.id }); } }
+}
 
 // Extended Circle discovery: Valentina reachable via Chiara but not discoverable; one pending Trust Bridge from Eva to Hana.
 const edge = async (a: string, b: string) => (await admin.from('trust_connections').select('id').eq('requester_id', id[a]!).eq('recipient_id', id[b]!).in('status', ['pending', 'accepted'])).data?.length;
@@ -194,3 +196,5 @@ console.log('Seeded network around Eva.');
  }
  console.log('Seeded wider demo community.');
 }
+
+await seedNamedRipples();
