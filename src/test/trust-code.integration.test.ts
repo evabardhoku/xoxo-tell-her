@@ -29,7 +29,7 @@ describe.skipIf(!url || !key)('Trust Code', () => {
   expect(await redeem(1, t.code.toLowerCase())).toEqual({ status: 'connected', first_name: 'Eva' });
   expect(await pair(0, 1)).toEqual([{ status: 'accepted' }]);
   const { data: n } = await admin.from('notifications').select('title').eq('recipient_id', ids[0]).eq('kind', 'trust_code');
-  expect(n![0]!.title).toBe('Sara connected with you through your Trust Code.');
+  expect(n![0]!.title).toBe('Sara joined your Circle.');
   expect((await redeem(2, t.code)).status).toBe('invalid');
  });
  it('already Direct: no duplicate', async () => {
