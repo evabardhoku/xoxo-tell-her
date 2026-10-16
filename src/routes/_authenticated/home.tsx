@@ -88,7 +88,7 @@ function CurrentPage() {
  const first = profile.data?.first_name;
 
  return <>
-  <div className="current-heading"><h2 className="current-welcome">{first ? `Welcome back, ${first}.` : 'Welcome back.'}</h2><p className="form-note"></p></div>
+  <div className="current-heading"><h2 className="current-welcome">{first ? `Welcome back, ${first}.` : 'Welcome back.'}</h2></div>
   {loading ? <p role="status" className="form-note">Gathering what’s moving…</p>
    : !items.length ? <section className="empty-panel"><h2>The Current is quiet for now.</h2><p>As your Direct Circle grows, their questions, notes and picks will gather here.</p><Button asChild variant="editorial" className="mt-6"><Link to="/circle">Go to Circle<ArrowRight /></Link></Button></section>
    : <>

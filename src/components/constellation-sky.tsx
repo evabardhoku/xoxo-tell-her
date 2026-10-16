@@ -14,9 +14,9 @@ export function ConstellationSky({ rows }: { rows: SkyRow[] }) {
   <TransformWrapper minScale={1} maxScale={3.5} wheel={{ step: 0.08 }} doubleClick={{ mode: 'zoomIn', step: 0.6 }} centerOnInit>
    {({ zoomIn, zoomOut, resetTransform }) => <div className="sky-frame">
     <div className="sky-zoom" role="group" aria-label="Zoom the sky">
-     <button type="button" onClick={() => zoomIn()} aria-label="Zoom in"><Plus size={15} /></button>
-     <button type="button" onClick={() => zoomOut()} aria-label="Zoom out"><Minus size={15} /></button>
-     <button type="button" onClick={() => resetTransform()} aria-label="Reset view"><RotateCcw size={14} /></button>
+     <Button size="icon" variant="ghost" onClick={() => zoomIn()} aria-label="Zoom in" title="Zoom in"><Plus size={15} /></Button>
+     <Button size="icon" variant="ghost" onClick={() => zoomOut()} aria-label="Zoom out" title="Zoom out"><Minus size={15} /></Button>
+     <Button size="icon" variant="ghost" onClick={() => resetTransform()} aria-label="Reset view" title="Reset view"><RotateCcw size={14} /></Button>
     </div>
     <TransformComponent wrapperClass="sky-wrap" contentClass="sky-content">
      <section className="sky sky--large" aria-label="Constellations of Ripples by situation">
