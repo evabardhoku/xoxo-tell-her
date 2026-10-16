@@ -44,10 +44,6 @@ function QuestionPage() {
    <p className="question-body">{q.body}</p>
   </article>
   <Echo id={id} isAuthor={q.is_mine} />
-  <PerspectiveMap counts={tally(data.replies)} />
-  {q.is_mine && q.my_instinct && <aside className="instinct-card"><p className="private-note"><LockKeyhole size={12} />Only you see this</p><p className="instinct-line">You started here: <strong>{instincts.find(i => i.value === q.my_instinct)?.label}</strong></p>{q.my_note && <p className="form-note">{q.my_note}</p>}</aside>}
-  <OtherSide id={id} isAuthor={q.is_mine} />
-  <PerspectiveSynthesis key={data.replies.length} id={id} replies={data.replies} />
   {!q.is_mine && !q.my_reply_id && <ReplyForm id={id} onDone={() => { setNote({ text: 'Thank you. Your perspective was added.' }); refresh(); }} />}
   {note && <p role={note.error ? 'alert' : 'status'} className={`form-note ${note.error ? 'form-error' : 'form-success'}`}>{note.text}</p>}
   <section aria-labelledby="replies-title" className="reply-section">
@@ -59,6 +55,10 @@ function QuestionPage() {
      {r.is_mine && <div><Button size="sm" variant="ghost" onClick={() => removeReply(r.id)}><Trash2 />Delete</Button></div>}
     </li>)}</ul>}
   </section>
+  {data.replies.length > 0 && <PerspectiveMap counts={tally(data.replies)} />}
+  <PerspectiveSynthesis key={data.replies.length} id={id} replies={data.replies} />
+  {q.is_mine && q.my_instinct && <aside className="instinct-card"><p className="private-note"><LockKeyhole size={12} />Only you see this</p><p className="instinct-line">You started here: <strong>{instincts.find(i => i.value === q.my_instinct)?.label}</strong></p>{q.my_note && <p className="form-note">{q.my_note}</p>}</aside>}
+  <OtherSide id={id} isAuthor={q.is_mine} />
  </div>;
 }
 
