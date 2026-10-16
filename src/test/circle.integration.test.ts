@@ -50,4 +50,11 @@ describe.skipIf(!url || !key)('MyCircle trust graph', () => {
   expect((await c[A]!.from('trust_connections').update({ status: 'accepted' }).eq('id', id).select()).data ?? []).toEqual([]);
   expect((await c[C]!.from('trust_connections').insert({ requester_id: ids[C], recipient_id: ids[B], status: 'accepted' })).error).not.toBeNull();
  });
+ it('when A directly trusts C, C leaves the Extended count and appears only in Direct Circle', async () => {
+  await c[A]!.rpc('tellher_send_trust', { _recipient: ids[C] });
+  await c[C]!.rpc('tellher_respond_trust', { _id: (await incoming(C)).find((e: { first_name: string }) => e.first_name === 'A').connection_id, _accept: true });
+  const direct = ((await c[A]!.rpc('tellher_my_circle')).data ?? []).filter((e: { kind: string }) => e.kind === 'direct').map((e: { first_name: string }) => e.first_name).sort();
+  expect(direct).toEqual(['B', 'C', 'D']);
+  expect((await c[A]!.rpc('tellher_extended_reach_count')).data).toBe(0);
+ });
 });
