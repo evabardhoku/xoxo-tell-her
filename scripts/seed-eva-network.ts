@@ -1,4 +1,5 @@
 import { seedNamedRipples } from './seed-named-ripples';
+import { refineDemoFieldNotes } from './refine-demo-field-notes';
 // One-off: fictional members (@example.com) connected to the project owner's account, with Ripples, replies and picks.
 // Uses member functions for everything members can do themselves; only trust edges where the owner is the requester are written with the admin key.
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
@@ -28,7 +29,7 @@ const details: Record<string, Record<string, unknown>> = {
 };
 const { data: list } = await admin.auth.admin.listUsers({ perPage: 1000 });
 const resume = list.users.some(u => u.email === 'giulia.demo@example.com');
-if (resume) { await seedNamedRipples(); console.log('Historical demo network preserved.'); process.exit(0); }
+if (resume) { await seedNamedRipples(); await refineDemoFieldNotes(); console.log('Historical demo network preserved.'); process.exit(0); }
 const c: Record<string, SupabaseClient> = {}; const id: Record<string, string> = { eva: EVA };
 // Demo sessions are cached in /tmp (refresh tokens only) so re-runs don't hit the sign-in rate limit.
 const CACHE = '/tmp/tellher-demo-sessions.json';
@@ -197,4 +198,4 @@ console.log('Seeded network around Eva.');
  console.log('Seeded wider demo community.');
 }
 
-await seedNamedRipples();
+await seedNamedRipples(); await refineDemoFieldNotes();

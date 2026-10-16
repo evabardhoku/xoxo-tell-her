@@ -11,7 +11,7 @@
 
 - Keep public pages at top-level routes and private app pages under the client-only `_authenticated` layout; this preserves one public home and a single account gate.
 - Keep account state in one root subscriber and private profile access owner-scoped through the generated browser client; this avoids duplicate session listeners and enforces database privacy.
-- Treat authentication, trust requests and accepted circle relationships, AskHer / Trust Ripples, private question ownership metadata, replies, Perspective Map, AI perspective synthesis, Wingwoman, and persisted demo data as existing functional systems; extend their current paths rather than duplicate or replace working logic.
+- Extend existing auth, trust relationships, Ripples/private ownership, replies, Perspective Map/synthesis, Wingwoman and persisted demo systems; never duplicate or replace working paths.
 - Trust/content writes use checked functions. Ripple identity uses additive checked publication/representation, immutable visibility, and private ownership. Named first names are Ripple-scoped; profile links/avatars require normal profile access. Anonymous identity and responder privacy never change.
 - Share profile validation and editing between account onboarding and Profile; database triggers enforce attestation and field limits independently of the UI.
 - Keep avatars in owner-scoped private storage and strip uploaded image metadata; short-lived signed links prevent public identity exposure.
@@ -27,6 +27,8 @@
 - Global search (tellher_search) only composes the viewer-checked profile, shelf and feed functions and matches fields they already return; section filters run client-side over data those same functions return.
 - The Current and Constellations only compose existing checked sources client-side (no feed table), ordered by trust distance, topic, freshness, so they never grant access their sources don't.
 - Between Us messaging is one-to-one only, readable by participants via RLS, with all writes (open, send, read marker, block, report) through checked database functions that re-check accepted Direct trust and blocks on every send; it is never initiated from anonymous content.
-- Navigation: one app-shell `navigation` list (Sky, Ask, Circle, Me) drives desktop tabs and the mobile bar; each area's `match` covers its nested routes and each hub page's in-page segmented control (or optional `hub` row) links every sub-page so nothing is unreachable — single source of truth for IA.
+- One app-shell `navigation` list (Sky, Ask, Circle, Me) drives desktop/mobile navigation; nested-route `match` and hub controls keep every sub-page reachable from this single IA source.
 - Echo/Echo Rooms/The Other Side/Letters: anonymous Ripple add-ons via checked functions only. One Echo per member; counts and room entry (author + echoers) only at ECHO_THRESHOLD (mirrors DB); room voices are stable numbers; outcomes are author-only, private by default, shared only within Ripple reach; Letters (echoers, or the author after a shared outcome) are read only via tellher_letters with author_id column-revoked; none are searchable.
 - Progressive discovery derives unlock state client-side from existing owner-scoped queries (src/lib/discovery.ts + useDiscovery) with an account-creation cutoff; it only softens emphasis, never hides routes or blocks direct navigation.
+
+- Field Notes reuse trust_notes; writes and optional Ripple linkage go through tellher_save_field_note, with append-only consent receipts for own anonymous links and viewer-checked context/read functions, so links never broaden Ripple or profile access.

@@ -1,4 +1,5 @@
 import { RippleAuthor } from '@/components/ripple-author';
+import { FieldNoteContext } from '@/components/field-note-context';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { zodValidator, fallback } from '@tanstack/zod-adapter';
@@ -14,7 +15,7 @@ import { matchTopics, relationLabel, searchQuery, type SearchRow } from '@/lib/s
 
 export const Route = createFileRoute('/_authenticated/search')({
  validateSearch: zodValidator(z.object({ q: fallback(z.string(), '').default('') })),
- head: () => pageHead('Search', 'Search people, Trust Notes, picks and questions you can already see on TellHer.'),
+ head: () => pageHead('Search', 'Search people, Field Notes, picks and questions you can already see on TellHer.'),
  component: SearchPage,
 });
 
@@ -26,7 +27,7 @@ function SearchPage() {
  const submit = (e: FormEvent) => { e.preventDefault(); navigate({ search: { q: text.trim() } }); };
  const rows = res.data ?? []; const of = (k: SearchRow['kind']) => rows.filter(r => r.kind === k);
  const topics = matchTopics(term);
- const groups: [string, SearchRow['kind']][] = [['People', 'person'], ['Trust Notes', 'note'], ['Trusted Picks', 'pick'], ['Trust Ripples', 'question']];
+ const groups: [string, SearchRow['kind']][] = [['People', 'person'], ['Field Notes', 'note'], ['Picks', 'pick'], ['Trust Ripples', 'question']];
  return <>
   <div className="page-heading"><div><div className="eyebrow">SEARCH</div><h1>Find what’s already shared with you.</h1><p>Only people, notes, picks and questions you can already see. Never emails, private instincts or Wingwoman.</p></div></div>
   <form className="search-bar" onSubmit={submit} role="search"><label htmlFor="global-q" className="sr-only">Search TellHer</label><Input id="global-q" value={text} maxLength={80} onChange={e => setText(e.target.value)} placeholder="A name, a city, a topic…" autoFocus /><Button type="submit" variant="editorial"><SearchIcon />Search</Button></form>
@@ -44,8 +45,8 @@ function SearchPage() {
 function Result({ r }: { r: SearchRow }) {
  if (r.kind === 'person') return <PersonResult r={r} />;
  if (r.kind === 'question') return <li className="search-item"><div className="question-meta"><span className="question-category">{r.category}</span><span>{reachContext(r.audience_scope ?? '')}</span>{r.created_at && <span>{relativeTime(r.created_at)}</span>}</div><RippleAuthor identity={r} /><Link to="/askher/$id" params={{ id: r.id }} className="question-link"><p>{r.body}</p></Link><span className="form-note">{r.reply_count ?? 0} perspectives</span></li>;
- const who = r.relation === 'self' ? <span>Yours</span> : <Link to="/profile/$memberId" params={{ memberId: r.member_id! }} className="member-link">{r.kind === 'pick' ? `Recommended by ${r.member_name}` : `From ${r.member_name}`}</Link>;
- return <li className="search-item"><div className="question-meta"><span className="question-category">{r.category}</span>{r.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{r.location}</span>}<span>{relationLabel(r.relation)}</span></div><strong>{r.title}</strong><p className="search-snippet">{r.body}</p>{who}</li>;
+ const who = r.relation === 'self' ? <span>Yours</span> : r.member_id ? <Link to="/profile/$memberId" params={{ memberId: r.member_id }} className="member-link">{r.kind === 'pick' ? `Recommended by ${r.member_name}` : `From ${r.member_name}`}</Link> : null;
+ return <li className="search-item"><div className="question-meta"><span className="question-category">{r.category}</span>{r.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{r.location}</span>}<span>{relationLabel(r.relation)}</span></div><strong>{r.title}</strong><p className="search-snippet">{r.body}</p>{who}{r.kind === 'note' && <FieldNoteContext id={r.id} />}</li>;
 }
 
 function PersonResult({ r }: { r: SearchRow }) {

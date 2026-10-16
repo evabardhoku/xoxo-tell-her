@@ -140,6 +140,39 @@ export type Database = {
           },
         ]
       }
+      field_note_identity_reveals: {
+        Row: {
+          confirmed_at: string
+          member_id: string
+          question_id: string
+        }
+        Insert: {
+          confirmed_at?: string
+          member_id: string
+          question_id: string
+        }
+        Update: {
+          confirmed_at?: string
+          member_id?: string
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "field_note_identity_reveals_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "field_note_identity_reveals_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       letter_helps: {
         Row: {
           created_at: string
@@ -784,6 +817,7 @@ export type Database = {
           body: string
           created_at: string
           id: string
+          linked_ripple_id: string | null
           location: string | null
           search: unknown
           title: string
@@ -795,6 +829,7 @@ export type Database = {
           body: string
           created_at?: string
           id?: string
+          linked_ripple_id?: string | null
           location?: string | null
           search?: unknown
           title: string
@@ -806,6 +841,7 @@ export type Database = {
           body?: string
           created_at?: string
           id?: string
+          linked_ripple_id?: string | null
           location?: string | null
           search?: unknown
           title?: string
@@ -818,6 +854,13 @@ export type Database = {
             columns: ["author_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trust_notes_linked_ripple_id_fkey"
+            columns: ["linked_ripple_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
             referencedColumns: ["id"]
           },
         ]
@@ -1059,6 +1102,16 @@ export type Database = {
           question_id: string
         }[]
       }
+      tellher_field_note_context: {
+        Args: { _ids: string[] }
+        Returns: {
+          category: string
+          identity_revealed: boolean
+          note_id: string
+          perspective_count: number
+          question_id: string
+        }[]
+      }
       tellher_find_member: {
         Args: { _email: string }
         Returns: {
@@ -1269,6 +1322,19 @@ export type Database = {
           trust_distance: number
         }[]
       }
+      tellher_ripple_field_notes: {
+        Args: { _q: string }
+        Returns: {
+          body: string
+          category: string
+          created_at: string
+          first_name: string
+          id: string
+          location: string
+          member_id: string
+          title: string
+        }[]
+      }
       tellher_ripple_identities: {
         Args: { _ids: string[] }
         Returns: {
@@ -1278,6 +1344,18 @@ export type Database = {
           profile_id: string
           question_id: string
         }[]
+      }
+      tellher_save_field_note: {
+        Args: {
+          _body?: string
+          _confirm_reveal?: boolean
+          _id?: string
+          _location?: string
+          _ripple?: string
+          _title?: string
+          _topic?: string
+        }
+        Returns: string
       }
       tellher_search: {
         Args: { _q: string }

@@ -35,8 +35,8 @@ export const currentFilters = [
  { value: 'direct', label: 'Direct Circle' },
  { value: 'extended', label: 'Extended Circle' },
  { value: 'question', label: 'Questions' },
- { value: 'note', label: 'Trust Notes' },
- { value: 'pick', label: 'Trusted Picks' },
+ { value: 'note', label: 'Field Notes' },
+ { value: 'pick', label: 'Picks' },
 ] as const;
 export type CurrentFilter = (typeof currentFilters)[number]['value'];
 export function applyFilter(items: CurrentItem[], f: CurrentFilter) {

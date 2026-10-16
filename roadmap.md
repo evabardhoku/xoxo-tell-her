@@ -1,4 +1,5 @@
 # TellHer foundation
+- [x] Field Notes and Picks: reuse notes, consent-gated Ripple links, editorial profile/discovery, demo improvements, full tests and browser verification
 - [x] Named/anonymous Ripples: preserve recovery copy, extend checked publication/attribution, update existing surfaces and demos, verify privacy and composer layouts
 - [x] Editorial design system and public landing page
 - [x] Real accounts and private profile storage
