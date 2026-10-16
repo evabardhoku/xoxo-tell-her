@@ -5,8 +5,8 @@ import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 
 const content = {
- home: { label: 'YOUR SPACE', title: 'A little space for you.', intro: 'You don’t have to have it all figured out.', empty: 'Every ripple starts somewhere.', copy: 'Ask a question through your circle, reflect privately with Wingwoman, or see what women are asking in AskHer.' },
- askher: { label: 'ASKHER', title: 'Room for another perspective.', intro: 'Thoughtful questions. Women with lived experience.', empty: 'A quieter kind of conversation.', copy: 'When Trust Ripples begin, questions from your network will appear here. No rankings. No race to be heard.' },
+ home: { label: 'YOUR SPACE', title: 'A little space for you.', intro: 'You don’t have to have it all figured out.', empty: 'Every ripple starts somewhere.', copy: 'Ask a question through your circle, reflect privately with Wingwoman, or see what women are asking in Sky.' },
+ askher: { label: 'SKY', title: 'Room for another perspective.', intro: 'Thoughtful questions. Women with lived experience.', empty: 'A quieter kind of conversation.', copy: 'When Trust Ripples begin, questions from your network will appear here. No rankings. No race to be heard.' },
  circle: { label: 'MY CIRCLE', title: 'Trust starts close to home.', intro: 'The women you turn to. The trust that connects you.', empty: 'Your circle is taking shape.', copy: 'A small circle of women you trust. One day, their circles can gently extend yours. Your connections will live here.' },
  wingwoman: { label: 'WINGWOMAN', title: 'Hear yourself a little clearer.', intro: 'Your private space for reflection. Before you reach out.', empty: 'A moment, just for you.', copy: 'Wingwoman will help you reflect on a situation in private, then turn it into an editable Trust Ripple draft when you’re ready.' },
  ripple: { label: 'TRUST RIPPLE', title: 'Some things are worth asking.', intro: 'Your question. Your words. Your choice of how far it travels.', empty: 'Start with what’s on your mind.', copy: 'The Trust Ripple composer is coming soon. Nothing is shared, saved, or sent from this preview.' },
