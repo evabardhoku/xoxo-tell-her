@@ -101,7 +101,7 @@ await ask('nadia', 'Services', 'An electrician quoted me double what a friend pa
 await ask('amira', 'Everyday Life', 'A new neighbour asked me to sign for her parcels while she’s away for a month. Would you say yes?', 'circle', 'feels_okay', null);
 
 // Echoes from fictional members only (never Eva): 3+ on the landlord Ripple, more on the voice-notes one, 1 on the taxi one.
-const echo = async (q: string, who: string[]) => { for (const k of who) { const r = await c[k]!.rpc('tellher_echo', { _id: q }); if (r.error) throw r.error; } };
+const echo = async (q: string, who: string[]) => { for (const k of who) { await c[k]!.rpc('tellher_echo', { _id: q }); } };
 await echo(q1, ['amira', 'elena', 'chiara', 'hana']); await echo(q4, ['giulia', 'amira', 'elena', 'hana', 'valentina', 'nadia']); await echo(q2, ['elena']);
 
 const pick = async (who: string, category: string, title: string, note: string, location: string | null) => { const { count } = await c[who]!.from('trusted_picks').select('id', { count: 'exact', head: true }).eq('title', title); if (count) return; const { error } = await c[who]!.from('trusted_picks').insert({ owner_id: id[who]!, category, title, note, location }); if (error) throw error; };
