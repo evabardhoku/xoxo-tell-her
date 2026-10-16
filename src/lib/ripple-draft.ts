@@ -16,3 +16,14 @@ export function ripplePublication(draft: RippleDraft) {
   _note: draft.note.trim() || null as unknown as string,
  };
 }
+export type ExcerptLine = { role: 'you' | 'wingwoman'; text: string };
+const clip = (s: string, n: number) => (s.length > n ? `${s.slice(0, n).trimEnd()}…` : s);
+/** Concise private reminder of a Wingwoman conversation: opening situation plus the last few turns, each clipped. */
+export function conversationExcerpt(situation: string, messages: { role: string; content: string }[], keep = 4) {
+ const recent = messages.slice(-keep);
+ return {
+  opening: clip(situation.trim(), 400),
+  omitted: Math.max(0, messages.length - recent.length),
+  lines: recent.map(m => ({ role: m.role === 'user' ? 'you' : 'wingwoman', text: clip(m.content.trim(), 220) }) as ExcerptLine),
+ };
+}

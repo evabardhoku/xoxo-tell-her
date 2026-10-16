@@ -28,3 +28,15 @@ describe('feed filters', () => {
   expect(filterFeed(list, { ...base, sort: 'oldest' }, now).map(x => x.id)).toEqual(['b', 'a']);
  });
 });
+
+import { conversationExcerpt } from '@/lib/ripple-draft';
+describe('conversation excerpt', () => {
+ it('keeps only the last four turns and counts the rest', () => {
+  const m = Array.from({ length: 8 }, (_, i) => ({ role: i % 2 ? 'assistant' : 'user', content: `turn ${i}` }));
+  const e = conversationExcerpt('opening', m);
+  expect(e.omitted).toBe(4); expect(e.lines.map(l => l.text)).toEqual(['turn 4', 'turn 5', 'turn 6', 'turn 7']);
+ });
+ it('clips long turns to 220 characters', () => {
+  expect(conversationExcerpt('o', [{ role: 'user', content: 'x'.repeat(500) }]).lines[0]!.text.length).toBe(221);
+ });
+});
