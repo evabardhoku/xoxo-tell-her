@@ -179,6 +179,7 @@ export type Database = {
           conversation_id: string
           created_at: string
           id: string
+          mentions: string[]
           sender_id: string
         }
         Insert: {
@@ -186,6 +187,7 @@ export type Database = {
           conversation_id: string
           created_at?: string
           id?: string
+          mentions?: string[]
           sender_id: string
         }
         Update: {
@@ -193,6 +195,7 @@ export type Database = {
           conversation_id?: string
           created_at?: string
           id?: string
+          mentions?: string[]
           sender_id?: string
         }
         Relationships: [
@@ -206,6 +209,47 @@ export type Database = {
           {
             foreignKeyName: "messages_sender_id_fkey"
             columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          kind: string
+          link: string | null
+          read_at: string | null
+          recipient_id: string
+          title: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          id?: string
+          kind: string
+          link?: string | null
+          read_at?: string | null
+          recipient_id: string
+          title: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          link?: string | null
+          read_at?: string | null
+          recipient_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_recipient_id_fkey"
+            columns: ["recipient_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -383,6 +427,7 @@ export type Database = {
           body: string
           created_at: string
           id: string
+          mentions: string[]
           perspective_tag: string | null
           question_id: string
           updated_at: string
@@ -392,6 +437,7 @@ export type Database = {
           body: string
           created_at?: string
           id?: string
+          mentions?: string[]
           perspective_tag?: string | null
           question_id: string
           updated_at?: string
@@ -401,6 +447,7 @@ export type Database = {
           body?: string
           created_at?: string
           id?: string
+          mentions?: string[]
           perspective_tag?: string | null
           question_id?: string
           updated_at?: string
@@ -418,6 +465,39 @@ export type Database = {
             columns: ["question_id"]
             isOneToOne: false
             referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reply_likes: {
+        Row: {
+          created_at: string
+          member_id: string
+          reply_id: string
+        }
+        Insert: {
+          created_at?: string
+          member_id: string
+          reply_id: string
+        }
+        Update: {
+          created_at?: string
+          member_id?: string
+          reply_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reply_likes_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reply_likes_reply_id_fkey"
+            columns: ["reply_id"]
+            isOneToOne: false
+            referencedRelation: "replies"
             referencedColumns: ["id"]
           },
         ]
@@ -910,6 +990,8 @@ export type Database = {
       tellher_is_direct: { Args: { _a: string; _b: string }; Returns: boolean }
       tellher_is_participant: { Args: { _c: string }; Returns: boolean }
       tellher_is_question_author: { Args: { _q: string }; Returns: boolean }
+      tellher_like_reply: { Args: { _reply: string }; Returns: undefined }
+      tellher_mark_notifications_read: { Args: never; Returns: undefined }
       tellher_mark_read: { Args: { _c: string }; Returns: undefined }
       tellher_member_profile: {
         Args: { _id: string }
@@ -953,6 +1035,27 @@ export type Database = {
           member_id: string
         }[]
       }
+      tellher_notifications: {
+        Args: never
+        Returns: {
+          body: string
+          created_at: string
+          id: string
+          kind: string
+          link: string
+          read: boolean
+          title: string
+        }[]
+      }
+      tellher_notify_trust: {
+        Args: {
+          _body: string
+          _kind: string
+          _recipient: string
+          _title: string
+        }
+        Returns: undefined
+      }
       tellher_open_conversation: { Args: { _member: string }; Returns: string }
       tellher_outcome: {
         Args: { _q: string }
@@ -967,6 +1070,10 @@ export type Database = {
       }
       tellher_post_reply: {
         Args: { _body: string; _id: string; _tag: string }
+        Returns: string
+      }
+      tellher_post_reply_tagged: {
+        Args: { _body: string; _id: string; _mentions: string[]; _tag: string }
         Returns: string
       }
       tellher_publish_question: {
@@ -1002,6 +1109,14 @@ export type Database = {
           id: string
           is_mine: boolean
           perspective_tag: string
+        }[]
+      }
+      tellher_reply_likes: {
+        Args: { _q: string }
+        Returns: {
+          likes: number
+          mine: boolean
+          reply_id: string
         }[]
       }
       tellher_report_message: {
@@ -1051,6 +1166,10 @@ export type Database = {
         Args: { _body: string; _c: string }
         Returns: string
       }
+      tellher_send_message_tagged: {
+        Args: { _body: string; _c: string; _mentions: string[] }
+        Returns: string
+      }
       tellher_send_trust: { Args: { _recipient: string }; Returns: undefined }
       tellher_set_outcome: {
         Args: {
@@ -1062,8 +1181,18 @@ export type Database = {
         }
         Returns: undefined
       }
+      tellher_taggable: {
+        Args: never
+        Returns: {
+          first_name: string
+          last_initial: string
+          member_id: string
+        }[]
+      }
       tellher_unblock: { Args: { _member: string }; Returns: undefined }
       tellher_unecho: { Args: { _id: string }; Returns: undefined }
+      tellher_unlike_reply: { Args: { _reply: string }; Returns: undefined }
+      tellher_unread_notifications: { Args: never; Returns: number }
     }
     Enums: {
       [_ in never]: never
