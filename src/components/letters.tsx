@@ -46,7 +46,7 @@ export function Letters({ id }: { id: string }) {
  </section>;
 }
 
-function LetterForm({ id, initial, onDone, onCancel }: { id: string; initial?: Letter; onDone: () => void; onCancel: () => void }) {
+function LetterForm({ id, initial, onDone, onCancel }: { id: string; initial?: Letter | undefined; onDone: () => void; onCancel: () => void }) {
  const [body, setBody] = useState(initial?.body ?? ''); const [where, setWhere] = useState(initial?.where_now ?? '');
  const [busy, setBusy] = useState(false); const [err, setErr] = useState('');
  const save = async () => { setBusy(true); setErr(''); const { error } = await supabase.rpc('tellher_write_letter', { _q: id, _body: body, _where_now: where }); setBusy(false); if (error) return setErr(errorText(error)); onDone(); };
