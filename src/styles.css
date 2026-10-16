@@ -263,7 +263,7 @@ input:focus-visible,textarea:focus-visible,select:focus-visible { outline:2px so
 .section-tabs a:hover, .section-tabs a[data-status="active"] { color:var(--primary); } .section-tabs a[data-status="active"] { border-bottom-color:var(--secondary);font-weight:500; }
 .section-tabs a:focus-visible { outline:2px solid var(--ring);outline-offset:2px; }
 .app-header-actions .avatar-link[data-active="true"] { border-color:var(--primary); }
-@media (max-width: 760px) { .mobile-nav { grid-template-columns:repeat(4,1fr) !important; } .app-header-actions .start-ripple { display:none; } .section-tabs { margin-top:-10px; } }
+@media (max-width: 760px) { .mobile-nav { grid-template-columns:repeat(5,1fr) !important; } .app-header-actions .start-ripple { display:none; } .section-tabs { margin-top:-10px; } }
 /* Echo: quiet shared-experience signal */
 .echo { position:relative;display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin:18px 0 28px;padding:16px 20px;border:1px solid var(--border);border-radius:16px;background:var(--muted); }
 .echo-halo { width:28px;height:28px;flex:none;border-radius:50%;border:1px solid var(--secondary);box-shadow:0 0 0 5px color-mix(in oklab, var(--secondary) 14%, transparent), 0 0 0 11px color-mix(in oklab, var(--secondary) 7%, transparent);opacity:.6;transition:opacity .4s ease; }
