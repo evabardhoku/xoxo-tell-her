@@ -51,7 +51,7 @@ export function TrustShelf({ memberId, firstName, editable = false }: { memberId
   </li>)}</ul> : <p className="form-note">{editable ? 'No notes yet. Share something you learned the hard way.' : 'No Trust Notes yet.'}</p>}
   {filtering && !notes.length && !picks.length && <p className="form-note">Nothing on this shelf matches these filters.</p>}
   {(picks.length > 0 || editable) && <><h3 className="picks-sub">Trusted Picks</h3>
-   {picks.length ? <ul className="pick-list">{picks.map(p => <li key={p.id} className="pick-item"><div className="question-meta"><span className="question-category">{p.category}</span>{p.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{p.location}</span>}</div><strong className="pick-title">{p.title}</strong><p className="pick-note">{p.body}</p></li>)}</ul> : <p className="form-note">Add picks from MyCircle. They show here only to women who trust you.</p>}</>}
+   {picks.length ? <ul className="pick-list">{picks.map(p => <li key={p.id} className="pick-item"><div className="question-meta"><span className="question-category">{p.category}</span>{p.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{p.location}</span>}</div><strong className="pick-title">{p.title}</strong><p className="pick-note">{p.body}</p></li>)}</ul> : <p className="form-note">Add picks from Circle. They show here only to women who trust you.</p>}</>}
  </section>;
 }
 

@@ -29,7 +29,7 @@ export const Route = createFileRoute('/_authenticated/profile_/$memberId')({
 });
 
 function Unavailable() {
- return <section className="empty-panel"><LockKeyhole /><h2>This profile isn’t shared with you.</h2><p>Members choose who can see their profile. It may be limited to her own circle.</p><Link to="/circle" className="member-link mt-4 inline-block">Back to MyCircle</Link></section>;
+ return <section className="empty-panel"><LockKeyhole /><h2>This profile isn’t shared with you.</h2><p>Members choose who can see their profile. It may be limited to her own circle.</p><Link to="/circle" className="member-link mt-4 inline-block">Back to Circle</Link></section>;
 }
 
 const context = (r: string, via: string | null) => r === 'self' ? 'This is how members see you' : r === 'direct' ? 'In your Direct Circle' : r === 'extended' ? `Extended Circle${via ? ` via ${via}` : ''}` : 'TellHer community member';
@@ -59,7 +59,7 @@ function MemberProfile() {
  </>;
 }
 
-function BackLink() { return <Link to="/circle" className="member-link mb-6 inline-flex items-center gap-2 text-sm"><ArrowLeft size={14} />My Circle</Link>; }
+function BackLink() { return <Link to="/circle" className="member-link mb-6 inline-flex items-center gap-2 text-sm"><ArrowLeft size={14} />Circle</Link>; }
 
 /** Between Us is offered only when the checked database rule allows it (accepted Direct Circle, no block). */
 function MessageHer({ memberId }: { memberId: string }) {
