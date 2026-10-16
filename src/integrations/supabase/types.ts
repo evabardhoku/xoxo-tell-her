@@ -972,9 +972,14 @@ export type Database = {
           created_at: string
           echo_level: number
           excerpt: string
+          has_letters: boolean
           has_outcome: boolean
           id: string
         }[]
+      }
+      tellher_constellation_women: {
+        Args: { _category: string }
+        Returns: number
       }
       tellher_conversation_partner: { Args: { _c: string }; Returns: string }
       tellher_delete_letter: { Args: { _id: string }; Returns: undefined }
@@ -1294,6 +1299,17 @@ export type Database = {
           first_name: string
           last_initial: string
           member_id: string
+        }[]
+      }
+      tellher_topic_letters: {
+        Args: { _category: string }
+        Returns: {
+          body: string
+          created_at: string
+          id: string
+          mine: boolean
+          question_id: string
+          where_now: string
         }[]
       }
       tellher_unblock: { Args: { _member: string }; Returns: undefined }

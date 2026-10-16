@@ -1,6 +1,7 @@
 import { categories } from '@/lib/askher';
+import { supabase } from '@/integrations/supabase/client';
 
-export type SkyRow = { id: string; category: string; excerpt: string; created_at: string; echo_level: number; has_outcome: boolean };
+export type SkyRow = { id: string; category: string; excerpt: string; created_at: string; echo_level: number; has_outcome: boolean; has_letters?: boolean };
 export type Star = SkyRow & { x: number; y: number };
 export type Cluster = { category: string; x: number; y: number; stars: Star[] };
 
@@ -22,3 +23,16 @@ export function buildSky(rows: SkyRow[]): Cluster[] {
 }
 const clamp = (v: number) => Math.min(95, Math.max(5, v));
 export const echoWords = ['', 'Others may relate', 'Echoed by others', 'Echoed by many women'];
+
+export const skyQuery = { queryKey: ['constellation'], queryFn: async () => { const { data, error } = await supabase.rpc('tellher_constellation'); if (error) throw error; return (data ?? []) as SkyRow[]; } };
+
+/** A short human title for each constellation, so a topic reads like a situation rather than a filter. */
+const titles: Record<string, string> = {
+ 'Work': 'Holding your ground at work',
+ 'Dating & Boundaries': 'When something feels off with someone new',
+ 'Housing & Moving': 'Finding a place that feels like yours',
+ 'Travel': 'Travelling on your own terms',
+ 'Services': 'Knowing who to trust with the work',
+ 'Everyday Life': 'The small things that weigh on you',
+};
+export const placeTitle = (category: string) => titles[category] ?? category;

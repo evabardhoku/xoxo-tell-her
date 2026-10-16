@@ -1,8 +1,9 @@
-import { Sparkle } from 'lucide-react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery, useQueries } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
-import { ArrowRight, LockKeyhole, MapPin, Search as SearchIcon } from 'lucide-react';
+import { ArrowRight, LockKeyhole, MapPin } from 'lucide-react';
+import { ConstellationSky } from '@/components/constellation-sky';
+import { skyQuery } from '@/lib/constellations';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { QuestionCard } from '@/components/question-feed';
@@ -17,11 +18,25 @@ import { feedMapQuery } from '@/lib/perspectives';
 import { availableFilters, applyFilter, questionProvenance, questionTier, rankCurrent, type CurrentFilter, type CurrentItem } from '@/lib/current';
 
 export const Route = createFileRoute('/_authenticated/home')({
- head: () => pageHead('The Current', 'What useful things are moving through your TellHer trust network right now.'),
- component: CurrentPage,
+ validateSearch: (s: Record<string, unknown>): { view?: 'constellations' } => (s['view'] === 'constellations' ? { view: 'constellations' } : {}),
+ head: () => pageHead('Sky', 'The Current and Constellations: what is moving through your TellHer trust network.'),
+ component: SkyHub,
 });
 
 const SHELF_LIMIT = 12;
+
+function SkyHub() {
+ const { view } = Route.useSearch();
+ const sky = useQuery(skyQuery);
+ return <div className="sky-hub">
+  <Link to="/wingwoman" className="mind-card"><span className="mind-card-rings" aria-hidden /><span className="eyebrow">WHAT’S ON YOUR MIND?</span><span className="mind-card-input">Something you can’t quite put down…</span><span className="form-note"><LockKeyhole size={12} className="inline mr-1" />Private until you choose to share.</span></Link>
+  <div className="segmented" role="tablist" aria-label="Sky">
+   <Link to="/home" search={{}} role="tab" aria-selected={!view} className="segmented-option">The Current</Link>
+   <Link to="/home" search={{ view: 'constellations' }} role="tab" aria-selected={view === 'constellations'} className="segmented-option">Constellations</Link>
+  </div>
+  {view === 'constellations' ? (sky.data ? <ConstellationSky rows={sky.data} /> : <p role="status" className="form-note">Drawing the sky…</p>) : <CurrentPage />}
+ </div>;
+}
 
 function CurrentPage() {
  const profile = useQuery(profileQuery);
@@ -57,8 +72,7 @@ function CurrentPage() {
  const first = profile.data?.first_name;
 
  return <>
-  <div className="page-heading current-heading"><div><div className="eyebrow">THE CURRENT</div><h1>{first ? `Welcome back, ${first}.` : 'Welcome back.'}</h1><p>What useful things are moving through your trust network right now.</p></div>
-   <div className="current-actions"><Button asChild variant="editorial"><Link to="/ripple">Start a Trust Ripple<ArrowRight /></Link></Button><Button asChild variant="outline"><Link to="/wingwoman"><LockKeyhole />Talk to Wingwoman</Link></Button><Link to="/search" search={{ q: '' }} className="member-link inline-flex items-center gap-1 text-sm" aria-label="Search TellHer"><SearchIcon size={14} />Search</Link></div></div>
+  <div className="current-heading"><h2 className="current-welcome">{first ? `Welcome back, ${first}.` : 'Welcome back.'}</h2><p className="form-note">What useful things are moving through your trust network right now.</p></div>
   {loading ? <p role="status" className="form-note">Gathering what’s moving…</p>
    : !items.length ? <section className="empty-panel"><h2>The Current is quiet for now.</h2><p>As your Direct Circle grows, their questions, notes and picks will gather here.</p><Button asChild variant="editorial" className="mt-6"><Link to="/circle">Go to Circle<ArrowRight /></Link></Button></section>
    : <>

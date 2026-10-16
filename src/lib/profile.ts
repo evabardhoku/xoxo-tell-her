@@ -7,7 +7,7 @@ export const tagList = z.string().transform(v => [...new Set(v.split(',').map(t 
 export const discoverabilityOptions = [
  { value: 'direct', label: 'Direct Circle only', hint: 'Only women you trust can open your profile.' },
  { value: 'extended', label: 'Direct + Extended Circle', hint: 'Also women trusted by the women you trust.' },
- { value: 'community', label: 'TellHer community', hint: 'Any signed-in TellHer member.' },
+ { value: 'community', label: 'All TellHer women', hint: 'Any signed-in TellHer member.' },
 ] as const;
 export const profileSchema = z.object({
  first_name: z.string().trim().min(1, 'First name is required.').max(80),

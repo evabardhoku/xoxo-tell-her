@@ -61,7 +61,7 @@ function QuestionPage() {
    <h2 id="replies-title" className="eyebrow">PERSPECTIVES</h2>
     {data.replies.length === 0 ? <p className="form-note">When women share how they see it, their responses will appear here.</p>
      : <ul className="question-list">{sortedReplies.map(r => { const lk = likes.data[r.id]; return <li key={r.id} className={`reply-card ${r.is_mine ? 'reply-card--mine' : ''}`}>
-      <div className="question-meta"><span className="question-category">{perspectiveLabel(r.perspective_tag)}</span><span>{r.is_mine ? 'You' : 'Community member'}</span><span>{relativeTime(r.created_at)}</span></div>
+      <div className="question-meta"><span className="question-category">{perspectiveLabel(r.perspective_tag)}</span><span>{r.is_mine ? 'You' : 'A TellHer woman'}</span><span>{relativeTime(r.created_at)}</span></div>
       <p className="reply-body">{r.body}</p>
       <div className="reply-foot">
        {!r.is_mine && <button type="button" className={`like-btn ${lk?.mine ? 'is-liked' : ''}`} aria-pressed={Boolean(lk?.mine)} aria-label={lk?.mine ? 'Remove your appreciation' : 'Appreciate this reply'} onClick={() => toggleLike(r.id, Boolean(lk?.mine))}><ThumbsUp size={13} />{lk?.likes ? <span>{lk.likes}</span> : null}</button>}
@@ -90,7 +90,7 @@ function ReplyForm({ id, onDone }: { id: string; onDone: () => void }) {
   <fieldset className="field"><legend>How would you see it?</legend>
    <div className="tag-grid">{perspectives.map(p => <label key={p.value} className={`tag-option ${tag === p.value ? 'is-selected' : ''}`}><input type="radio" name="perspective" value={p.value} checked={tag === p.value} onChange={() => setTag(p.value)} />{p.label}</label>)}</div>
   </fieldset>
-  <div className="field"><label htmlFor="reply-body">Your response</label><textarea id="reply-body" className="reply-text" maxLength={1000} rows={4} value={body} onChange={e => setBody(e.target.value)} placeholder="Share what you’d consider, gently and briefly." /><span className="form-note">Shown as “Community member”. {body.length}/1000</span></div>
+  <div className="field"><label htmlFor="reply-body">Your response</label><textarea id="reply-body" className="reply-text" maxLength={1000} rows={4} value={body} onChange={e => setBody(e.target.value)} placeholder="Share what you’d consider, gently and briefly." /><span className="form-note">Shown as “A TellHer woman”. {body.length}/1000</span></div>
   <TagPicker id="reply-tags" selected={mentions} onChange={setMentions} />
   {err && <p role="alert" className="form-note form-error">{err}</p>}
   <div><Button type="submit" variant="editorial" disabled={!tag || body.trim().length < 2 || busy}>Share perspective</Button></div>

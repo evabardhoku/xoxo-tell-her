@@ -401,3 +401,33 @@ a.bell-item:hover { background:color-mix(in oklab, var(--secondary) 12%, transpa
 .letter-sign { margin-top:12px;font-family:var(--font-editorial);font-style:italic;color:var(--primary); }
 .letter-foot { display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:14px; }
 @media (prefers-reduced-motion: no-preference) { .letter-card { animation:th-rise .6s var(--ease-calm) both; } .letter-card:nth-child(2){animation-delay:.08s} .letter-card:nth-child(3){animation-delay:.16s} }
+
+/* Sky hub */
+.sky-hub { display:grid;gap:28px; }
+.mind-card { position:relative;overflow:hidden;display:grid;gap:10px;padding:34px 36px;border-radius:24px;background:var(--card);border:1px solid var(--border);box-shadow:0 18px 40px -32px var(--primary);transition:border-color .3s var(--ease-calm),transform .3s var(--ease-calm); }
+.mind-card:hover { border-color:var(--secondary); } .mind-card:focus-visible { outline:2px solid var(--ring);outline-offset:3px; }
+.mind-card-input { font-family:var(--font-editorial);font-size:24px;line-height:1.35;color:var(--muted-foreground);padding:14px 0;border-bottom:1px solid var(--border); }
+.mind-card-rings, .place-rings { position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;border:1px solid color-mix(in oklab, var(--secondary) 30%, transparent);box-shadow:0 0 0 28px color-mix(in oklab, var(--secondary) 6%, transparent),0 0 0 56px color-mix(in oklab, var(--secondary) 4%, transparent);pointer-events:none; }
+.segmented { display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:999px;background:var(--muted);border:1px solid var(--border);justify-self:start; }
+.segmented-option { padding:9px 20px;border-radius:999px;font-size:14px;color:var(--muted-foreground);display:inline-flex;align-items:center;gap:8px;min-height:40px;transition:background .25s var(--ease-calm),color .25s var(--ease-calm); }
+.segmented-option[aria-selected="true"] { background:var(--card);color:var(--primary);font-weight:500;box-shadow:0 2px 8px -4px var(--primary); }
+.segmented-option:focus-visible { outline:2px solid var(--ring);outline-offset:2px; }
+.segmented-count { font-size:11px;padding:1px 7px;border-radius:999px;background:var(--muted); }
+.current-welcome { font-family:var(--font-editorial);font-size:26px;color:var(--primary); } .current-heading { margin-bottom:8px; }
+.sky-frame { position:relative; }
+.sky-wrap { width:100% !important;border-radius:24px;overflow:hidden;touch-action:none; } .sky-content { width:100% !important; }
+.sky--large { width:100%;height:min(72vh,640px);min-height:440px;margin:0; }
+.sky-label--link { pointer-events:auto;text-decoration:none;cursor:pointer; } .sky-label--link:hover { text-decoration:underline; }
+.sky-zoom { position:absolute;top:14px;right:14px;z-index:5;display:grid;gap:6px; }
+.sky-zoom button { width:40px;height:40px;display:grid;place-items:center;border-radius:50%;background:var(--card);color:var(--primary);border:1px solid var(--border); }
+.sky-card--docked { position:absolute;left:16px;right:16px;bottom:16px;top:auto;transform:none;max-width:460px;margin:auto;z-index:6; }
+.star[data-letters="true"]::after { content:"";position:absolute;inset:-6px;border-radius:50%;border:1px dashed color-mix(in oklab, var(--accent) 70%, transparent); }
+.sky-places { display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px; }
+.sky-place { display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;padding:16px 18px;border-radius:16px;border:1px solid var(--border);background:var(--card); }
+.sky-place strong { font-family:var(--font-editorial);font-weight:500;color:var(--primary); } .sky-place svg { grid-row:1 / span 2;grid-column:2;color:var(--secondary); }
+.place { display:grid;gap:26px;max-width:820px; }
+.place-hero { position:relative;overflow:hidden;padding:40px 36px;border-radius:24px;background:var(--muted);display:grid;gap:8px; }
+.place-hero h1 { font-family:var(--font-editorial);font-size:38px;line-height:1.15;color:var(--primary);max-width:560px; }
+.place-count { font-family:var(--font-editorial);font-size:19px; }
+.place-trusted { display:grid;gap:14px; }
+@media (max-width: 760px) { .mind-card { padding:26px 22px; } .mind-card-input { font-size:20px; } .place-hero h1 { font-size:29px; } .sky--large { height:62vh;min-height:380px; } .segmented { justify-self:stretch; } .segmented-option { flex:1;justify-content:center;padding:9px 12px; } }
