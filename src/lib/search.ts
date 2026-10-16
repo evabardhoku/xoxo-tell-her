@@ -14,4 +14,4 @@ export const searchQuery = (q: string) => ({
 /** Topics are the fixed product vocabulary (AskHer categories + Field Note topics), never user content. */
 export const allTopics = Array.from(new Set<string>([...categories, ...noteTopics]));
 export const matchTopics = (q: string) => { const s = q.trim().toLowerCase(); return s.length < 2 ? [] : allTopics.filter(t => t.toLowerCase().includes(s)); };
-export const relationLabel = (r: string | null) => r === 'direct' ? 'Direct Circle' : r === 'extended' ? 'Extended Circle' : r === 'self' ? 'You' : 'All TellHer women';
+export const relationLabel = (r: string | null) => r === 'direct' ? 'My Circle' : r === 'extended' ? 'Extended' : r === 'self' ? 'You' : 'TellHer Community';
