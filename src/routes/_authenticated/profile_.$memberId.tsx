@@ -32,7 +32,7 @@ function Unavailable() {
  return <section className="empty-panel"><LockKeyhole /><h2>This profile isn’t shared with you.</h2><p>Members choose who can see their profile. It may be limited to her own circle.</p><Link to="/circle" className="member-link mt-4 inline-block">Back to Circle</Link></section>;
 }
 
-const context = (r: string, via: string | null) => r === 'self' ? 'This is how members see you' : r === 'direct' ? 'In your Direct Circle' : r === 'extended' ? `Extended Circle${via ? ` via ${via}` : ''}` : 'TellHer community member';
+const context = (r: string, via: string | null) => r === 'self' ? 'This is how members see you' : r === 'direct' ? 'In your Direct Circle' : r === 'extended' ? `Extended Circle${via ? ` via ${via}` : ''}` : 'All TellHer women member';
 
 function MemberProfile() {
  const { memberId } = Route.useParams();

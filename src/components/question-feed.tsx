@@ -20,14 +20,14 @@ export function FeedFilters({ f, setF, id = 'f' }: { f: FeedFilter; setF: (f: Fe
  return <div className="feed-filters" role="search" aria-label="Filter questions">
   <div className="field"><label htmlFor={`${id}-kw`}>Keyword</label><Input id={`${id}-kw`} value={f.kw} onChange={e => up({ kw: e.target.value })} placeholder="Search questions" /></div>
   <div className="field"><label htmlFor={`${id}-cat`}>Category</label><select id={`${id}-cat`} className="ext-select" value={f.cat} onChange={e => up({ cat: e.target.value })}><option value="">All categories</option>{categories.map(c => <option key={c}>{c}</option>)}</select></div>
-  <div className="field"><label htmlFor={`${id}-reach`}>Reach</label><select id={`${id}-reach`} className="ext-select" value={f.reach} onChange={e => up({ reach: e.target.value })}><option value="">All reach</option><option value="circle">Direct Circle</option><option value="extended">Extended Circle</option><option value="community">TellHer community</option></select></div>
+  <div className="field"><label htmlFor={`${id}-reach`}>Reach</label><select id={`${id}-reach`} className="ext-select" value={f.reach} onChange={e => up({ reach: e.target.value })}><option value="">All reach</option><option value="circle">Direct Circle</option><option value="extended">Extended Circle</option><option value="community">All TellHer women</option></select></div>
   <div className="field"><label htmlFor={`${id}-days`}>Date</label><select id={`${id}-days`} className="ext-select" value={f.days} onChange={e => up({ days: Number(e.target.value) })}><option value={0}>Any time</option><option value={7}>Past 7 days</option><option value={30}>Past 30 days</option></select></div>
   <div className="field"><label htmlFor={`${id}-status`}>Status</label><select id={`${id}-status`} className="ext-select" value={f.status} onChange={e => up({ status: e.target.value as FeedFilter['status'] })}><option value="">Any</option><option value="awaiting">Awaiting perspectives</option><option value="answered">Has perspectives</option></select></div>
   <div className="field"><label htmlFor={`${id}-sort`}>Order</label><select id={`${id}-sort`} className="ext-select" value={f.sort} onChange={e => up({ sort: e.target.value as FeedFilter['sort'] })}><option value="newest">Newest first</option><option value="oldest">Oldest first</option></select></div>
  </div>;
 }
 
-export const reachReason = (s: string) => s === 'circle' ? 'Reached you through Direct reach' : s === 'extended' ? 'Reached you through Extended reach' : 'Shared with the TellHer community';
+export const reachReason = (s: string) => s === 'circle' ? 'Reached you through Direct reach' : s === 'extended' ? 'Reached you through Extended reach' : 'Shared with all TellHer women';
 export const statusLabel = (q: FeedQuestion) => q.reply_count ? 'Open · has perspectives' : 'Open · awaiting perspectives';
 
 export function QuestionCard({ q, counts, detail = false }: { q: FeedQuestion; counts?: Counts | undefined; detail?: boolean }) {

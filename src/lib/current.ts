@@ -17,7 +17,7 @@ export type CurrentItem =
 
 export function questionProvenance(q: Pick<FeedQuestion, 'is_mine' | 'audience_scope'>) {
  if (q.is_mine) return 'Your Ripple';
- return q.audience_scope === 'circle' ? 'Anonymous Ripple · Direct reach' : q.audience_scope === 'extended' ? 'Anonymous Ripple · Extended reach' : 'Anonymous Ripple · TellHer community';
+ return q.audience_scope === 'circle' ? 'Anonymous Ripple · Direct reach' : q.audience_scope === 'extended' ? 'Anonymous Ripple · Extended reach' : 'Anonymous Ripple · All TellHer women';
 }
 export const questionTier = (s: string): Tier => (s === 'circle' ? 0 : s === 'extended' ? 1 : 2);
 
