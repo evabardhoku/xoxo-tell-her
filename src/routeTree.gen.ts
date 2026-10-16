@@ -18,6 +18,7 @@ import { Route as AuthenticatedCircleRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedRippleRouteImport } from './routes/_authenticated/ripple'
+import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated/search'
 import { Route as AuthenticatedWingwomanRouteImport } from './routes/_authenticated/wingwoman'
 import { Route as AuthenticatedAskherIdRouteImport } from './routes/_authenticated/askher_.$id'
 import { Route as AuthenticatedProfileMemberIdRouteImport } from './routes/_authenticated/profile_.$memberId'
@@ -66,6 +67,11 @@ const AuthenticatedRippleRoute = AuthenticatedRippleRouteImport.update({
   path: '/ripple',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSearchRoute = AuthenticatedSearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedWingwomanRoute = AuthenticatedWingwomanRouteImport.update({
   id: '/wingwoman',
   path: '/wingwoman',
@@ -92,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/home': typeof AuthenticatedHomeRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/ripple': typeof AuthenticatedRippleRoute
+  '/search': typeof AuthenticatedSearchRoute
   '/wingwoman': typeof AuthenticatedWingwomanRoute
   '/askher/$id': typeof AuthenticatedAskherIdRoute
   '/profile/$memberId': typeof AuthenticatedProfileMemberIdRoute
@@ -105,6 +112,7 @@ export interface FileRoutesByTo {
   '/home': typeof AuthenticatedHomeRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/ripple': typeof AuthenticatedRippleRoute
+  '/search': typeof AuthenticatedSearchRoute
   '/wingwoman': typeof AuthenticatedWingwomanRoute
   '/askher/$id': typeof AuthenticatedAskherIdRoute
   '/profile/$memberId': typeof AuthenticatedProfileMemberIdRoute
@@ -120,6 +128,7 @@ export interface FileRoutesById {
   '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/ripple': typeof AuthenticatedRippleRoute
+  '/_authenticated/search': typeof AuthenticatedSearchRoute
   '/_authenticated/wingwoman': typeof AuthenticatedWingwomanRoute
   '/_authenticated/askher_/$id': typeof AuthenticatedAskherIdRoute
   '/_authenticated/profile_/$memberId': typeof AuthenticatedProfileMemberIdRoute
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/profile'
     | '/ripple'
+    | '/search'
     | '/wingwoman'
     | '/askher/$id'
     | '/profile/$memberId'
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/profile'
     | '/ripple'
+    | '/search'
     | '/wingwoman'
     | '/askher/$id'
     | '/profile/$memberId'
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/_authenticated/home'
     | '/_authenticated/profile'
     | '/_authenticated/ripple'
+    | '/_authenticated/search'
     | '/_authenticated/wingwoman'
     | '/_authenticated/askher_/$id'
     | '/_authenticated/profile_/$memberId'
@@ -239,6 +251,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRippleRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/search': {
+      id: '/_authenticated/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof AuthenticatedSearchRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/wingwoman': {
       id: '/_authenticated/wingwoman'
       path: '/wingwoman'
@@ -269,6 +288,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedRippleRoute: typeof AuthenticatedRippleRoute
+  AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
   AuthenticatedWingwomanRoute: typeof AuthenticatedWingwomanRoute
   AuthenticatedAskherIdRoute: typeof AuthenticatedAskherIdRoute
   AuthenticatedProfileMemberIdRoute: typeof AuthenticatedProfileMemberIdRoute
@@ -280,6 +300,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedRippleRoute: AuthenticatedRippleRoute,
+  AuthenticatedSearchRoute: AuthenticatedSearchRoute,
   AuthenticatedWingwomanRoute: AuthenticatedWingwomanRoute,
   AuthenticatedAskherIdRoute: AuthenticatedAskherIdRoute,
   AuthenticatedProfileMemberIdRoute: AuthenticatedProfileMemberIdRoute,
