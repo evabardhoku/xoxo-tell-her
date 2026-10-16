@@ -1,3 +1,4 @@
+import { SectionTabs } from '@/components/app-shell';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { zodValidator, fallback } from '@tanstack/zod-adapter';

@@ -1,3 +1,4 @@
+import { SectionTabs } from '@/components/app-shell';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useMemo, useState, type FormEvent } from 'react';
@@ -13,7 +14,7 @@ import { ExtendedCircle } from '@/components/extended-circle';
 
 export const Route = createFileRoute('/_authenticated/circle')({
  loader: ({ context }) => context.queryClient.ensureQueryData(circleQuery),
- head: () => pageHead('MyCircle', 'Your small circle of trusted women on TellHer.'),
+ head: () => pageHead('My Circle', 'Your small circle of trusted women on TellHer.'),
  errorComponent: () => <p role="alert" className="form-note form-error">Your circle could not be loaded. Please refresh.</p>,
  component: Circle,
 });
@@ -29,7 +30,8 @@ function Circle() {
  const respond = useMutation({ mutationFn: async (v: { id: string; accept: boolean }) => { const { error } = await supabase.rpc('tellher_respond_trust', { _id: v.id, _accept: v.accept }); if (error) throw error; }, onSuccess: refresh });
  const cancel = useMutation({ mutationFn: async (id: string) => { const { error } = await supabase.rpc('tellher_cancel_trust', { _id: id }); if (error) throw error; }, onSuccess: refresh });
  return <>
-  <div className="page-heading"><div><div className="eyebrow">MYCIRCLE</div><h1>Trust starts close to home.</h1><p>The women you choose to trust. Only accepted trust shapes how far a Ripple can travel.</p></div></div>
+  <div className="page-heading"><div><div className="eyebrow">MY CIRCLE</div><h1>Trust starts close to home.</h1><p>The women you choose to trust. Only accepted trust shapes how far a Trust Ripple can travel.</p></div></div>
+  <SectionTabs label="My Circle sections"><a href="#direct-circle">Direct Circle</a><a href="#extended-circle">Extended Circle</a><a href="#requests">Requests &amp; Trust Bridges</a><a href="#trusted-picks">Trusted Picks</a></SectionTabs>
   <section className="circle-summary" aria-label="Your reach">
    <ReachRings direct={direct.length} extended={data.extendedCount} />
    <dl className="reach-stats">
@@ -39,13 +41,13 @@ function Circle() {
    </dl>
   </section>
   <div className="circle-grid">
-   <DirectCircle direct={direct} />
+   <div id="direct-circle" className="scroll-mt-24"><DirectCircle direct={direct} /></div>
    <AddMember onSent={refresh} />
-   <section className="circle-card"><h2>Requests for you</h2>{by('incoming').length ? <ul className="member-list">{by('incoming').map(m => <Member key={m.connection_id} m={m}><Button size="sm" variant="editorial" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: true })}><Check />Accept</Button><Button size="sm" variant="ghost" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: false })}>Decline</Button></Member>)}</ul> : <p className="form-note">No requests waiting.</p>}{respond.isError && <p role="alert" className="form-note form-error">{message(respond.error)}</p>}</section>
-   <section className="circle-card"><h2>Sent requests</h2>{by('outgoing').length ? <ul className="member-list">{by('outgoing').map(m => <Member key={m.connection_id} m={m}><span className="status-label">Pending</span><Button size="sm" variant="ghost" aria-label={`Withdraw request to ${memberName(m)}`} disabled={cancel.isPending} onClick={() => cancel.mutate(m.connection_id)}><X /></Button></Member>)}</ul> : <p className="form-note">Nothing pending.</p>}</section>
+   <section id="requests" className="circle-card scroll-mt-24"><h2>Requests for you</h2>{by('incoming').length ? <ul className="member-list">{by('incoming').map(m => <Member key={m.connection_id} m={m}><Button size="sm" variant="editorial" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: true })}><Check />Accept</Button><Button size="sm" variant="ghost" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: false })}>Decline</Button></Member>)}</ul> : <p className="form-note">No requests waiting.</p>}{respond.isError && <p role="alert" className="form-note form-error">{message(respond.error)}</p>}</section>
+   <section className="circle-card"><h2>Sent requests &amp; Trust Bridges</h2>{by('outgoing').length ? <ul className="member-list">{by('outgoing').map(m => <Member key={m.connection_id} m={m}><span className="status-label">Pending</span><Button size="sm" variant="ghost" aria-label={`Withdraw request to ${memberName(m)}`} disabled={cancel.isPending} onClick={() => cancel.mutate(m.connection_id)}><X /></Button></Member>)}</ul> : <p className="form-note">Nothing pending.</p>}</section>
   </div>
-  <ExtendedCircle direct={direct} />
-  <TrustedPicks />
+  <div id="extended-circle" className="scroll-mt-24"><ExtendedCircle direct={direct} /></div>
+  <div id="trusted-picks" className="scroll-mt-24"><TrustedPicks /></div>
  </>;
 }
 
