@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ArrowLeft, LockKeyhole, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
+import { Echo } from '@/components/echo';
 import { PerspectiveMap } from '@/components/perspective-map';
 import { PerspectiveSynthesis } from '@/components/perspective-synthesis';
 import { pageHead } from '@/lib/metadata';
@@ -41,6 +42,7 @@ function QuestionPage() {
    <div className="question-meta"><span className="question-category">{q.category}</span><span>{reachContext(q.audience_scope)}</span><span>{relativeTime(q.created_at)}</span>{q.is_mine && <span className="mine-label">Your question</span>}</div>
    <p className="question-body">{q.body}</p>
   </article>
+  <Echo id={id} isAuthor={q.is_mine} />
   <PerspectiveMap counts={tally(data.replies)} />
   {q.is_mine && q.my_instinct && <aside className="instinct-card"><p className="private-note"><LockKeyhole size={12} />Only you see this</p><p className="instinct-line">You started here: <strong>{instincts.find(i => i.value === q.my_instinct)?.label}</strong></p>{q.my_note && <p className="form-note">{q.my_note}</p>}</aside>}
   <PerspectiveSynthesis key={data.replies.length} id={id} replies={data.replies} />

@@ -1,0 +1,40 @@
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { errorText } from '@/lib/askher';
+
+/** Exact counts are shown only at or above this number, to protect anonymity. Mirrors tellher_echo_signal. */
+export const ECHO_THRESHOLD = 3;
+type Signal = { echo_count: number | null; below_threshold: boolean; mine: boolean };
+export const echoQuery = (id: string) => ({ queryKey: ['echo', id], queryFn: async () => { const { data, error } = await supabase.rpc('tellher_echo_signal', { _id: id }); if (error) throw error; return ((data ?? [])[0] ?? { echo_count: null, below_threshold: false, mine: false }) as Signal; } });
+
+export function echoLine(s: Signal, isAuthor: boolean): string | null {
+ if (s.echo_count && s.echo_count >= ECHO_THRESHOLD) return isAuthor ? `${s.echo_count} women have been through something similar. You’re not alone in this.` : `${s.echo_count} women have been through something similar.`;
+ if (s.below_threshold) return 'Others may relate to this too.';
+ return null;
+}
+
+export function Echo({ id, isAuthor }: { id: string; isAuthor: boolean }) {
+ const qc = useQueryClient(); const q = useQuery(echoQuery(id));
+ const [busy, setBusy] = useState(false); const [note, setNote] = useState<{ text: string; error?: boolean } | null>(null);
+ if (!q.data) return null;
+ const s = q.data; const line = echoLine(s, isAuthor);
+ const toggle = async () => {
+  setBusy(true); setNote(null);
+  const { error } = await supabase.rpc(s.mine ? 'tellher_unecho' : 'tellher_echo', { _id: id });
+  setBusy(false);
+  if (error) return setNote({ text: errorText(error), error: true });
+  setNote({ text: s.mine ? 'Your Echo was removed.' : 'Echoed quietly. No one will see it was you.' });
+  qc.invalidateQueries({ queryKey: ['echo', id] });
+ };
+ if (isAuthor && !line) return null;
+ return <section className="echo" data-active={s.mine} aria-label="Echo">
+  <span className="echo-halo" aria-hidden />
+  <div className="echo-text">
+   {line && <p className="echo-line">{line}</p>}
+   {!isAuthor && <p className="form-note">An Echo means “this happened to me too.” It’s anonymous and separate from perspectives.</p>}
+   {note && <p role={note.error ? 'alert' : 'status'} className={`form-note ${note.error ? 'form-error' : ''}`}>{note.text}</p>}
+  </div>
+  {!isAuthor && <button type="button" className="echo-button" aria-pressed={s.mine} disabled={busy} onClick={toggle}>{s.mine ? 'You echoed this · Remove' : 'This happened to me too'}</button>}
+ </section>;
+}
