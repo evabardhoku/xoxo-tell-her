@@ -179,6 +179,8 @@ console.log('Seeded network around Eva.');
   if (r.room && echoers.length >= 3 && !((await c[r.by]!.rpc('tellher_echo_room', { _q: qid })).data ?? []).length)
    for (const [v, body] of r.room) { const who = v === 0 ? r.by : echoers[v - 1]; if (!who) continue; const e = await c[who]!.rpc('tellher_echo_room_post', { _q: qid, _body: body }); if (e.error) throw e.error; }
   if (r.outcome) { const [status, summary, note, shared] = r.outcome; const e = await c[r.by]!.rpc('tellher_set_outcome', { _q: qid, _status: status, _summary: summary, _note: note as string, _shared: shared }); if (e.error) throw e.error; }
+  // Letters upsert per (Ripple, writer), so re-runs never duplicate.
+  for (const [v, body, where] of letterSeeds.find(x => r.body.startsWith(x.start))?.letters ?? []) { const who = v === 0 ? r.by : echoers[v - 1]; if (!who) continue; const e = await c[who]!.rpc('tellher_write_letter', { _q: qid, _body: body, _where_now: where as string }); if (e.error) throw e.error; }
  }
  for (const [a, b, msgs] of threads) {
   const conv = await c[a]!.rpc('tellher_open_conversation', { _member: id[b]! }); if (conv.error) throw conv.error;

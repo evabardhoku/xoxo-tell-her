@@ -455,3 +455,18 @@ export const sessions: SeedSession[] = [
   ['user', 'I’ll ask for a plan.'], ['assistant', 'A plan with dates sounds practical — and it gives you both something to check in on.'],
  ] },
 ];
+
+/** Letters from the Other Side: matched to a Ripple by the start of its body. Writer 0 = the Ripple's author (only after a shared outcome); n = the nth echoer. */
+export const letterSeeds: { start: string; letters: [number, string, string | null][] }[] = [
+ { start: 'My manager keeps messaging me after 9pm', letters: [
+  [1, 'I used to sleep with my phone face-up, waiting for his name. What I wish someone had told me: answering at 11pm doesn’t make you more valuable, it just teaches everyone that you will. The first morning I replied at 8:30 I felt sick. Nothing happened. Nothing ever happened.', 'two years later'],
+  [2, 'You are not being difficult by having evenings. It took me far too long to believe that. Be kind to yourself while you find your words.', null],
+ ] },
+ { start: 'My sister keeps leaving her kids with me', letters: [
+  [1, 'I was the “yes” sister for years. Saying “Thursday works, today doesn’t” felt like betrayal the first time. My sister was quiet for a week. Then she started asking earlier. Love survived the limit — it actually got softer.', 'about a year on'],
+ ] },
+ { start: 'Three weeks into my first job', letters: [
+  [0, 'Writing this to whoever is where I was. I said one calm sentence and my hands shook. It was awkward for a day, then it was simply over. You don’t need the perfect wording, just a true one.', 'a few months later'],
+  [2, 'I never said anything in my first job and I still replay it. Whatever you decide, the discomfort you feel is information, not oversensitivity.', 'eight years later'],
+ ] },
+];
