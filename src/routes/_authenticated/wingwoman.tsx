@@ -75,8 +75,11 @@ function Thread({ id }: { id: string }) {
  const qc = useQueryClient(); const navigate = useNavigate();
  const t = useQuery(threadQuery(id));
  const send = useServerFn(sendWingwomanMessage);
+ const related = useServerFn(wingwomanRelated);
  const [text, setText] = useState(''); const [pending, setPending] = useState<string | null>(null); const [error, setError] = useState('');
+ const [chipsGone, setChipsGone] = useState(false);
  const box = useRef<HTMLTextAreaElement>(null); const end = useRef<HTMLDivElement>(null);
+ const rel = useQuery({ queryKey: ['ww-related', id], queryFn: () => related({ data: { sessionId: id } }), staleTime: 60_000 });
  useEffect(() => { box.current?.focus(); }, [pending, t.data]);
  useEffect(() => { end.current?.scrollIntoView({ block: 'end' }); }, [t.data?.messages.length, pending]);
  if (t.isPending) return <p role="status" className="form-note">Opening your conversation…</p>;
@@ -91,6 +94,10 @@ function Thread({ id }: { id: string }) {
  };
  const onKey = (e: KeyboardEvent) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); void submit(); } };
  const instinct = instincts.find(i => i.value === session.instinct)?.label;
+ // Gentle next-step chips appear once Wingwoman has replied; each hides when it has nothing to show.
+ const replied = Boolean(session.reflection) || messages.some(m => m.role !== 'user');
+ const r = rel.data;
+ const showChips = replied && !chipsGone && !pending;
  return <section className="ww-thread" aria-label="Conversation">
   <div className="ww-thread-head"><div className="question-meta"><span className="question-category">{session.context ?? 'Other'}</span><span>{relativeTime(session.created_at)}</span>{instinct && <span className="private-note"><LockKeyhole size={12} />Your instinct · {instinct}</span>}</div>
    <Button variant="outline" size="sm" onClick={() => navigate({ to: '/ripple', search: { from: id } })}>Send as a Trust Ripple<ArrowRight /></Button></div>
@@ -100,6 +107,12 @@ function Thread({ id }: { id: string }) {
    {messages.map(m => <li key={m.id} className={`ww-msg ${m.role === 'user' ? 'ww-user' : 'ww-assistant'}`}>{m.role !== 'user' && <span className="ww-voice">Wingwoman</span>}<p>{m.content}</p></li>)}
    {pending && <><li className="ww-msg ww-user"><p>{pending}</p></li><li className="ww-msg ww-assistant" role="status"><span className="ww-voice">Wingwoman</span><p className="ww-typing">Thinking it over…</p></li></>}
   </ol>
+  {showChips && <div className="ww-chips" aria-label="Where to go from here">
+   <button type="button" className="choice-chip" onClick={() => { setChipsGone(true); box.current?.focus(); }}>Just keep talking</button>
+   <button type="button" className="choice-chip" onClick={() => navigate({ to: '/ripple', search: { from: id } })}>Ask other women anonymously</button>
+   {r && r.constellations > 0 && <button type="button" className="choice-chip" onClick={() => navigate({ to: '/constellations/$topic', params: { topic: r.topic } })}>Has this happened to others?</button>}
+   {r?.lettersRippleId && <button type="button" className="choice-chip" onClick={() => navigate({ to: '/askher/$id', params: { id: r.lettersRippleId! } })}>Hear from women who’ve been through this</button>}
+  </div>}
   <div ref={end} />
   {error && <p role="alert" className="form-note form-error">{error}</p>}
   <div className="ww-composer"><label htmlFor="ww-reply" className="sr-only">Reply to Wingwoman</label><Textarea id="ww-reply" ref={box} rows={2} maxLength={4000} value={text} onChange={e => setText(e.target.value)} onKeyDown={onKey} disabled={!!pending} placeholder="Say what’s on your mind…" /><Button variant="editorial" size="icon" aria-label="Send" disabled={!text.trim() || !!pending} onClick={() => void submit()}><Send /></Button></div>
