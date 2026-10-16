@@ -20,6 +20,7 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedRippleRouteImport } from './routes/_authenticated/ripple'
 import { Route as AuthenticatedWingwomanRouteImport } from './routes/_authenticated/wingwoman'
 import { Route as AuthenticatedAskherIdRouteImport } from './routes/_authenticated/askher_.$id'
+import { Route as AuthenticatedProfileMemberIdRouteImport } from './routes/_authenticated/profile_.$memberId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -75,6 +76,12 @@ const AuthenticatedAskherIdRoute = AuthenticatedAskherIdRouteImport.update({
   path: '/askher/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedProfileMemberIdRoute =
+  AuthenticatedProfileMemberIdRouteImport.update({
+    id: '/profile_/$memberId',
+    path: '/profile/$memberId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/ripple': typeof AuthenticatedRippleRoute
   '/wingwoman': typeof AuthenticatedWingwomanRoute
   '/askher/$id': typeof AuthenticatedAskherIdRoute
+  '/profile/$memberId': typeof AuthenticatedProfileMemberIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -99,6 +107,7 @@ export interface FileRoutesByTo {
   '/ripple': typeof AuthenticatedRippleRoute
   '/wingwoman': typeof AuthenticatedWingwomanRoute
   '/askher/$id': typeof AuthenticatedAskherIdRoute
+  '/profile/$memberId': typeof AuthenticatedProfileMemberIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -113,6 +122,7 @@ export interface FileRoutesById {
   '/_authenticated/ripple': typeof AuthenticatedRippleRoute
   '/_authenticated/wingwoman': typeof AuthenticatedWingwomanRoute
   '/_authenticated/askher_/$id': typeof AuthenticatedAskherIdRoute
+  '/_authenticated/profile_/$memberId': typeof AuthenticatedProfileMemberIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/ripple'
     | '/wingwoman'
     | '/askher/$id'
+    | '/profile/$memberId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/ripple'
     | '/wingwoman'
     | '/askher/$id'
+    | '/profile/$memberId'
   id:
     | '__root__'
     | '/'
@@ -152,6 +164,7 @@ export interface FileRouteTypes {
     | '/_authenticated/ripple'
     | '/_authenticated/wingwoman'
     | '/_authenticated/askher_/$id'
+    | '/_authenticated/profile_/$memberId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -240,6 +253,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAskherIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/profile_/$memberId': {
+      id: '/_authenticated/profile_/$memberId'
+      path: '/profile/$memberId'
+      fullPath: '/profile/$memberId'
+      preLoaderRoute: typeof AuthenticatedProfileMemberIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -251,6 +271,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedRippleRoute: typeof AuthenticatedRippleRoute
   AuthenticatedWingwomanRoute: typeof AuthenticatedWingwomanRoute
   AuthenticatedAskherIdRoute: typeof AuthenticatedAskherIdRoute
+  AuthenticatedProfileMemberIdRoute: typeof AuthenticatedProfileMemberIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -261,6 +282,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedRippleRoute: AuthenticatedRippleRoute,
   AuthenticatedWingwomanRoute: AuthenticatedWingwomanRoute,
   AuthenticatedAskherIdRoute: AuthenticatedAskherIdRoute,
+  AuthenticatedProfileMemberIdRoute: AuthenticatedProfileMemberIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
