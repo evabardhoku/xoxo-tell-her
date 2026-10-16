@@ -1,4 +1,8 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
+import { Mail } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { canMessageQuery } from '@/lib/between-us';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { ArrowLeft, LockKeyhole, MapPin } from 'lucide-react';
 import { z } from 'zod';
@@ -45,7 +49,8 @@ function MemberProfile() {
     <div className="member-avatar" aria-hidden>{avatar.data?.url ? <img src={avatar.data.url} alt="" /> : m.first_name.slice(0, 1).toUpperCase()}</div>
     <div><h1>{m.first_name} {m.last_name.length === 1 ? `${m.last_name}.` : m.last_name}</h1>
      {(m.occupation || place) && <p className="form-note">{m.occupation}{m.occupation && place && ' · '}{place && <><MapPin size={12} className="inline mr-1" />{place}</>}</p>}
-     <span className="trust-context">{context(m.relation, m.via)}</span></div>
+     <span className="trust-context">{context(m.relation, m.via)}</span>
+     <MessageHer memberId={memberId} /></div>
    </header>
    {m.bio && <section className="member-section"><h2>About her</h2><p>{m.bio}</p></section>}
    {lists.map(([label, items]) => items.length > 0 && <section key={label} className="member-section"><h2>{label}</h2><ul className="tag-list">{items.map(t => <li key={t}>{t}</li>)}</ul></section>)}
@@ -56,3 +61,11 @@ function MemberProfile() {
 }
 
 function BackLink() { return <Link to="/circle" className="member-link mb-6 inline-flex items-center gap-2 text-sm"><ArrowLeft size={14} />MyCircle</Link>; }
+
+/** Between Us is offered only when the checked database rule allows it (accepted Direct Circle, no block). */
+function MessageHer({ memberId }: { memberId: string }) {
+ const can = useQuery(canMessageQuery(memberId)); const navigate = useNavigate(); const [err, setErr] = useState('');
+ if (!can.data) return null;
+ const open = async () => { const { data, error } = await supabase.rpc('tellher_open_conversation', { _member: memberId }); if (error || !data) return setErr('This conversation couldn’t be opened.'); navigate({ to: '/between-us/$conversationId', params: { conversationId: data } }); };
+ return <div className="mt-3"><Button variant="outline" size="sm" onClick={open}><Mail />Message her</Button>{err && <p role="alert" className="form-note form-error">{err}</p>}</div>;
+}

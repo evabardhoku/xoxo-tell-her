@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAskherRouteImport } from './routes/_authenticated/askher'
+import { Route as AuthenticatedBetweenUsRouteImport } from './routes/_authenticated/between-us'
 import { Route as AuthenticatedCircleRouteImport } from './routes/_authenticated/circle'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
 import { Route as AuthenticatedMyRipplesRouteImport } from './routes/_authenticated/my-ripples'
@@ -22,6 +23,7 @@ import { Route as AuthenticatedRippleRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated/search'
 import { Route as AuthenticatedWingwomanRouteImport } from './routes/_authenticated/wingwoman'
 import { Route as AuthenticatedAskherIdRouteImport } from './routes/_authenticated/askher_.$id'
+import { Route as AuthenticatedBetweenUsConversationIdRouteImport } from './routes/_authenticated/between-us_.$conversationId'
 import { Route as AuthenticatedProfileMemberIdRouteImport } from './routes/_authenticated/profile_.$memberId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -46,6 +48,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const AuthenticatedAskherRoute = AuthenticatedAskherRouteImport.update({
   id: '/askher',
   path: '/askher',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedBetweenUsRoute = AuthenticatedBetweenUsRouteImport.update({
+  id: '/between-us',
+  path: '/between-us',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedCircleRoute = AuthenticatedCircleRouteImport.update({
@@ -88,6 +95,12 @@ const AuthenticatedAskherIdRoute = AuthenticatedAskherIdRouteImport.update({
   path: '/askher/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedBetweenUsConversationIdRoute =
+  AuthenticatedBetweenUsConversationIdRouteImport.update({
+    id: '/between-us_/$conversationId',
+    path: '/between-us/$conversationId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedProfileMemberIdRoute =
   AuthenticatedProfileMemberIdRouteImport.update({
     id: '/profile_/$memberId',
@@ -100,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/askher': typeof AuthenticatedAskherRoute
+  '/between-us': typeof AuthenticatedBetweenUsRoute
   '/circle': typeof AuthenticatedCircleRoute
   '/home': typeof AuthenticatedHomeRoute
   '/my-ripples': typeof AuthenticatedMyRipplesRoute
@@ -108,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/search': typeof AuthenticatedSearchRoute
   '/wingwoman': typeof AuthenticatedWingwomanRoute
   '/askher/$id': typeof AuthenticatedAskherIdRoute
+  '/between-us/$conversationId': typeof AuthenticatedBetweenUsConversationIdRoute
   '/profile/$memberId': typeof AuthenticatedProfileMemberIdRoute
 }
 export interface FileRoutesByTo {
@@ -115,6 +130,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/askher': typeof AuthenticatedAskherRoute
+  '/between-us': typeof AuthenticatedBetweenUsRoute
   '/circle': typeof AuthenticatedCircleRoute
   '/home': typeof AuthenticatedHomeRoute
   '/my-ripples': typeof AuthenticatedMyRipplesRoute
@@ -123,6 +139,7 @@ export interface FileRoutesByTo {
   '/search': typeof AuthenticatedSearchRoute
   '/wingwoman': typeof AuthenticatedWingwomanRoute
   '/askher/$id': typeof AuthenticatedAskherIdRoute
+  '/between-us/$conversationId': typeof AuthenticatedBetweenUsConversationIdRoute
   '/profile/$memberId': typeof AuthenticatedProfileMemberIdRoute
 }
 export interface FileRoutesById {
@@ -132,6 +149,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/askher': typeof AuthenticatedAskherRoute
+  '/_authenticated/between-us': typeof AuthenticatedBetweenUsRoute
   '/_authenticated/circle': typeof AuthenticatedCircleRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/my-ripples': typeof AuthenticatedMyRipplesRoute
@@ -140,6 +158,7 @@ export interface FileRoutesById {
   '/_authenticated/search': typeof AuthenticatedSearchRoute
   '/_authenticated/wingwoman': typeof AuthenticatedWingwomanRoute
   '/_authenticated/askher_/$id': typeof AuthenticatedAskherIdRoute
+  '/_authenticated/between-us_/$conversationId': typeof AuthenticatedBetweenUsConversationIdRoute
   '/_authenticated/profile_/$memberId': typeof AuthenticatedProfileMemberIdRoute
 }
 export interface FileRouteTypes {
@@ -149,6 +168,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/askher'
+    | '/between-us'
     | '/circle'
     | '/home'
     | '/my-ripples'
@@ -157,6 +177,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/wingwoman'
     | '/askher/$id'
+    | '/between-us/$conversationId'
     | '/profile/$memberId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -164,6 +185,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/askher'
+    | '/between-us'
     | '/circle'
     | '/home'
     | '/my-ripples'
@@ -172,6 +194,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/wingwoman'
     | '/askher/$id'
+    | '/between-us/$conversationId'
     | '/profile/$memberId'
   id:
     | '__root__'
@@ -180,6 +203,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/_authenticated/askher'
+    | '/_authenticated/between-us'
     | '/_authenticated/circle'
     | '/_authenticated/home'
     | '/_authenticated/my-ripples'
@@ -188,6 +212,7 @@ export interface FileRouteTypes {
     | '/_authenticated/search'
     | '/_authenticated/wingwoman'
     | '/_authenticated/askher_/$id'
+    | '/_authenticated/between-us_/$conversationId'
     | '/_authenticated/profile_/$memberId'
   fileRoutesById: FileRoutesById
 }
@@ -233,6 +258,13 @@ declare module '@tanstack/react-router' {
       path: '/askher'
       fullPath: '/askher'
       preLoaderRoute: typeof AuthenticatedAskherRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/between-us': {
+      id: '/_authenticated/between-us'
+      path: '/between-us'
+      fullPath: '/between-us'
+      preLoaderRoute: typeof AuthenticatedBetweenUsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/circle': {
@@ -291,6 +323,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAskherIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/between-us_/$conversationId': {
+      id: '/_authenticated/between-us_/$conversationId'
+      path: '/between-us/$conversationId'
+      fullPath: '/between-us/$conversationId'
+      preLoaderRoute: typeof AuthenticatedBetweenUsConversationIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/profile_/$memberId': {
       id: '/_authenticated/profile_/$memberId'
       path: '/profile/$memberId'
@@ -303,6 +342,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAskherRoute: typeof AuthenticatedAskherRoute
+  AuthenticatedBetweenUsRoute: typeof AuthenticatedBetweenUsRoute
   AuthenticatedCircleRoute: typeof AuthenticatedCircleRoute
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
   AuthenticatedMyRipplesRoute: typeof AuthenticatedMyRipplesRoute
@@ -311,11 +351,13 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
   AuthenticatedWingwomanRoute: typeof AuthenticatedWingwomanRoute
   AuthenticatedAskherIdRoute: typeof AuthenticatedAskherIdRoute
+  AuthenticatedBetweenUsConversationIdRoute: typeof AuthenticatedBetweenUsConversationIdRoute
   AuthenticatedProfileMemberIdRoute: typeof AuthenticatedProfileMemberIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAskherRoute: AuthenticatedAskherRoute,
+  AuthenticatedBetweenUsRoute: AuthenticatedBetweenUsRoute,
   AuthenticatedCircleRoute: AuthenticatedCircleRoute,
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedMyRipplesRoute: AuthenticatedMyRipplesRoute,
@@ -324,6 +366,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
   AuthenticatedWingwomanRoute: AuthenticatedWingwomanRoute,
   AuthenticatedAskherIdRoute: AuthenticatedAskherIdRoute,
+  AuthenticatedBetweenUsConversationIdRoute:
+    AuthenticatedBetweenUsConversationIdRoute,
   AuthenticatedProfileMemberIdRoute: AuthenticatedProfileMemberIdRoute,
 }
 

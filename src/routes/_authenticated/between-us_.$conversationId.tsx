@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { pageHead } from '@/lib/metadata';
 import { errorText, relativeTime } from '@/lib/askher';
-import { useAccount } from '@/lib/account';
+import { useAccount } from '@/hooks/account';
 import { inboxQuery, messagesQuery } from '@/lib/between-us';
 
 export const Route = createFileRoute('/_authenticated/between-us_/$conversationId')({
