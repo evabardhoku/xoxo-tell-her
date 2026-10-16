@@ -3,7 +3,7 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 const url = process.env['SUPABASE_URL']; const key = process.env['SUPABASE_SERVICE_ROLE_KEY'];
 const pub = process.env['SUPABASE_PUBLISHABLE_KEY'] || key;
 describe.skipIf(!url || !key)('My Feed: open Ripples, audiences, named comments and likes', () => {
- let admin: SupabaseClient; const c: SupabaseClient[] = []; const ids: string[] = []; const qs: Record<string, string> = {};
+ let admin: SupabaseClient; const c: SupabaseClient[] = []; const ids: string[] = []; const qs = {} as Record<'circle' | 'extended' | 'community' | 'anon', string>;
  const names = ['OpenAuthor', 'DirectFriend', 'ExtendedFriend', 'CommunityMember'].map(n => n + crypto.randomUUID().slice(0, 4));
  const feedIds = async (i: number) => { const r = await c[i]!.rpc('tellher_feed'); if (r.error) throw r.error; return (r.data as { id: string }[]).map(x => x.id); };
  beforeAll(async () => {
