@@ -17,6 +17,7 @@ import { Route as AuthenticatedAskherRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedBetweenUsRouteImport } from './routes/_authenticated/between-us'
 import { Route as AuthenticatedCircleRouteImport } from './routes/_authenticated/circle'
 import { Route as AuthenticatedConstellationsRouteImport } from './routes/_authenticated/constellations'
+import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/feed'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
 import { Route as AuthenticatedMyRipplesRouteImport } from './routes/_authenticated/my-ripples'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
@@ -70,6 +71,11 @@ const AuthenticatedConstellationsRoute =
     path: '/constellations',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedFeedRoute = AuthenticatedFeedRouteImport.update({
+  id: '/feed',
+  path: '/feed',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
   id: '/home',
   path: '/home',
@@ -144,6 +150,7 @@ export interface FileRoutesByFullPath {
   '/between-us': typeof AuthenticatedBetweenUsRoute
   '/circle': typeof AuthenticatedCircleRoute
   '/constellations': typeof AuthenticatedConstellationsRoute
+  '/feed': typeof AuthenticatedFeedRoute
   '/home': typeof AuthenticatedHomeRoute
   '/my-ripples': typeof AuthenticatedMyRipplesRoute
   '/profile': typeof AuthenticatedProfileRoute
@@ -165,6 +172,7 @@ export interface FileRoutesByTo {
   '/between-us': typeof AuthenticatedBetweenUsRoute
   '/circle': typeof AuthenticatedCircleRoute
   '/constellations': typeof AuthenticatedConstellationsRoute
+  '/feed': typeof AuthenticatedFeedRoute
   '/home': typeof AuthenticatedHomeRoute
   '/my-ripples': typeof AuthenticatedMyRipplesRoute
   '/profile': typeof AuthenticatedProfileRoute
@@ -188,6 +196,7 @@ export interface FileRoutesById {
   '/_authenticated/between-us': typeof AuthenticatedBetweenUsRoute
   '/_authenticated/circle': typeof AuthenticatedCircleRoute
   '/_authenticated/constellations': typeof AuthenticatedConstellationsRoute
+  '/_authenticated/feed': typeof AuthenticatedFeedRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/my-ripples': typeof AuthenticatedMyRipplesRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
@@ -211,6 +220,7 @@ export interface FileRouteTypes {
     | '/between-us'
     | '/circle'
     | '/constellations'
+    | '/feed'
     | '/home'
     | '/my-ripples'
     | '/profile'
@@ -232,6 +242,7 @@ export interface FileRouteTypes {
     | '/between-us'
     | '/circle'
     | '/constellations'
+    | '/feed'
     | '/home'
     | '/my-ripples'
     | '/profile'
@@ -254,6 +265,7 @@ export interface FileRouteTypes {
     | '/_authenticated/between-us'
     | '/_authenticated/circle'
     | '/_authenticated/constellations'
+    | '/_authenticated/feed'
     | '/_authenticated/home'
     | '/_authenticated/my-ripples'
     | '/_authenticated/profile'
@@ -331,6 +343,13 @@ declare module '@tanstack/react-router' {
       path: '/constellations'
       fullPath: '/constellations'
       preLoaderRoute: typeof AuthenticatedConstellationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/feed': {
+      id: '/_authenticated/feed'
+      path: '/feed'
+      fullPath: '/feed'
+      preLoaderRoute: typeof AuthenticatedFeedRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/home': {
@@ -425,6 +444,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBetweenUsRoute: typeof AuthenticatedBetweenUsRoute
   AuthenticatedCircleRoute: typeof AuthenticatedCircleRoute
   AuthenticatedConstellationsRoute: typeof AuthenticatedConstellationsRoute
+  AuthenticatedFeedRoute: typeof AuthenticatedFeedRoute
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
   AuthenticatedMyRipplesRoute: typeof AuthenticatedMyRipplesRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
@@ -444,6 +464,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBetweenUsRoute: AuthenticatedBetweenUsRoute,
   AuthenticatedCircleRoute: AuthenticatedCircleRoute,
   AuthenticatedConstellationsRoute: AuthenticatedConstellationsRoute,
+  AuthenticatedFeedRoute: AuthenticatedFeedRoute,
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedMyRipplesRoute: AuthenticatedMyRipplesRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
