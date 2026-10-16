@@ -12,6 +12,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { AccountContext } from '@/hooks/account';
+import { accountLifecycle } from '@/lib/account-lifecycle';
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -125,16 +126,12 @@ function RootComponent() {
   const [user, setUser] = useState<User | null>(null);
   const [ready, setReady] = useState(false);
   useEffect(() => {
-    let live = true;
+    const account = accountLifecycle({ setUser, setReady: () => setReady(true), clearCache: () => { void queryClient.cancelQueries(); queryClient.clear(); }, refresh: signedIn => { void router.invalidate(); if (signedIn) void queryClient.invalidateQueries(); } });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event !== 'SIGNED_IN' && event !== 'SIGNED_OUT' && event !== 'USER_UPDATED') return;
-      if (event === 'SIGNED_OUT') setUser(null);
-      else void supabase.auth.getUser().then(({ data }) => { if (live) setUser(data.user); });
-      void router.invalidate();
-      if (event !== 'SIGNED_OUT') void queryClient.invalidateQueries();
+      account.change(event, session?.user ?? null);
     });
-    void supabase.auth.getUser().then(({ data }) => { if (live) { setUser(data.user); setReady(true); } });
-    return () => { live = false; subscription.unsubscribe(); };
+    void supabase.auth.getUser().then(({ data }) => account.initial(data.user));
+    return () => { account.dispose(); subscription.unsubscribe(); };
   }, [router, queryClient]);
 
   return (

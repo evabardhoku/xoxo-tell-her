@@ -36,10 +36,10 @@ export function AnonymousAvatar({ avatar, size = 40 }: { avatar: unknown; size?:
 }
 
 /** A member's Open Avatar: illustrated config, her protected photo, or her initial. Viewer-checked. */
-export function MemberAvatar({ id, name, hasPhoto, size = 40 }: { id: string | null | undefined; name: string | null | undefined; hasPhoto?: boolean | undefined; size?: number }) {
+export function MemberAvatar({ id, name, hasPhoto, size = 40, className = '' }: { id: string | null | undefined; name: string | null | undefined; hasPhoto?: boolean | undefined; size?: number; className?: string }) {
  const open = useQuery(openAvatarQuery(id));
- const photo = useQuery({ queryKey: ['member-avatar', id], enabled: Boolean(id && hasPhoto && open.data?.kind !== 'illustrated'), queryFn: () => memberAvatar({ data: { id: id! } }), staleTime: 240000 });
+ const photo = useQuery({ queryKey: ['member-avatar', id], enabled: Boolean(id && hasPhoto && open.isSuccess && open.data?.kind !== 'illustrated'), queryFn: () => id ? memberAvatar({ data: { id } }) : Promise.resolve({ url: null }), staleTime: 240000 });
  const style = { width: size, height: size };
- if (open.data?.kind === 'illustrated' && open.data.config) return <span className="member-initial avatar-frame" style={style} aria-hidden><IllustratedAvatar config={open.data.config as OpenAvatarConfig} size={size} /></span>;
- return <span className="member-initial avatar-frame" style={style} aria-hidden>{photo.data?.url ? <img className="h-full w-full rounded-full object-cover" src={photo.data.url} alt="" /> : (name ?? 'T').slice(0, 1).toUpperCase()}</span>;
+ if (open.data?.kind === 'illustrated' && open.data.config) return <span className={`member-initial avatar-frame ${className}`} style={style} aria-hidden><IllustratedAvatar config={open.data.config as OpenAvatarConfig} size={size} /></span>;
+ return <span className={`member-initial avatar-frame ${className}`} style={style} aria-hidden>{photo.data?.url ? <img className="h-full w-full rounded-full object-cover" src={photo.data.url} alt="" /> : (name ?? 'T').slice(0, 1).toUpperCase()}</span>;
 }

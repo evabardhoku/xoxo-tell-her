@@ -1,4 +1,5 @@
 # TellHer foundation
+- [x] Platform regression pass: member avatars, compact feed comments, phone layouts, account switching, full tests and signed-in journeys
 - [x] Safety hardening: moderation, quick exit, safety panel, Wingwoman deletion, rate limits, PII warning, privacy & data, tests
 - [x] Subtractive UI cleanup: simplify hubs and Ripple, remove gamification/likes/tags, contextual secondary actions, mobile/desktop review and existing tests
 - [x] Field Notes and Picks: reuse notes, consent-gated Ripple links, editorial profile/discovery, demo improvements, full tests and browser verification

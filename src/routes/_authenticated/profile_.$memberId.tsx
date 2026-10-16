@@ -7,7 +7,7 @@ import { ArrowLeft, LockKeyhole, Mail, MapPin } from 'lucide-react';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { pageHead } from '@/lib/metadata';
-import { memberAvatar } from '@/lib/member.functions';
+import { MemberAvatar } from '@/components/avatars';
 import { TrustShelf } from '@/components/trust-shelf';
 
 const memberQuery = (id: string) => ({
@@ -37,7 +37,6 @@ const context = (r: string, via: string | null) => r === 'self' ? 'This is how m
 function MemberProfile() {
  const { memberId } = Route.useParams();
  const { data: m } = useSuspenseQuery(memberQuery(memberId));
- const avatar = useQuery({ queryKey: ['member-avatar', memberId], enabled: Boolean(m?.has_avatar), queryFn: () => memberAvatar({ data: { id: memberId } }), staleTime: 240000 });
  if (!m) return <><BackLink /><Unavailable /></>;
  const place = [m.city, m.country].filter(Boolean).join(', ');
  const lists = [['Known for', m.known_for], ['Ask me about', m.ask_me_about], ['Languages', m.languages]] as const;
@@ -45,7 +44,7 @@ function MemberProfile() {
   <BackLink />
   <article className="member-profile">
    <header className="member-head">
-    <div className="member-avatar" aria-hidden>{avatar.data?.url ? <img src={avatar.data.url} alt="" /> : m.first_name.slice(0, 1).toUpperCase()}</div>
+    <MemberAvatar id={memberId} name={m.first_name} hasPhoto={m.has_avatar} size={56} className="member-avatar" />
     <div><h1>{m.first_name} {m.last_name.length === 1 ? `${m.last_name}.` : m.last_name}</h1>
      {(m.occupation || place) && <p className="form-note">{m.occupation}{m.occupation && place && ' · '}{place && <><MapPin size={12} className="inline mr-1" />{place}</>}</p>}
      <span className="trust-context" data-relation={m.relation}>{context(m.relation, m.via)}</span>
