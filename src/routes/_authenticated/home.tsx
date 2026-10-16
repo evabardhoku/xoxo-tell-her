@@ -63,7 +63,7 @@ function CurrentPage() {
    : !items.length ? <section className="empty-panel"><h2>The Current is quiet for now.</h2><p>As your Direct Circle grows, their questions, notes and picks will gather here.</p><Button asChild variant="editorial" className="mt-6"><Link to="/circle">Go to Circle<ArrowRight /></Link></Button></section>
    : <>
     {filters.length > 1 && <div className="current-filters" role="group" aria-label="Filter The Current">{filters.map(f => <button key={f.value} type="button" className="current-filter" aria-pressed={filter === f.value} onClick={() => { setFilter(f.value); setLimit(6); }}>{f.label}</button>)}</div>}
-    <ol className="current-stream">{shown.slice(0, limit).map(i => <li key={i.key} className="current-item"><p className="current-provenance">{i.provenance}</p><CurrentCard i={i} counts={i.kind === 'question' ? maps.data?.[i.q.id] : undefined} /></li>)}</ol>
+    <ol className="current-stream">{shown.slice(0, limit).map(i => <li key={i.key} className={`current-item current-item--${i.kind}`}><p className="current-provenance">{i.provenance}</p><CurrentCard i={i} counts={i.kind === 'question' ? maps.data?.[i.q.id] : undefined} /></li>)}</ol>
    </>}
  </>;
 }

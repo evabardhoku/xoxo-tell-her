@@ -9,6 +9,7 @@ import { pageHead } from '@/lib/metadata';
 import { errorText, relativeTime } from '@/lib/askher';
 import { useAccount } from '@/hooks/account';
 import { inboxQuery, messagesQuery } from '@/lib/between-us';
+import { TagPicker } from '@/components/tag-picker';
 
 export const Route = createFileRoute('/_authenticated/between-us_/$conversationId')({
  head: () => pageHead('Between Us', 'A private conversation with a woman you trust.'),
@@ -21,7 +22,8 @@ function Conversation() {
  const inbox = useQuery({ ...inboxQuery, refetchInterval: 15000 });
  const msgs = useQuery({ ...messagesQuery(id), refetchInterval: 5000 });
  const [text, setText] = useState(''); const [busy, setBusy] = useState(false); const [error, setError] = useState('');
- const [reporting, setReporting] = useState<string | null>(null); const [reason, setReason] = useState(''); const [note, setNote] = useState('');
+  const [reporting, setReporting] = useState<string | null>(null); const [reason, setReason] = useState(''); const [note, setNote] = useState('');
+  const [mentions, setMentions] = useState<string[]>([]);
  const end = useRef<HTMLDivElement>(null);
  const row = inbox.data?.find(r => r.conversation_id === id);
  const count = msgs.data?.length ?? 0;
@@ -30,11 +32,11 @@ function Conversation() {
  if (inbox.isPending || msgs.isPending) return <p role="status" className="form-note">Opening your conversation…</p>;
  if (!row) return <><Back /><section className="empty-panel"><LockKeyhole /><h2>This conversation isn’t available.</h2><p>Between Us conversations can only be opened by the two women in them.</p></section></>;
  const refresh = () => Promise.all([qc.invalidateQueries({ queryKey: ['between-us-messages', id] }), qc.invalidateQueries({ queryKey: inboxQuery.queryKey })]);
- const send = async () => {
-  const body = text.trim(); if (!body || busy) return; setBusy(true); setError('');
-  const { error: e } = await supabase.rpc('tellher_send_message', { _c: id, _body: body });
-  setBusy(false); if (e) return setError(errorText(e)); setText(''); await refresh();
- };
+  const send = async () => {
+   const body = text.trim(); if (!body || busy) return; setBusy(true); setError('');
+   const { error: e } = await supabase.rpc('tellher_send_message_tagged', { _c: id, _body: body, _mentions: mentions });
+   setBusy(false); if (e) return setError(errorText(e)); setText(''); setMentions([]); await refresh();
+  };
  const onKey = (e: KeyboardEvent) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); void send(); } };
  const toggleBlock = async () => {
   if (!row.blocked_by_me && !window.confirm(`Block ${row.first_name}? Neither of you will be able to send messages here.`)) return;
@@ -57,7 +59,7 @@ function Conversation() {
    {!(msgs.data ?? []).length && <p className="form-note">No messages yet. Say hello.</p>}
    <div ref={end} />
    {error && <p role="alert" className="form-note form-error">{error}</p>}
-   {row.can_message ? <div className="ww-composer"><label htmlFor="bu-text" className="sr-only">Message {row.first_name}</label><Textarea id="bu-text" rows={2} maxLength={2000} value={text} onChange={e => setText(e.target.value)} onKeyDown={onKey} disabled={busy} placeholder="Write a message…" /><Button variant="editorial" size="icon" aria-label="Send" disabled={!text.trim() || busy} onClick={() => void send()}><Send /></Button></div>
+   {row.can_message ? <><TagPicker id="bu-tags" selected={mentions} onChange={setMentions} /><div className="ww-composer"><label htmlFor="bu-text" className="sr-only">Message {row.first_name}</label><Textarea id="bu-text" rows={2} maxLength={2000} value={text} onChange={e => setText(e.target.value)} onKeyDown={onKey} disabled={busy} placeholder="Write a message…" /><Button variant="editorial" size="icon" aria-label="Send" disabled={!text.trim() || busy} onClick={() => void send()}><Send /></Button></div></>
     : <p className="private-note">{row.blocked_by_me ? 'You blocked her. Unblock to message again.' : 'Messaging isn’t available in this conversation. Between Us is only open between Direct Circle members.'}</p>}
   </section>
  </>;

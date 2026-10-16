@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAccount } from '@/hooks/account';
 import { profileQuery } from '@/lib/profile';
 import { ProfileEditor } from './profile-editor';
+import { NotificationBell } from './notification-bell';
 
 // Four primary areas; Between Us, Search and Profile are header utilities. `match` lists sub-areas that live under each one (My Ripples and the composer under AskHer).
 const navigation = [
@@ -32,6 +33,7 @@ export function AppShell({ children }: { children: ReactNode }) {
  return <><header className="app-header"><Brand /><nav className="desktop-nav" aria-label="Main navigation">{desktop}</nav><div className="app-header-actions">
   <Link to="/search" search={{ q: '' }} className="avatar-link search-link" aria-label="Search TellHer" data-active={pathname === '/search'}><Search size={17} /></Link>
   <Link to="/between-us" className="avatar-link inbox-link" aria-label="Between Us — private conversations" data-active={isIn(pathname, ['/between-us'])}><Mail size={17} /></Link>
+  <NotificationBell />
   <Button asChild variant="editorial" className="start-ripple"><Link to="/ripple"><Plus />Start a Trust Ripple</Link></Button>
   <UserMenu initial={profile.data.first_name.slice(0, 1).toUpperCase()} active={pathname === '/profile'} />
  </div></header><main className="app-main">{children}<p className="app-footnote"><LockKeyhole size={12} />A little space. A little perspective. Always your choice.</p></main><nav className="mobile-nav" aria-label="Mobile navigation">{mobile}</nav></>;

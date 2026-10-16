@@ -346,3 +346,36 @@ input:focus-visible,textarea:focus-visible,select:focus-visible { outline:2px so
 .constellation-teaser > span { display:flex;flex-direction:column;gap:4px;flex:1;min-width:0; }
 .constellation-teaser strong { font-family:var(--font-serif, 'Noto Serif', serif);font-weight:500;font-size:17px; }
 @media (max-width: 760px) { .current-actions { flex-wrap:wrap;gap:8px; } .page-heading { flex-wrap:wrap;gap:16px; } }
+
+/* --- Likes, tags, notifications, content distinction --- */
+.bell-link { position:relative; }
+.bell-badge { position:absolute;top:-4px;right:-6px;min-width:16px;height:16px;border-radius:999px;background:var(--primary);color:var(--primary-foreground);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;padding:0 4px; }
+.bell-panel { width:320px;max-width:calc(100vw - 32px);padding:10px; }
+.bell-title { font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--secondary);margin:4px 8px 8px; }
+.bell-empty { padding:8px; }
+.bell-list { list-style:none;margin:0;padding:0;display:grid;gap:2px;max-height:380px;overflow-y:auto; }
+.bell-list li { border-radius:10px; }
+.bell-list li.is-unread { background:color-mix(in oklab, var(--secondary) 10%, transparent); }
+.bell-item { display:grid;gap:2px;padding:8px 10px;font-size:13px;color:var(--foreground);text-decoration:none;border-radius:10px; }
+.bell-item strong { font-size:13px;color:var(--primary);font-weight:600; }
+.bell-item span { color:var(--muted-foreground);font-size:12px;line-height:1.5; }
+.bell-item em { font-style:normal;font-size:10px;color:var(--muted-foreground); }
+a.bell-item:hover { background:color-mix(in oklab, var(--secondary) 12%, transparent); }
+
+.reply-foot { display:flex;align-items:center;gap:12px; }
+.like-btn { display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;background:transparent;color:var(--muted-foreground);font-size:12px;padding:5px 12px;cursor:pointer;transition:border-color .25s var(--ease-calm),color .25s var(--ease-calm),background .25s var(--ease-calm); }
+.like-btn:hover { border-color:color-mix(in oklab, var(--secondary) 50%, var(--border));color:var(--primary); }
+.like-btn.is-liked { background:color-mix(in oklab, var(--secondary) 14%, transparent);border-color:var(--secondary);color:var(--primary); }
+.like-count { display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted-foreground); }
+
+.tag-picker { display:grid;gap:8px; }
+.tag-chosen { display:flex;flex-wrap:wrap;gap:6px; }
+.tag-chip { display:inline-flex;align-items:center;gap:5px;border:1px solid color-mix(in oklab, var(--secondary) 45%, var(--border));border-radius:999px;background:color-mix(in oklab, var(--secondary) 12%, transparent);color:var(--primary);font-size:12px;padding:4px 10px;cursor:pointer; }
+.tag-field label { font-size:12px; }
+
+/* Own content stands out; request cards get the burnt burgundy tone. */
+.question-card--mine { border-left:3px solid var(--primary);background:color-mix(in oklab, var(--primary) 4%, var(--card)); }
+.reply-card--mine { border-left:3px solid var(--secondary);background:color-mix(in oklab, var(--secondary) 7%, var(--card)); }
+.current-item--request { border-left:3px solid var(--primary);background:color-mix(in oklab, var(--primary) 8%, var(--card));border-radius:0 14px 14px 0;padding:14px 16px; }
+.current-item--request .search-item { border-color:color-mix(in oklab, var(--primary) 30%, var(--border));background:color-mix(in oklab, var(--primary) 5%, var(--card)); }
+.current-item--request .current-provenance { color:var(--primary); }
