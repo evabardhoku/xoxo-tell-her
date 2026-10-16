@@ -3,7 +3,6 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { zodValidator, fallback } from '@tanstack/zod-adapter';
 import { z } from 'zod';
-import { Button } from '@/components/ui/button';
 import { EmptyRipple } from '@/components/brand';
 import { pageHead } from '@/lib/metadata';
 import { feedMapQuery } from '@/lib/perspectives';
