@@ -16,7 +16,8 @@ import { QuickExit } from './safety';
 // The four primary areas (same list on desktop and mobile). `match` lists every route that belongs to the area; each hub page's segmented control keeps its sub-pages reachable.
 const navigation = [
  { to: '/feed', label: 'My Feed', icon: Newspaper, match: ['/feed'] },
- { to: '/home', label: 'Sky', icon: Sparkle, match: ['/home', '/constellations', '/wingwoman', '/askher', '/my-ripples', '/ripple'] },
+ { to: '/wingwoman', label: 'Wingwoman', icon: Feather, match: ['/wingwoman'] },
+ { to: '/home', label: 'Sky', icon: Sparkle, match: ['/home', '/constellations', '/askher', '/my-ripples', '/ripple'] },
  { to: '/circle', label: 'My Circle', icon: Users, match: ['/circle', '/between-us', '/profile/'] },
  { to: '/profile', label: 'Profile', icon: UserRound, match: [] },
 ] as const;
