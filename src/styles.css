@@ -610,3 +610,4 @@ details[open] > summary::before { content:'−'; }
 .connect-confirm { display:grid;justify-items:center;gap:8px;text-align:center;padding:20px;border:1px solid var(--border);border-radius:16px;background:var(--card); }
 .connect-confirm .member-initial { width:56px;height:56px;font-size:22px; } .connect-confirm h3 { font-family:var(--font-editorial);font-size:22px;color:var(--primary); }
 .connect-in-person svg { max-width:100%;height:auto; }
+@media (max-width:480px) { .ripple-tabs { gap:0; } .ripple-tabs .ripple-tab { white-space:nowrap;padding-left:9px;padding-right:9px;font-size:14px; } }
