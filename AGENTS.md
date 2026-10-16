@@ -9,7 +9,7 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Keep public pages at top-level routes and private app pages under the client-only `_authenticated` layout; this preserves one public home and a single account gate.
+- Keep public pages at top-level routes and private app pages under the client-only `_authenticated` layout.
 - Keep account state in one root subscriber and private profile access owner-scoped through the generated browser client.
 - Extend existing auth, trust relationships, Ripples/private ownership, replies, Perspective Map/synthesis, Wingwoman and persisted demo systems; never duplicate or replace working paths.
 - Trust/content writes use checked functions. Ripple identity uses additive checked publication/representation, immutable visibility, and private ownership. Named first names are Ripple-scoped; anonymous identity and responder privacy never change.
