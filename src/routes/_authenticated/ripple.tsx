@@ -1,3 +1,6 @@
+import { profileQuery } from '@/lib/profile';
+import { RippleAuthor } from '@/components/ripple-author';
+import type { AuthorVisibility } from '@/lib/ripple-identity';
 import { markRippleSent } from '@/lib/motion';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -11,10 +14,10 @@ import { ReachRings } from '@/components/brand';
 import { pageHead } from '@/lib/metadata';
 import { categories, errorText, feedQuery, instincts, reachPreview, reaches, type Reach } from '@/lib/askher';
 import { useServerFn } from '@tanstack/react-start';
-import { conversationExcerpt, ripplePublication } from '@/lib/ripple-draft';
+import { conversationExcerpt, rippleIdentityPublication } from '@/lib/ripple-draft';
 import { proposeRippleDraft } from '@/lib/wingwoman.functions';
 
-export const Route = createFileRoute('/_authenticated/ripple')({ validateSearch: (s: Record<string, unknown>): { from?: string } => (typeof s['from'] === 'string' ? { from: s['from'] } : {}), head: () => pageHead('Start a Trust Ripple', 'Ask a sensitive question anonymously and choose how far it travels.'), component: Composer });
+export const Route = createFileRoute('/_authenticated/ripple')({ validateSearch: (s: Record<string, unknown>): { from?: string } => (typeof s['from'] === 'string' ? { from: s['from'] } : {}), head: () => pageHead('Start a Trust Ripple', 'Choose who sees your question and whether to ask anonymously or with your name.'), component: Composer });
 
 const steps = ['Question', 'My Instinct', 'Reach', 'Review & Send'];
 const contextCategory: Record<string, string> = { Dating: 'Dating & Boundaries', Work: 'Work' };
@@ -27,6 +30,8 @@ function Composer() {
  const [instinct, setInstinct] = useState('');
  const [note, setNote] = useState('');
  const [scope, setScope] = useState<Reach | ''>('');
+ const [visibility, setVisibility] = useState<AuthorVisibility>('anonymous');
+ const profile = useQuery(profileQuery);
  const [source, setSource] = useState<ReturnType<typeof conversationExcerpt> | null>(null);
  const [drafting, setDrafting] = useState(false); const [draftNote, setDraftNote] = useState('');
  const propose = useServerFn(proposeRippleDraft);
@@ -69,12 +74,12 @@ function Composer() {
  const send = async () => {
   if (step !== 3 || busy || sourceLoading || sourceError || !category || body.trim().length < 10 || !instinct || !scope) return;
   setBusy(true); setError('');
-  const { error } = await supabase.rpc('tellher_publish_question', ripplePublication({ category, body, scope, instinct, note }));
+  const { error } = await supabase.rpc('tellher_publish_question_identity', rippleIdentityPublication({ category, body, scope, instinct, note, author_visibility: visibility }));
   setBusy(false); if (error) return setError(errorText(error));
   await qc.invalidateQueries({ queryKey: feedQuery.queryKey }); markRippleSent(); navigate({ to: '/askher' });
  };
  return <>
-  <div className="page-heading"><div><div className="eyebrow">TRUST RIPPLE</div><h1>Some things are worth asking.</h1><p>Your question travels without your name. Only you see your instinct.</p></div></div>
+  <div className="page-heading"><div><div className="eyebrow">TRUST RIPPLE</div><h1>Some things are worth asking.</h1><p>Choose who sees your question and how you appear. Only you see your instinct.</p></div></div>
   <section className="composer-card">
    {from && <aside className="wingwoman-source" aria-label="Private Wingwoman source">
     <h2 className="field-legend">From your private Wingwoman conversation</h2>
@@ -95,15 +100,22 @@ function Composer() {
     <fieldset className="field"><legend className="field-legend">Before anyone else weighs in, how does it feel?</legend><div className="choice-stack">{instincts.map(i => <Button variant="ghost" type="button" key={i.value} className="choice-card" aria-pressed={instinct === i.value} onClick={() => setInstinct(i.value)}>{i.label}</Button>)}</div></fieldset>
     <div className="field"><label htmlFor="q-note">A one-line note to yourself (optional)</label><Input id="q-note" maxLength={140} value={note} onChange={e => setNote(e.target.value)} /></div>
    </div>}
-   {step === 2 && <div key="s2" className="composer-body"><fieldset className="field"><legend className="field-legend">How far should it travel?</legend><ReachRings level={scope === 'circle' ? 1 : scope === 'extended' ? 2 : scope === 'community' ? 3 : 0} /><div className="choice-stack">{reaches.map(r => { const empty = r.value !== 'community' && preview.data && (count(r.value) ?? 0) === 0; return <Button variant="ghost" type="button" key={r.value} className="choice-card" aria-pressed={scope === r.value} disabled={Boolean(empty)} onClick={() => setScope(r.value)}><strong>{r.label}</strong><span>{r.hint}</span><em>{preview.isPending ? 'Checking reach…' : empty ? 'No one here yet' : reachPreview(r.value, count(r.value), preview.data?.circle)}</em></Button>; })}</div></fieldset>{preview.isError && <p role="alert" className="form-note form-error">Your circle reach could not be loaded. Please try again.</p>}</div>}
+   {step === 2 && <div key="s2" className="composer-body"><fieldset className="field"><legend className="field-legend">How far should it travel?</legend><ReachRings level={scope === 'circle' ? 1 : scope === 'extended' ? 2 : scope === 'community' ? 3 : 0} /><div className="choice-stack">{reaches.map(r => { const empty = r.value !== 'community' && preview.data && (count(r.value) ?? 0) === 0; return <Button variant="ghost" type="button" key={r.value} className="choice-card" aria-pressed={scope === r.value} disabled={Boolean(empty)} onClick={() => setScope(r.value)}><strong>{r.label}</strong><span>{r.hint}</span><em>{preview.isPending ? 'Checking reach…' : empty ? 'No one here yet' : reachPreview(r.value, count(r.value), preview.data?.circle)}</em></Button>; })}</div></fieldset>{preview.isError && <p role="alert" className="form-note form-error">Your circle reach could not be loaded. Please try again.</p>}<IdentityChoice value={visibility} onChange={setVisibility} />{from && <p className="private-note"><LockKeyhole size={13} />Anonymous is a quiet place to begin. Your conversation stays private either way.</p>}</div>}
    {step === 3 && scope && <div key="s3" className="composer-body review">
-    <section className="ripple-shared-preview" aria-label="What other members will see"><h2 className="field-legend">What other members will see</h2><div className="question-meta"><span className="question-category">{category}</span><span>{reaches.find(r => r.value === scope)?.label}</span></div><p className="question-body">{body.trim()}</p></section>
-    <dl><div><dt>My Instinct · private</dt><dd>{instincts.find(i => i.value === instinct)?.label}{note.trim() && ` — ${note.trim()}`}</dd></div><div><dt>Reach</dt><dd>{reachPreview(scope, count(scope), preview.data?.circle)}</dd></div></dl>
-    <p className="form-note">Your name, photo and instinct are never shown with the question. Women may or may not choose to respond.</p>
+    <section className="ripple-shared-preview" aria-label="What other members will see"><h2 className="field-legend">What other members will see</h2><div className="question-meta"><span className="question-category">{category}</span><span>{reaches.find(r => r.value === scope)?.label}</span></div><RippleAuthor identity={{ author_visibility: visibility, first_name: visibility === 'named' ? profile.data?.first_name ?? null : null }} /><p className="question-body">{body.trim()}</p></section>
+    <dl><div><dt>Who will see this</dt><dd>{reaches.find(r => r.value === scope)?.label}</dd></div><div><dt>How you’ll appear</dt><dd>{visibility === 'anonymous' ? 'Anonymous' : profile.data?.first_name ?? 'With my name'}</dd></div><div><dt>My Instinct · private</dt><dd>{instincts.find(i => i.value === instinct)?.label}{note.trim() && ` — ${note.trim()}`}</dd></div><div><dt>Reach</dt><dd>{reachPreview(scope, count(scope), preview.data?.circle)}</dd></div></dl>
+    <IdentityChoice value={visibility} onChange={setVisibility} /><p className="form-note">Your identity choice is locked after sending. Replies, Echoes and Letters stay anonymous; your instinct stays private. Your profile’s discoverability does not change.</p>
    </div>}
    {error && <p role="alert" className="form-note form-error">{error}</p>}
    {step === 3 && source !== null && <p className="private-note ripple-sharing-note"><LockKeyhole size={13} />Only the Ripple below will be shared. Your Wingwoman conversation stays private.</p>}
-   <div className="composer-actions ripple-actions"><div className="ripple-back-actions">{step > 0 && <Button variant="ghost" disabled={busy} onClick={() => setStep(step - 1)}><ArrowLeft />Back</Button>}{from && <Button variant="ghost" disabled={busy} onClick={() => navigate({ to: '/wingwoman' })}>Cancel</Button>}</div>{step < 3 ? <Button variant="editorial" disabled={!valid || sourceLoading || drafting || Boolean(sourceError)} onClick={() => setStep(step + 1)}>Continue<ArrowRight /></Button> : <Button variant="editorial" disabled={busy} onClick={send}>{busy ? 'Sending…' : 'Send Trust Ripple'}</Button>}</div>
+   <div className="composer-actions ripple-actions"><div className="ripple-back-actions">{step > 0 && <Button variant="ghost" disabled={busy} onClick={() => setStep(step - 1)}><ArrowLeft />Back</Button>}{from && <Button variant="ghost" disabled={busy} onClick={() => navigate({ to: '/wingwoman' })}>Cancel</Button>}</div>{step < 3 ? <Button variant="editorial" disabled={!valid || sourceLoading || drafting || Boolean(sourceError)} onClick={() => setStep(step + 1)}>Continue<ArrowRight /></Button> : <Button variant="editorial" disabled={busy || (visibility === 'named' && !profile.data?.first_name)} onClick={send}>{busy ? 'Sending…' : 'Send Trust Ripple'}</Button>}</div>
   </section>
  </>;
+}
+
+function IdentityChoice({ value, onChange }: { value: AuthorVisibility; onChange: (v: AuthorVisibility) => void }) {
+ return <fieldset className="field"><legend className="field-legend">How do you want to show up?</legend><div className="choice-stack">
+  <label className="identity-choice"><input type="radio" name="author-visibility" value="anonymous" checked={value === 'anonymous'} onChange={() => onChange('anonymous')} /><span><strong>Anonymous</strong><span className="form-note">Your identity stays hidden from everyone who sees this Ripple.</span></span></label>
+  <label className="identity-choice"><input type="radio" name="author-visibility" value="named" checked={value === 'named'} onChange={() => onChange('named')} /><span><strong>With my name</strong><span className="form-note">Your first name and profile identity will appear with this Ripple.</span></span></label>
+ </div></fieldset>;
 }

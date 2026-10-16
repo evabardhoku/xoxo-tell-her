@@ -1,3 +1,4 @@
+import { seedNamedRipples } from './seed-named-ripples';
 // Seeds a small fictional TellHer demo network through the real member functions.
 // Run: bun scripts/seed-demo.ts  (requires SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY)
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
@@ -102,7 +103,7 @@ const seedExtras = async () => {
  for (const [role, content] of turns) { const r = await maya.cl.from('wingwoman_messages').insert({ session_id: s.data.id, owner_id: maya.uid, role, content }); if (r.error) throw r.error; }
  console.log('Seeded demo extras.');
 };
-if (list.users.some(u => u.email === 'maya.demo@example.com')) { await seedMessages(); await seedExtras(); console.log('Demo already seeded; profile details refreshed.'); process.exit(0); }
+if (list.users.some(u => u.email === 'maya.demo@example.com')) { await seedMessages(); await seedExtras(); await seedNamedRipples(); console.log('Demo already seeded; profile details refreshed.'); process.exit(0); }
 const id: Record<string, string> = {}; const c: Record<string, SupabaseClient> = {};
 for (const [k, first, last, city] of people) {
  const email = `${k}.demo@example.com`;
@@ -142,5 +143,5 @@ const pick = async (who: string, category: string, title: string, note: string, 
 await pick('lina', 'Services', 'A locksmith who quotes before starting', 'She told me the price on the phone, arrived on time and didn’t upsell anything.', 'Rome · Trastevere');
 await pick('sofia', 'Health & Care', 'A GP who listens without rushing', 'She took my questions seriously and explained the options plainly.', null);
 await pick('sofia', 'Travel', 'Women-run guesthouse with clear check-in', 'They sent written check-in instructions and never asked for flight details.', 'Lisbon');
-await seedMessages(); await seedExtras();
+await seedMessages(); await seedExtras(); await seedNamedRipples();
 console.log('Seeded demo. Sign in as maya.demo@example.com /', PASSWORD);

@@ -49,7 +49,7 @@ function Place() {
    <div className="eyebrow">{topic.toUpperCase()}</div>
    <h1>{placeTitle(topic)}</h1>
    <p className="place-count">{women.data ? `${women.data} women in your network have lived this.` : 'A few women in your network have lived this.'}</p>
-   <p className="form-note">No names, only presence. Everyone here is anonymous.</p>
+   <p className="form-note">Women choose whether to name their Ripple. Echoes and letters stay anonymous.</p>
   </header>
   {echoTarget && <Echo id={echoTarget.id} isAuthor={false} />}
   <div className="segmented" role="tablist" aria-label="In this constellation">

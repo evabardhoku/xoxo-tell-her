@@ -1,3 +1,4 @@
+import { RippleAuthor } from '@/components/ripple-author';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -54,6 +55,7 @@ function QuestionPage() {
   {/* 1 · The question (author stays anonymous) */}
   <article className="question-card">
    <div className="question-meta"><span className="question-category">{q.category}</span><span>{reachContext(q.audience_scope)}</span><span>{relativeTime(q.created_at)}</span>{q.is_mine && <span className="mine-label">Your question</span>}</div>
+   <RippleAuthor identity={q} />
    <p className="question-body">{q.body}</p>
   </article>
   {/* 2 · My Instinct (private, only the author sees it) */}

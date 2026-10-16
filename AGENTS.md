@@ -12,7 +12,7 @@
 - Keep public pages at top-level routes and private app pages under the client-only `_authenticated` layout; this preserves one public home and a single account gate.
 - Keep account state in one root subscriber and private profile access owner-scoped through the generated browser client; this avoids duplicate session listeners and enforces database privacy.
 - Treat authentication, trust requests and accepted circle relationships, AskHer / Trust Ripples, private question ownership metadata, replies, Perspective Map, AI perspective synthesis, Wingwoman, and persisted demo data as existing functional systems; extend their current paths rather than duplicate or replace working logic.
-- Trust edges and question publication/visibility/deletion/reporting change only through owner-checked database functions, so emails and second-degree identities stay hidden; author identity lives only in owner-readable question metadata.
+- Trust/content writes use checked functions. Ripple identity uses additive checked publication/representation, immutable visibility, and private ownership. Named first names are Ripple-scoped; profile links/avatars require normal profile access. Anonymous identity and responder privacy never change.
 - Share profile validation and editing between account onboarding and Profile; database triggers enforce attestation and field limits independently of the UI.
 - Keep avatars in owner-scoped private storage and strip uploaded image metadata; short-lived signed links prevent public identity exposure.
 - Keep reusable editorial styling in semantic global design tokens and shared components; extend existing functional screens and retain genuine empty states without rebuilding navigation.

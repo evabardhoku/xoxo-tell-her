@@ -1,3 +1,4 @@
+import { RippleAuthor } from '@/components/ripple-author';
 import { Link } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
@@ -32,6 +33,7 @@ export function ConstellationSky({ rows }: { rows: SkyRow[] }) {
     </TransformComponent>
     {sel && <div className="sky-card sky-card--docked" role="dialog" aria-label="Ripple preview">
      <div className="question-meta"><span className="question-category">{placeTitle(sel.category)}</span><button type="button" className="ml-auto" aria-label="Close preview" onClick={() => setSel(null)}><X size={14} /></button></div>
+     <RippleAuthor identity={sel} />
      <p className="sky-excerpt">{sel.excerpt}{sel.excerpt.length >= 140 ? '…' : ''}</p>
      <ul className="sky-tags">{sel.echo_level > 0 && <li>{echoWords[sel.echo_level]}</li>}{sel.has_outcome && <li>Includes what happened next</li>}{sel.has_letters && <li>Letters from the Other Side</li>}</ul>
      <div className="flex flex-wrap gap-2"><Button asChild size="sm" variant="soft"><Link to="/askher/$id" params={{ id: sel.id }}>Open Ripple<ArrowRight /></Link></Button><Button asChild size="sm" variant="ghost"><Link to="/constellations/$topic" params={{ topic: sel.category }}>Visit this constellation</Link></Button></div>

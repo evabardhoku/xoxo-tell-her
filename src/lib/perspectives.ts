@@ -1,3 +1,4 @@
+import { withRippleIdentities, type RippleIdentity } from '@/lib/ripple-identity';
 import { supabase } from '@/integrations/supabase/client';
 
 export const perspectives = [
@@ -19,7 +20,7 @@ export function tally(rows: { perspective_tag: string | null; n?: number }[]): C
  return c;
 }
 
-export type QuestionDetail = { id: string; category: string; body: string; audience_scope: string; created_at: string; is_mine: boolean; my_instinct: string | null; my_note: string | null; my_reply_id: string | null };
+export type QuestionDetail = { id: string; category: string; body: string; audience_scope: string; created_at: string; is_mine: boolean; my_instinct: string | null; my_note: string | null; my_reply_id: string | null } & Partial<RippleIdentity>;
 export type Reply = { id: string; perspective_tag: string; body: string; created_at: string; is_mine: boolean };
 
 export const questionQuery = (id: string) => ({
@@ -30,7 +31,8 @@ export const questionQuery = (id: string) => ({
   const question = (q.data?.[0] ?? null) as QuestionDetail | null;
   if (!question) return { question: null, replies: [] as Reply[] };
   if (r.error) throw r.error;
-  return { question, replies: (r.data ?? []) as Reply[] };
+  const identified = await withRippleIdentities([question]);
+  return { question: identified[0] ?? question, replies: (r.data ?? []) as Reply[] };
  },
 });
 

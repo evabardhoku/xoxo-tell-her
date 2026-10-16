@@ -461,3 +461,10 @@ a.bell-item:hover { background:color-mix(in oklab, var(--secondary) 12%, transpa
 /* Tap targets: keep small inline links at least 24px tall (WCAG 2.5.8) */
 .question-foot > a, .back-link, .member-list .member-link, .search-item .member-link, .me-header .member-link { min-height: 1.75rem; display: inline-flex; align-items: center; }
 .sky-label--link { min-height: 1.5rem; padding-block: 0.2rem; }
+
+.ripple-author { display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--muted-foreground); }
+.ripple-author .member-initial { width:28px;height:28px;font-size:11px;overflow:hidden; }
+.identity-choice { display:flex;align-items:flex-start;gap:10px;border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--background);cursor:pointer; }
+.identity-choice:has(input:checked) { border-color:var(--primary);background:var(--muted); }
+.identity-choice input { margin-top:3px;accent-color:var(--primary);width:18px;height:18px;flex-shrink:0; }
+.identity-choice > span { display:grid;gap:5px;min-width:0; }
