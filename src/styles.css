@@ -109,6 +109,13 @@ h1,h2,h3,p { margin:0; } h1,h2,h3 { font-family:var(--font-editorial); font-weig
 .reach-stats { display:grid;grid-template-columns:1fr 1fr;gap:28px;flex:1; } .reach-stats dt { font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:var(--primary); } .reach-stats dd { font-family:var(--font-editorial);font-size:40px;color:var(--primary);margin:6px 0; } .reach-stats p { font-size:12px;line-height:1.7;color:var(--muted-foreground); }
 .circle-grid { display:grid;grid-template-columns:1fr 1fr;gap:20px; } .circle-card { border:1px solid var(--border);border-radius:16px;background:var(--card);padding:24px; } .circle-card h2 { font-size:21px;color:var(--primary);margin-bottom:14px; }
 .member-list { display:grid;gap:10px; } .member-row { display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--border); } .member-list .member-row:first-child { border-top:0; }
+.scroll-panel { display:flex;align-items:center;gap:8px; } .scroll-panel.member-list { display:flex; }
+.scroll-track { display:flex;gap:12px;overflow-x:auto;scroll-behavior:smooth;flex:1;min-width:0;padding:4px 2px;scrollbar-width:none;list-style:none;margin:0; } .scroll-track::-webkit-scrollbar { display:none; }
+.scroll-track > * { flex:0 0 240px; }
+.scroll-track .member-row { border-top:0;padding:12px 14px;border:1px solid var(--border);border-radius:14px;background:var(--card); }
+.scroll-track .pick-item { height:100%; }
+.scroll-arrow { flex-shrink:0;border-radius:50%; } .scroll-arrow:disabled { opacity:0.35; }
+@media (max-width: 760px) { .scroll-arrow { display:none; } .scroll-track { scroll-snap-type:x mandatory; } .scroll-track > * { scroll-snap-align:start; } }
 .member-initial { width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--muted);color:var(--primary);font-size:13px;flex-shrink:0; } .member-meta { display:grid;flex:1;font-size:13px; } .member-meta span { font-size:11px;color:var(--muted-foreground); } .member-actions { display:flex;gap:6px;align-items:center; }
 .add-member { display:flex;align-items:flex-end;gap:10px;margin:14px 0 8px; } .add-member .field { flex:1; } .add-member button { height:46px; } .found-member { margin-top:8px; }
 @media (max-width: 760px) { .circle-summary { flex-direction:column;gap:20px;padding:24px; } .reach-rings { width:180px;height:180px; } .circle-grid { grid-template-columns:1fr; } .reach-stats { gap:16px; } }
