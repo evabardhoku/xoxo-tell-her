@@ -25,7 +25,9 @@ export function buildSky(rows: SkyRow[]): Cluster[] {
 const clamp = (v: number) => Math.min(95, Math.max(5, v));
 export const echoWords = ['', 'Others may relate', 'Echoed by others', 'Echoed by many women'];
 
-export const skyQuery = { queryKey: ['constellation'], queryFn: async () => { const { data, error } = await supabase.rpc('tellher_constellation'); if (error) throw error; const rows = await withRippleIdentities((data ?? []) as SkyRow[]); return rows.filter(r => (r as { author_visibility?: string }).author_visibility !== 'named'); } }; // Sky holds anonymous Ripples only
+export const skyQuery = { queryKey: ['constellation'], queryFn: async () => { const { data, error } = await supabase.rpc('tellher_constellation'); if (error) throw error; const rows = await withRippleIdentities((data ?? []) as SkyRow[]); return skyOnly(rows); } };
+/** Sky holds anonymous Ripples only; open Ripples live in My Feed. */
+export const skyOnly = <T,>(rows: T[]) => rows.filter(r => (r as { author_visibility?: string }).author_visibility !== 'named');
 
 /** A short human title for each constellation, so a topic reads like a situation rather than a filter. */
 const titles: Record<string, string> = {
