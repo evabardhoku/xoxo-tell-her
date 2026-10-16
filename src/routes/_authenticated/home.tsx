@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { QuestionCard } from '@/components/question-feed';
 import { PickItem, picksQuery } from '@/components/trusted-picks';
 import { shelfQuery } from '@/components/trust-shelf';
+import { FieldNoteContext } from '@/components/field-note-context';
 import type { ExtendedMember } from '@/components/extended-circle';
 import { pageHead } from '@/lib/metadata';
 import { profileQuery } from '@/lib/profile';
@@ -100,7 +101,7 @@ function CurrentPage() {
 function CurrentCard({ i, counts }: { i: CurrentItem; counts?: Parameters<typeof QuestionCard>[0]['counts'] }) {
  if (i.kind === 'question') return <ul className="list-none p-0"><QuestionCard q={i.q} counts={counts} /></ul>;
  if (i.kind === 'pick') return <ul className="list-none p-0"><PickItem p={i.p} provenance={`Recommended by ${i.provenance.split(' · ')[0]}`} /></ul>;
- if (i.kind === 'note') return <div className="search-item"><div className="question-meta"><span className="question-category">{i.topic}</span>{i.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{i.location}</span>}<span>{relativeTime(i.at)}</span></div><strong>{i.title}</strong><p className="search-snippet">{i.body}</p><Link to="/profile/$memberId" params={{ memberId: i.member_id }} className="member-link">Field Note · view her profile</Link></div>;
+ if (i.kind === 'note') return <div className="search-item"><div className="question-meta"><span className="question-category">{i.topic}</span>{i.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{i.location}</span>}<span>{relativeTime(i.at)}</span></div><strong>{i.title}</strong><p className="search-snippet">{i.body}</p><Link to="/profile/$memberId" params={{ memberId: i.member_id }} className="member-link">Field Note · view her profile</Link><FieldNoteContext id={i.id} /></div>;
  if (i.kind === 'request') return <div className="search-item"><strong><Link to="/profile/$memberId" params={{ memberId: i.member_id }} className="member-link">{i.name}</Link> sent you a trust request</strong><p className="search-snippet">Accepting adds her to your Direct Circle. You can decide in Circle.</p><Link to="/circle" className="member-link inline-flex items-center gap-1">Review in Circle<ArrowRight size={14} /></Link></div>;
  return <div className="search-item"><strong><Link to="/profile/$memberId" params={{ memberId: i.member_id }} className="member-link">{i.name}</Link></strong>{i.location && <span className="form-note"><MapPin size={12} className="inline mr-1" />{i.location}</span>}{i.known_for.length > 0 && <span className="form-note">Known for {i.known_for.join(', ')}</span>}<Link to="/circle" className="member-link">{i.bridge_pending ? 'Trust Bridge requested' : 'Request a Trust Bridge in Circle'}</Link></div>;
 }
