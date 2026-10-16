@@ -20,7 +20,25 @@ const details: Record<string, Record<string, unknown>> = {
  june: { bio: 'Charity fundraiser in Bristol and keen cyclist.', country: 'United Kingdom', languages: ['English'], occupation: 'Fundraiser', known_for: ['Nonprofits'], ask_me_about: ['Cycling commutes'], discoverability: 'direct' },
 };
 for (const u of list.users) { const k = u.email?.match(/^(\w+)\.demo@example\.com$/)?.[1]; if (k && details[k]) { const r = await admin.from('profiles').update(details[k]).eq('id', u.id); if (r.error) throw r.error; } }
-if (list.users.some(u => u.email === 'maya.demo@example.com')) { console.log('Demo already seeded; profile details refreshed.'); process.exit(0); }
+// Between Us: three fictional conversations between demo Direct Circle members only (idempotent; never real accounts).
+const seedMessages = async () => {
+ const sign = async (k: string) => { const cl = createClient(url, pub, { auth: { persistSession: false } }); const s = await cl.auth.signInWithPassword({ email: `${k}.demo@example.com`, password: PASSWORD }); if (s.error) throw s.error; return { cl, uid: s.data.user.id }; };
+ const maya = await sign('maya');
+ const existing = await maya.cl.rpc('tellher_inbox'); if (existing.error) throw existing.error;
+ if ((existing.data ?? []).length) return;
+ const threads: [string, [boolean, string][]][] = [
+  ['lina', [[true, 'Thank you for your perspective on the meeting question. It helped more than you know.'], [false, 'Of course. Did you end up talking to her?'], [true, 'Not yet — I’m writing down the three examples first, like you suggested.'], [false, 'Good plan. Happy to read it over before you send anything.']]],
+  ['sofia', [[false, 'Are you still looking for a flat near the river?'], [true, 'Yes! Viewing two on Saturday.'], [false, 'Ask them about the heating bills in winter. Mine were a surprise.']]],
+  ['noor', [[true, 'Your Trusted Pick for the bakery was perfect, by the way.'], [false, 'So glad! Get there before nine or the cardamom buns are gone.']]],
+ ];
+ for (const [k, msgs] of threads) {
+  const other = await sign(k);
+  const conv = await maya.cl.rpc('tellher_open_conversation', { _member: other.uid }); if (conv.error) throw conv.error;
+  for (const [fromMaya, body] of msgs) { const r = await (fromMaya ? maya : other).cl.rpc('tellher_send_message', { _c: conv.data as string, _body: body }); if (r.error) throw r.error; }
+ }
+ console.log('Seeded Between Us demo conversations.');
+};
+if (list.users.some(u => u.email === 'maya.demo@example.com')) { await seedMessages(); console.log('Demo already seeded; profile details refreshed.'); process.exit(0); }
 const id: Record<string, string> = {}; const c: Record<string, SupabaseClient> = {};
 for (const [k, first, last, city] of people) {
  const email = `${k}.demo@example.com`;
@@ -60,4 +78,5 @@ const pick = async (who: string, category: string, title: string, note: string, 
 await pick('lina', 'Services', 'A locksmith who quotes before starting', 'She told me the price on the phone, arrived on time and didn’t upsell anything.', 'Rome · Trastevere');
 await pick('sofia', 'Health & Care', 'A GP who listens without rushing', 'She took my questions seriously and explained the options plainly.', null);
 await pick('sofia', 'Travel', 'Women-run guesthouse with clear check-in', 'They sent written check-in instructions and never asked for flight details.', 'Lisbon');
+await seedMessages();
 console.log('Seeded demo. Sign in as maya.demo@example.com /', PASSWORD);
