@@ -26,8 +26,8 @@ function MyRipples() {
  const { f, setF, shown } = useFeedFilter(list);
  const tab = (v: 'started' | 'reached', label: string, n: number) => <Link to="/my-ripples" search={{ view: v }} className="ripple-tab" role="tab" aria-selected={view === v} data-active={view === v}>{label} <span className="form-note">{n}</span></Link>;
  return <>
-  <Link to="/askher" className="member-link mb-6 inline-flex items-center gap-2 text-sm"><ArrowLeft size={14} />AskHer</Link>
-  <div className="page-heading"><div><div className="eyebrow">MY RIPPLES</div><h1>Your Ripple activity.</h1><p>{view === 'started' ? 'Questions you started. Your private instinct stays visible only to you.' : 'Questions that reached you, and why. Authors are never shown.'}</p></div><Button asChild variant="editorial"><Link to="/ripple"><Plus />Start a Ripple</Link></Button></div>
+  <div className="page-heading"><div><div className="eyebrow">MY RIPPLES</div><h1>Your Ripple activity.</h1><p>{view === 'started' ? 'Questions you started. Your private instinct stays visible only to you.' : 'Questions that reached you, and why. Authors are never shown.'}</p></div></div>
+  <SectionTabs label="AskHer sections"><Link to="/askher" activeOptions={{ exact: true, includeSearch: false }}>Community</Link><Link to="/my-ripples" activeOptions={{ includeSearch: false }}>My Ripples</Link><Link to="/ripple">Start a Trust Ripple</Link></SectionTabs>
   <div className="ripple-tabs" role="tablist" aria-label="My Ripples views">{tab('started', 'Started by me', data.filter(q => q.is_mine).length)}{tab('reached', 'Reached me', data.filter(q => !q.is_mine).length)}</div>
   {list.length === 0 ? <section className="empty-panel"><EmptyRipple /><h2>{view === 'started' ? 'You haven’t started a Ripple yet.' : 'Nothing has reached you yet.'}</h2><p>{view === 'started' ? 'When you send a question, it will appear here with its perspectives.' : 'Questions from your circle and the community will appear here.'}</p></section>
    : <><FeedFilters key={view} f={f} setF={setF} id={`mr-${view}`} />
