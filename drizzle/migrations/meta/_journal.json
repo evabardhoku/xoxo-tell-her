@@ -169,6 +169,13 @@
       "when": 1792163746704,
       "tag": "0023_trust_notifications_trigger",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1792171305692,
+      "tag": "0024_letters_from_the_other_side",
+      "breakpoints": true
     }
   ]
 }
