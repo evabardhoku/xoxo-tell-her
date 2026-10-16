@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { useState, type FormEvent } from 'react';
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useMemo, useState, type FormEvent } from 'react';
 import { Check, Search, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -39,7 +39,7 @@ function Circle() {
    </dl>
   </section>
   <div className="circle-grid">
-   <section className="circle-card"><h2>Direct Circle</h2>{direct.length ? <ul className="member-list">{direct.map(m => <Member key={m.connection_id} m={m} />)}</ul> : <p className="form-note">No one yet. Invite a woman you trust below.</p>}</section>
+   <DirectCircle direct={direct} />
    <AddMember onSent={refresh} />
    <section className="circle-card"><h2>Requests for you</h2>{by('incoming').length ? <ul className="member-list">{by('incoming').map(m => <Member key={m.connection_id} m={m}><Button size="sm" variant="editorial" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: true })}><Check />Accept</Button><Button size="sm" variant="ghost" disabled={respond.isPending} onClick={() => respond.mutate({ id: m.connection_id, accept: false })}>Decline</Button></Member>)}</ul> : <p className="form-note">No requests waiting.</p>}{respond.isError && <p role="alert" className="form-note form-error">{message(respond.error)}</p>}</section>
    <section className="circle-card"><h2>Sent requests</h2>{by('outgoing').length ? <ul className="member-list">{by('outgoing').map(m => <Member key={m.connection_id} m={m}><span className="status-label">Pending</span><Button size="sm" variant="ghost" aria-label={`Withdraw request to ${memberName(m)}`} disabled={cancel.isPending} onClick={() => cancel.mutate(m.connection_id)}><X /></Button></Member>)}</ul> : <p className="form-note">Nothing pending.</p>}</section>
@@ -83,4 +83,20 @@ function ReachRings({ direct, extended }: { direct: number; extended: number }) 
   <circle cx="120" cy="120" r="100" className="ring-extended" /><circle cx="120" cy="120" r="68" className="ring-direct" /><circle cx="120" cy="120" r="9" className="ring-you" />
   <text x="120" y="146" className="ring-label">You</text><text x="120" y="47" className="ring-label">Direct · {direct}</text><text x="120" y="236" className="ring-label">Extended · {extended}</text>
  </svg>;
+}
+
+type Field = 'all' | 'name' | 'location' | 'known' | 'ask';
+function DirectCircle({ direct }: { direct: CircleEntry[] }) {
+ const [text, setText] = useState(''); const [field, setField] = useState<Field>('all');
+ // Details come only from the viewer-checked member profile function, one call per Direct Circle member.
+ const details = useQuery({ queryKey: ['direct-details', direct.map(d => d.member_id).join()], enabled: direct.length > 0, queryFn: async () => Object.fromEntries(await Promise.all(direct.map(async d => [d.member_id, (await supabase.rpc('tellher_member_profile', { _id: d.member_id })).data?.[0] ?? null] as const))) });
+ const shown = useMemo(() => {
+  const q = text.trim().toLowerCase(); if (!q) return direct;
+  return direct.filter(d => { const p = details.data?.[d.member_id];
+   const f: Record<Exclude<Field, 'all'>, string[]> = { name: [d.first_name, p?.last_name ?? d.last_initial], location: [d.city ?? '', p?.country ?? ''], known: p?.known_for ?? [], ask: p?.ask_me_about ?? [] };
+   return (field === 'all' ? Object.values(f).flat() : f[field]).some(v => v.toLowerCase().includes(q)); });
+ }, [direct, details.data, text, field]);
+ return <section className="circle-card"><h2>Direct Circle</h2>
+  {direct.length > 1 && <div className="shelf-filters" role="search" aria-label="Filter Direct Circle"><div className="field"><label htmlFor="dc-q">Search</label><Input id="dc-q" value={text} onChange={e => setText(e.target.value)} placeholder="Name, city, topic…" /></div><div className="field"><label htmlFor="dc-f">Search in</label><select id="dc-f" className="ext-select" value={field} onChange={e => setField(e.target.value as Field)}><option value="all">Everything</option><option value="name">Name</option><option value="location">Location</option><option value="known">Known for</option><option value="ask">Ask me about</option></select></div></div>}
+  {direct.length ? shown.length ? <ul className="member-list">{shown.map(m => <Member key={m.connection_id} m={m} />)}</ul> : <p className="form-note">No one in your Direct Circle matches.</p> : <p className="form-note">No one yet. Invite a woman you trust below.</p>}</section>;
 }
