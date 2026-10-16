@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Compass, Heart, LockKeyhole, MapPin, Pencil, Ripple, Sparkles, Users } from 'lucide-react';
+import { Compass, Heart, LockKeyhole, MapPin, Pencil, Sparkles, Users, Waves } from 'lucide-react';
 import { ProfileEditor } from '@/components/profile-editor';
 import { discoverabilityOptions, profileQuery } from '@/lib/profile';
 import { SignOut } from '@/components/app-shell';
