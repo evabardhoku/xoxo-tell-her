@@ -105,6 +105,10 @@ const echo = async (q: string, who: string[]) => { for (const k of who) { await 
 await echo(q1, ['amira', 'elena', 'chiara', 'hana']); await echo(q4, ['giulia', 'amira', 'elena', 'hana', 'valentina', 'nadia']); await echo(q2, ['elena']);
 // Echo Room on the voice-notes Ripple (fresh each run with the question): anonymous voices only.
 for (const [k, b] of [['chiara', 'I didn’t expect anyone else to recognise this. Thank you.'], ['amira', 'A conference contact did this to me too. One short, polite message ended it.'], ['hana', 'I muted the chat first, then replied the next morning. Distance helped me sound calm.']] as const) await c[k]!.rpc('tellher_echo_room_post', { _q: q4, _body: b });
+// The Other Side: shared outcomes from fictional authors (questions are recreated each run, so these are fresh too).
+await c['giulia']!.rpc('tellher_set_outcome', { _q: q1, _status: 'boundary', _summary: 'I asked in writing for 24 hours’ notice and a reason for each visit.', _note: 'He agreed straight away. Visits are now about once a month, always agreed by message first.', _shared: true });
+await c['chiara']!.rpc('tellher_set_outcome', { _q: q4, _status: 'moved_forward', _summary: 'I sent one short message saying I prefer to keep things professional, and the voice notes stopped.', _note: null as unknown as string, _shared: true });
+await c['elena']!.rpc('tellher_set_outcome', { _q: q3, _status: 'figuring_out', _summary: 'I’ve said no twice with the same words. It’s a little tense, but I’m keeping notes and holding steady.', _note: null as unknown as string, _shared: false });
 
 const pick = async (who: string, category: string, title: string, note: string, location: string | null) => { const { count } = await c[who]!.from('trusted_picks').select('id', { count: 'exact', head: true }).eq('title', title); if (count) return; const { error } = await c[who]!.from('trusted_picks').insert({ owner_id: id[who]!, category, title, note, location }); if (error) throw error; };
 await pick('giulia', 'Housing & Moving', 'A tenants’ advice desk that answers emails', 'They read my contract for free and told me exactly which clauses mattered.', 'Rome · Pigneto');

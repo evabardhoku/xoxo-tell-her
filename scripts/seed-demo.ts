@@ -74,6 +74,13 @@ const seedExtras = async () => {
   const roomMsgs: [string, string][] = [['maya', 'Thank you for echoing this. It helps to know it isn’t just me.'], ['lina', 'Same pattern with a previous manager. Recap emails after every 1:1 changed a lot.'], ['sofia', 'I kept a simple doc of ideas with dates. I never had to use it, but it made me calmer.'], ['maya', 'I’m going to try the recap email this week.']];
   for (const [k, b] of roomMsgs) { const r = await all[k]!.cl.rpc('tellher_echo_room_post', { _q: credit.id, _body: b }); if (r.error) throw r.error; }
  }
+ // The Other Side: fictional shared outcomes written by each demo author on her own Ripple (upsert, so re-runs don't duplicate).
+ const outcomes: [string, string, string, string, string | null][] = [
+  ['maya', 'My manager keeps presenting', 'boundary', 'I started sending recap emails after every 1:1, and I raised credit once, calmly.', 'She now names me when she presents my ideas. It isn’t perfect, but it’s much better than it was.'],
+  ['iris', 'I’m travelling alone for the first time', 'moved_forward', 'I gave the host an arrival window instead of my flight number. The trip was lovely.', null],
+  ['sofia', 'After two dates he suggested', 'figuring_out', 'I said I wasn’t ready to share locations yet. We’re still seeing each other, and I’m watching how he takes it.', null],
+ ];
+ for (const [k, start, status, summary, note] of outcomes) { const f = ((await all[k]!.cl.rpc('tellher_feed')).data ?? []) as { id: string; body: string; is_mine: boolean }[]; const q = f.find(x => x.is_mine && x.body.startsWith(start)); if (q) { const r = await all[k]!.cl.rpc('tellher_set_outcome', { _q: q.id, _status: status, _summary: summary, _note: note as string, _shared: true }); if (r.error) throw r.error; } }
  const maya = m['maya']!;
  const { count: ww } = await maya.cl.from('wingwoman_sessions').select('id', { count: 'exact', head: true }).eq('title', 'Asked to cover a colleague’s project again'); if (ww) return;
  // Legacy-style one-shot reflection.
