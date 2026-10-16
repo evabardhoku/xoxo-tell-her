@@ -12,7 +12,7 @@ import { PrivacyData } from '@/components/privacy-data';
 
 import { Button } from '@/components/ui/button';
 
-export const Route = createFileRoute('/_authenticated/profile')({ loader: ({ context }) => context.queryClient.ensureQueryData(profileQuery), head: () => pageHead('Me', 'Your private TellHer account and profile.'), component: Profile });
+export const Route = createFileRoute('/_authenticated/profile')({ loader: ({ context }) => context.queryClient.ensureQueryData(profileQuery), head: () => pageHead('Profile', 'Your private TellHer account and profile.'), component: Profile });
 
 function Profile() {
  const { data, refetch } = useSuspenseQuery(profileQuery);
@@ -29,7 +29,7 @@ function Profile() {
  const discovery = discoverabilityOptions.find(o => o.value === data.discoverability);
  const isMod = useQuery({ queryKey: ['is-moderator'], queryFn: async () => (await supabase.rpc('tellher_is_moderator')).data === true });
  return <>
-  <div className="page-heading"><div><div className="eyebrow">ME</div><h1>A space that’s yours.</h1><p>Your name, your account, your own pace.</p></div></div>
+  <div className="page-heading"><div><div className="eyebrow">PROFILE</div><h1>A space that’s yours.</h1><p>Your name, your account, your own pace.</p></div></div>
 
   <section className="circle-card me-header" aria-labelledby="me-title">
    <div className="me-identity">
