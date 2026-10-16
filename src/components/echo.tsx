@@ -22,7 +22,7 @@ export const echoRoomQuery = (id: string) => ({ queryKey: ['echo', id, 'room'], 
 export function EchoRoomEntry({ id }: { id: string }) {
  const room = useQuery(echoRoomQuery(id));
  if (!room.data?.can_enter) return null;
- return <section className="echo-room-entry" aria-labelledby="echo-room-entry-title">
+ return <section className="echo-room-entry" aria-label="Women who’ve been here">
   <Link to="/askher/$id/room" params={{ id }} className="member-link text-sm echo-room-link">Talk with women who’ve been here</Link>
  </section>;
 }

@@ -48,7 +48,7 @@ function QuestionPage() {
   <Link to="/askher" className="back-link"><ArrowLeft size={14} />Ask</Link>
   <article className={`ripple-question ${q.is_mine ? 'ripple-question--mine' : ''}`}>
    <p className="question-body">{q.body}</p>
-   <RippleAuthor identity={q} />
+   <RippleAuthor identity={q} showAnonymous />
    <div className="question-meta"><span className="question-category">{q.category}</span><span>{reachContext(q.audience_scope)}</span><span>{relativeTime(q.created_at)}</span>{q.is_mine && <span className="mine-label">Your Ripple</span>}</div>
    <div className="ripple-core-actions"><Echo id={id} isAuthor={q.is_mine} compact />{!q.is_mine && !q.my_reply_id && <Button variant="editorial" onClick={() => { setAdding(true); setTimeout(() => document.getElementById('reply-body')?.focus(), 0); }}>Add perspective</Button>}</div>
   </article>

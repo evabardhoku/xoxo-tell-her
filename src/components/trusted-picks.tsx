@@ -32,14 +32,15 @@ export function PickItem({ p, provenance, children }: { p: Pick; provenance: str
  </li>;
 }
 
-export function TrustedPicks() {
+export function TrustedPicks({ ownerOnly = false }: { ownerOnly?: boolean }) {
  const { user } = useAccount();
  const picks = useQuery({ ...picksQuery, enabled: Boolean(user) });
- const qc = useQueryClient(); const refresh = () => qc.invalidateQueries({ queryKey: picksQuery.queryKey });
+ const qc = useQueryClient(); const refresh = () => { qc.invalidateQueries({ queryKey: picksQuery.queryKey }); qc.invalidateQueries({ queryKey: ['trust-shelf'] }); };
  const [open, setOpen] = useState(false); const [category, setCategory] = useState(''); const [error, setError] = useState('');
  const add = useMutation({
   mutationFn: async (v: { title: string; note: string; location: string }) => {
-   const { error } = await supabase.from('trusted_picks').insert({ owner_id: user!.id, category, title: v.title, note: v.note, location: v.location || null });
+   if (!user) throw new Error('Please sign in again.');
+   const { error } = await supabase.from('trusted_picks').insert({ owner_id: user.id, category, title: v.title, note: v.note, location: v.location || null });
    if (error) throw new Error('That pick couldn’t be saved. Check the fields and try again.');
   },
   onSuccess: () => { setOpen(false); setCategory(''); refresh(); }, onError: e => setError(e.message),
@@ -51,8 +52,8 @@ export function TrustedPicks() {
   if (!category) return setError('Choose a category.'); if (title.length < 2) return setError('Add a short title.'); if (note.length < 5) return setError('Add a short personal note.');
   add.mutate({ title, note, location });
  };
- return <section className="circle-card picks-card" aria-labelledby="picks-title">
-  <div className="picks-head"><div><h2 id="picks-title">Picks</h2><p className="form-note">Practical recommendations from women in your Direct Circle. Valued for who shared them, never ranked.</p></div>{!open && <Button size="sm" variant="outline" onClick={() => setOpen(true)}><Plus />Share a pick</Button>}</div>
+ return <section className={ownerOnly ? "picks-card owner-picks" : "circle-card picks-card"} aria-labelledby="picks-title">
+  <div className="picks-head"><div><h2 id="picks-title">Picks</h2>{!ownerOnly && <p className="form-note">Recommendations from your Direct Circle.</p>}</div>{!open && <Button size="sm" variant="outline" onClick={() => setOpen(true)}><Plus />Share a pick</Button>}</div>
   {open && <form className="pick-form" onSubmit={submit}>
    <fieldset className="field"><legend className="field-legend">Category</legend><div className="choice-row">{pickCategories.map(c => <button type="button" key={c} className="choice-chip" aria-pressed={category === c} onClick={() => setCategory(c)}>{c}</button>)}</div></fieldset>
    <div className="field"><label htmlFor="pick-title">Title</label><Input id="pick-title" name="title" maxLength={120} placeholder="e.g. A plumber who explains everything" /></div>
@@ -63,7 +64,7 @@ export function TrustedPicks() {
    <p className="form-note">Shared with women who have you in their Direct Circle, shown with your first name.</p>
   </form>}
   {picks.isPending ? <p role="status" className="form-note">Loading picks…</p> : picks.isError ? <p role="alert" className="form-note form-error">Picks couldn’t be loaded.</p> : <>
-{picks.data.circle.length ? <ScrollPanel label="Picks from your circle" className="pick-list">{picks.data.circle.map(p => <PickItem key={p.id} p={p} provenance={`Recommended by ${p.recommender} · in your Direct Circle`} />)}</ScrollPanel> : <p className="form-note">No picks from your circle yet.</p>}
+{!ownerOnly && (picks.data.circle.length ? <ScrollPanel label="Picks from your circle" className="pick-list">{picks.data.circle.map(p => <PickItem key={p.id} p={p} provenance={`Recommended by ${p.recommender} · in your Direct Circle`} />)}</ScrollPanel> : <p className="form-note">No picks from your circle yet.</p>)}
    {picks.data.mine.length > 0 && <><h3 className="picks-sub">Your picks</h3><ScrollPanel label="Your picks" className="pick-list">{picks.data.mine.map(p => <PickItem key={p.id} p={p} provenance="Shared by you"><Button size="sm" variant="ghost" aria-label={`Delete pick ${p.title}`} disabled={remove.isPending} onClick={() => remove.mutate(p.id)}><Trash2 /></Button></PickItem>)}</ScrollPanel></>}
   </>}
  </section>;

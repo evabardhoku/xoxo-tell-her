@@ -554,3 +554,6 @@ details[open] > summary::before { content:'−'; }
  .ww-sessions ul { max-height:220px; }
  .sky--large { min-height:420px;height:64vh; }
 }
+
+.owner-picks { margin-top:0; } .owner-picks h2,.owner-picks .picks-sub { display:none; } .owner-picks .pick-item { border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent;padding:16px 0; }
+.sky-label--link { display:block;animation:none;opacity:1;z-index:1; }
