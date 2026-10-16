@@ -183,6 +183,13 @@
       "when": 1792171528501,
       "tag": "0025_letters_hide_author_column",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1792171701241,
+      "tag": "0026_constellation_places",
+      "breakpoints": true
     }
   ]
 }
