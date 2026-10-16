@@ -465,6 +465,22 @@ export type Database = {
       }
       tellher_delete_question: { Args: { _id: string }; Returns: undefined }
       tellher_delete_reply: { Args: { _id: string }; Returns: undefined }
+      tellher_extended_circle: {
+        Args: { _via?: string }
+        Returns: {
+          ask_me_about: string[]
+          bridge_pending: boolean
+          city: string
+          country: string
+          first_name: string
+          has_avatar: boolean
+          known_for: string[]
+          last_initial: string
+          member_id: string
+          via: string
+          via_id: string
+        }[]
+      }
       tellher_extended_reach_count: { Args: never; Returns: number }
       tellher_feed: {
         Args: never

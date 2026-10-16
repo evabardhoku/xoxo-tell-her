@@ -85,6 +85,13 @@
       "when": 1792146775145,
       "tag": "0011_trust_notes",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1792148354290,
+      "tag": "0012_extended_circle_discovery",
+      "breakpoints": true
     }
   ]
 }
