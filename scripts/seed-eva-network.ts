@@ -134,7 +134,7 @@ console.log('Seeded network around Eva.');
 // ── Wider fictional community (data in demo-community-data.ts). Every step is check-then-write, so re-runs add nothing new.
 // Eva is never signed in: only trust edges where she is a party are written with the admin key, as above.
 {
- const { members, directOfEva, mutualPairs, acceptedBridges, pendingToEva, pendingBetween, declined, cancelled, notes: cNotes, picks: cPicks, ripples, threads, sessions } = community;
+ const { members, directOfEva, mutualPairs, acceptedBridges, pendingToEva, pendingBetween, declined, cancelled, notes: cNotes, picks: cPicks, ripples, threads, sessions, letterSeeds } = community;
  for (const m of members) {
   const email = `${m.k}.demo@example.com`;
   const existing = list.users.find(u => u.email === email);
@@ -179,6 +179,8 @@ console.log('Seeded network around Eva.');
   if (r.room && echoers.length >= 3 && !((await c[r.by]!.rpc('tellher_echo_room', { _q: qid })).data ?? []).length)
    for (const [v, body] of r.room) { const who = v === 0 ? r.by : echoers[v - 1]; if (!who) continue; const e = await c[who]!.rpc('tellher_echo_room_post', { _q: qid, _body: body }); if (e.error) throw e.error; }
   if (r.outcome) { const [status, summary, note, shared] = r.outcome; const e = await c[r.by]!.rpc('tellher_set_outcome', { _q: qid, _status: status, _summary: summary, _note: note as string, _shared: shared }); if (e.error) throw e.error; }
+  // Letters upsert per (Ripple, writer), so re-runs never duplicate.
+  for (const [v, body, where] of letterSeeds.find(x => r.body.startsWith(x.start))?.letters ?? []) { const who = v === 0 ? r.by : echoers[v - 1]; if (!who) continue; const e = await c[who]!.rpc('tellher_write_letter', { _q: qid, _body: body, _where_now: where as string }); if (e.error) throw e.error; }
  }
  for (const [a, b, msgs] of threads) {
   const conv = await c[a]!.rpc('tellher_open_conversation', { _member: id[b]! }); if (conv.error) throw conv.error;

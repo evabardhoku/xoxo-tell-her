@@ -140,6 +140,39 @@ export type Database = {
           },
         ]
       }
+      letter_helps: {
+        Row: {
+          created_at: string
+          letter_id: string
+          member_id: string
+        }
+        Insert: {
+          created_at?: string
+          letter_id: string
+          member_id: string
+        }
+        Update: {
+          created_at?: string
+          letter_id?: string
+          member_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "letter_helps_letter_id_fkey"
+            columns: ["letter_id"]
+            isOneToOne: false
+            referencedRelation: "ripple_letters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "letter_helps_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       member_blocks: {
         Row: {
           blocked_id: string
@@ -506,6 +539,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          letter_id: string | null
           message_id: string | null
           question_id: string | null
           reason: string
@@ -517,6 +551,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          letter_id?: string | null
           message_id?: string | null
           question_id?: string | null
           reason: string
@@ -528,6 +563,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          letter_id?: string | null
           message_id?: string | null
           question_id?: string | null
           reason?: string
@@ -537,6 +573,13 @@ export type Database = {
           status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "reports_letter_id_fkey"
+            columns: ["letter_id"]
+            isOneToOne: false
+            referencedRelation: "ripple_letters"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "reports_message_id_fkey"
             columns: ["message_id"]
@@ -600,6 +643,51 @@ export type Database = {
           },
           {
             foreignKeyName: "ripple_echoes_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ripple_letters: {
+        Row: {
+          author_id: string
+          body: string
+          created_at: string
+          id: string
+          question_id: string
+          updated_at: string
+          where_now: string | null
+        }
+        Insert: {
+          author_id: string
+          body: string
+          created_at?: string
+          id?: string
+          question_id: string
+          updated_at?: string
+          where_now?: string | null
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          created_at?: string
+          id?: string
+          question_id?: string
+          updated_at?: string
+          where_now?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ripple_letters_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ripple_letters_question_id_fkey"
             columns: ["question_id"]
             isOneToOne: false
             referencedRelation: "questions"
@@ -863,6 +951,7 @@ export type Database = {
       tellher_block: { Args: { _member: string }; Returns: undefined }
       tellher_can_message: { Args: { _member: string }; Returns: boolean }
       tellher_can_view: { Args: { _q: string }; Returns: boolean }
+      tellher_can_write_letter: { Args: { _q: string }; Returns: boolean }
       tellher_cancel_trust: { Args: { _id: string }; Returns: undefined }
       tellher_circle_picks: {
         Args: never
@@ -888,6 +977,7 @@ export type Database = {
         }[]
       }
       tellher_conversation_partner: { Args: { _c: string }; Returns: string }
+      tellher_delete_letter: { Args: { _id: string }; Returns: undefined }
       tellher_delete_outcome: { Args: { _q: string }; Returns: undefined }
       tellher_delete_question: { Args: { _id: string }; Returns: undefined }
       tellher_delete_reply: { Args: { _id: string }; Returns: undefined }
@@ -970,6 +1060,7 @@ export type Database = {
           member_id: string
         }[]
       }
+      tellher_help_letter: { Args: { _id: string }; Returns: undefined }
       tellher_inbox: {
         Args: never
         Returns: {
@@ -990,6 +1081,18 @@ export type Database = {
       tellher_is_direct: { Args: { _a: string; _b: string }; Returns: boolean }
       tellher_is_participant: { Args: { _c: string }; Returns: boolean }
       tellher_is_question_author: { Args: { _q: string }; Returns: boolean }
+      tellher_letters: {
+        Args: { _q: string }
+        Returns: {
+          body: string
+          created_at: string
+          help_count: number
+          helped: boolean
+          id: string
+          mine: boolean
+          where_now: string
+        }[]
+      }
       tellher_like_reply: { Args: { _reply: string }; Returns: undefined }
       tellher_mark_notifications_read: { Args: never; Returns: undefined }
       tellher_mark_read: { Args: { _c: string }; Returns: undefined }
@@ -1119,6 +1222,10 @@ export type Database = {
           reply_id: string
         }[]
       }
+      tellher_report_letter: {
+        Args: { _id: string; _reason: string }
+        Returns: undefined
+      }
       tellher_report_message: {
         Args: { _id: string; _reason: string }
         Returns: undefined
@@ -1191,8 +1298,13 @@ export type Database = {
       }
       tellher_unblock: { Args: { _member: string }; Returns: undefined }
       tellher_unecho: { Args: { _id: string }; Returns: undefined }
+      tellher_unhelp_letter: { Args: { _id: string }; Returns: undefined }
       tellher_unlike_reply: { Args: { _reply: string }; Returns: undefined }
       tellher_unread_notifications: { Args: never; Returns: number }
+      tellher_write_letter: {
+        Args: { _body: string; _q: string; _where_now: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

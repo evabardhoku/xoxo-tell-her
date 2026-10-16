@@ -8,6 +8,7 @@ import { TagPicker } from '@/components/tag-picker';
 import { replyLikesQuery } from '@/lib/notifications';
 import { Echo } from '@/components/echo';
 import { OtherSide } from '@/components/other-side';
+import { Letters } from '@/components/letters';
 import { PerspectiveMap } from '@/components/perspective-map';
 import { PerspectiveSynthesis } from '@/components/perspective-synthesis';
 import { pageHead } from '@/lib/metadata';
@@ -72,6 +73,7 @@ function QuestionPage() {
   <PerspectiveSynthesis key={data.replies.length} id={id} replies={data.replies} />
   {q.is_mine && q.my_instinct && <aside className="instinct-card"><p className="private-note"><LockKeyhole size={12} />Only you see this</p><p className="instinct-line">You started here: <strong>{instincts.find(i => i.value === q.my_instinct)?.label}</strong></p>{q.my_note && <p className="form-note">{q.my_note}</p>}</aside>}
   <OtherSide id={id} isAuthor={q.is_mine} />
+  <Letters id={id} />
  </div>;
 }
 
