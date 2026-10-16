@@ -550,6 +550,7 @@ export type Database = {
           created_at: string
           id: string
           mentions: string[]
+          open_identity: boolean
           perspective_tag: string | null
           question_id: string
           updated_at: string
@@ -560,6 +561,7 @@ export type Database = {
           created_at?: string
           id?: string
           mentions?: string[]
+          open_identity?: boolean
           perspective_tag?: string | null
           question_id: string
           updated_at?: string
@@ -570,6 +572,7 @@ export type Database = {
           created_at?: string
           id?: string
           mentions?: string[]
+          open_identity?: boolean
           perspective_tag?: string | null
           question_id?: string
           updated_at?: string
@@ -1429,7 +1432,29 @@ export type Database = {
         }
         Returns: undefined
       }
+      tellher_open_comments: {
+        Args: { _id: string }
+        Returns: {
+          body: string
+          created_at: string
+          first_name: string
+          has_avatar: boolean
+          id: string
+          is_mine: boolean
+          liked: boolean
+          likes: number
+          profile_id: string
+        }[]
+      }
       tellher_open_conversation: { Args: { _member: string }; Returns: string }
+      tellher_open_feed_context: {
+        Args: { _ids: string[] }
+        Returns: {
+          question_id: string
+          relation: string
+          via_name: string
+        }[]
+      }
       tellher_outcome: {
         Args: { _q: string }
         Returns: {
@@ -1440,6 +1465,10 @@ export type Database = {
           summary: string
           updated_at: string
         }[]
+      }
+      tellher_post_open_comment: {
+        Args: { _body: string; _id: string }
+        Returns: string
       }
       tellher_post_reply: {
         Args: { _body: string; _id: string; _tag: string }

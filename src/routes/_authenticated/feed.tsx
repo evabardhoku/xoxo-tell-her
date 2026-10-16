@@ -1,37 +1,50 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { ArrowRight, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { QuestionCard } from '@/components/question-feed';
+import { RippleAuthor } from '@/components/ripple-author';
+import { OpenComments } from '@/components/open-comments';
 import { pageHead } from '@/lib/metadata';
-import { feedQuery } from '@/lib/askher';
-import { questionProvenance } from '@/lib/current';
-import { feedMapQuery } from '@/lib/perspectives';
+import { feedQuery, relativeTime } from '@/lib/askher';
+import { openContextQuery, openOnly, rankFeed, relationLabel, type FeedFilterMode } from '@/lib/open-feed';
 import { profileQuery } from '@/lib/profile';
 
 export const Route = createFileRoute('/_authenticated/feed')({
- head: () => pageHead('My Feed', 'Ripples women in your network chose to post with their name.'),
+ head: () => pageHead('My Feed', 'Open Ripples from women you know and the wider TellHer network.'),
  component: MyFeed,
 });
 
-/** Open side of TellHer: only Ripples posted with the author's name, from the same checked feed as Sky. */
+const filters: { value: FeedFilterMode; label: string }[] = [{ value: 'for-you', label: 'For You' }, { value: 'circle', label: 'My Circle' }, { value: 'community', label: 'Community' }];
+
+/** Open side of TellHer: only Ripples posted with the author's name, checked by the same feed function as Sky. */
 function MyFeed() {
  const profile = useQuery(profileQuery);
- const feed = useQuery(feedQuery); const maps = useQuery(feedMapQuery);
+ const feed = useQuery(feedQuery);
+ const [mode, setMode] = useState<FeedFilterMode>('for-you');
  const [limit, setLimit] = useState(6);
- const list = (feed.data ?? []).filter(q => q.author_visibility === 'named');
+ const open = openOnly(feed.data ?? []);
+ const ctx = useQuery(openContextQuery(open.map(q => q.id)));
+ const myTopics = new Set(open.filter(q => q.is_mine).map(q => q.category));
+ const list = rankFeed(open, ctx.data ?? {}, mode, myTopics);
+ const circleCount = open.filter(q => ['circle', 'mine'].includes(ctx.data?.[q.id]?.relation ?? '')).length;
  const first = profile.data?.first_name;
- return <>
-  <div className="page-heading"><div><div className="eyebrow">MY FEED</div><h1>{first ? `Welcome back, ${first}.` : 'Welcome back.'}</h1><p>Ripples women chose to share with their name.</p></div></div>
-  <div className="flex gap-2 flex-wrap mb-6">
-   <Button asChild variant="editorial"><Link to="/ripple"><Plus />Ask a Ripple</Link></Button>
-   <Button asChild variant="ghost"><Link to="/wingwoman" search={{}}>Think this through privately with Wingwoman</Link></Button>
-  </div>
+ return <div className="open-feed">
+  <Link to="/ripple" className="mind-entry open-feed-mind"><span className="member-initial" aria-hidden>{first?.slice(0, 1) ?? 'T'}</span><span>What’s on your mind{first ? `, ${first}` : ''}?</span></Link>
+  <div className="segmented open-feed-filter" role="group" aria-label="Filter My Feed">{filters.map(f => <button key={f.value} type="button" className="segmented-option" aria-pressed={mode === f.value} onClick={() => { setMode(f.value); setLimit(6); }}>{f.label}</button>)}</div>
   {feed.isPending ? <p role="status" className="form-note">Gathering your feed…</p>
    : feed.isError ? <p role="alert" className="form-note form-error">Your feed could not be loaded. Please refresh.</p>
-   : !list.length ? <section className="empty-panel"><p>No open Ripples yet. When women in your network post with their name, they’ll appear here.</p><Button asChild variant="editorial" className="mt-6"><Link to="/circle">Go to My Circle<ArrowRight /></Link></Button></section>
-   : <><ol className="current-stream">{list.slice(0, limit).map(q => <li key={q.id} className="current-item current-item--question"><p className="current-provenance">{questionProvenance(q)}</p><ul className="list-none p-0"><QuestionCard q={q} counts={maps.data?.[q.id]} /></ul></li>)}</ol>
-    {list.length > limit && <Button variant="ghost" onClick={() => setLimit(n => n + 6)}>Show more</Button>}</>}
- </>;
+   : <>
+    {mode !== 'community' && ctx.isSuccess && circleCount < 3 && open.length > circleCount && <p className="form-note open-feed-quiet">Your Circle is still quiet. Here are a few open conversations from TellHer.</p>}
+    {!list.length ? <section className="empty-panel"><p>{mode === 'circle' ? 'No open Ripples from your Circle yet.' : 'No open Ripples yet. When women post with their name, they’ll appear here.'}</p></section>
+     : <ol className="open-feed-list">{list.slice(0, limit).map(q => { const c = ctx.data?.[q.id]; const rel = c?.relation ?? 'community'; return <li key={q.id}>
+      <article className={`open-ripple open-ripple--${rel === 'mine' ? 'circle' : rel}`} aria-label={`Open Ripple by ${q.first_name ?? 'a member'}`}>
+       <header className="open-ripple-head"><RippleAuthor identity={q} /><p className="open-ripple-context"><span className="trust-tag">{relationLabel(c)}</span><span>{relativeTime(q.created_at)}</span></p></header>
+       <span className="question-category">{q.category}</span>
+       <Link to="/askher/$id" params={{ id: q.id }} className="open-ripple-body">{q.body}</Link>
+       <OpenComments id={q.id} preview={2} isAuthor={q.is_mine} />
+      </article>
+     </li>; })}</ol>}
+    {list.length > limit && <Button variant="ghost" onClick={() => setLimit(n => n + 6)}>Show more</Button>}
+   </>}
+ </div>;
 }
