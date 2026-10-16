@@ -36,7 +36,7 @@ function MyFeed() {
    : <>
     {mode !== 'community' && ctx.isSuccess && circleCount < 3 && open.length > circleCount && <p className="form-note open-feed-quiet">Your Circle is still quiet. Here are a few open conversations from TellHer.</p>}
     {!list.length ? <section className="empty-panel"><p>{mode === 'circle' ? 'No open Ripples from your Circle yet.' : 'No open Ripples yet. When women post with their name, they’ll appear here.'}</p></section>
-     : <ol className="open-feed-list">{(mode === 'circle' || circleCount >= 3 ? list : rankFeed(open, ctx.data ?? {}, 'for-you', myTopics)).slice(0, limit).map(q => { const c = ctx.data?.[q.id]; const rel = c?.relation ?? 'community'; return <li key={q.id}>
+     : <ol className="open-feed-list">{list.slice(0, limit).map(q => { const c = ctx.data?.[q.id]; const rel = c?.relation ?? 'community'; return <li key={q.id}>
       <article className={`open-ripple open-ripple--${rel === 'mine' ? 'circle' : rel}`} aria-label={`Open Ripple by ${q.first_name ?? 'a member'}`}>
        <header className="open-ripple-head"><RippleAuthor identity={q} /><p className="open-ripple-context"><span className="trust-tag">{relationLabel(c)}</span><span>{relativeTime(q.created_at)}</span></p></header>
        <span className="question-category">{q.category}</span>
