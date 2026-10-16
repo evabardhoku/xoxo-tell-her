@@ -14,6 +14,7 @@ import { TrustedPicks } from '@/components/trusted-picks';
 import { ExtendedCircle } from '@/components/extended-circle';
 import { InboxList } from '@/components/inbox-list';
 import { ScrollPanel } from '@/components/scroll-panel';
+import { useDiscovery } from '@/hooks/discovery';
 
 export const Route = createFileRoute('/_authenticated/circle')({
  validateSearch: zodValidator(z.object({ view: fallback(z.string(), 'direct').default('direct') })),
@@ -32,13 +33,16 @@ function Circle() {
  const { data } = useSuspenseQuery(circleQuery);
  const direct = data.entries.filter(e => e.kind === 'direct');
  const pending = data.entries.filter(e => e.kind === 'incoming' || e.kind === 'outgoing').length;
- const tab = (v: View, label: string) => <Link to="/circle" search={{ view: v }} className="ripple-tab" role="tab" aria-selected={view === v} data-active={view === v}>{label}</Link>;
+ const { isNew } = useDiscovery();
+ const easing = isNew && direct.length === 0;
+ const tab = (v: View, label: string, hint?: string) => <Link to="/circle" search={{ view: v }} className="ripple-tab" role="tab" aria-selected={view === v} data-active={view === v}>{label}{hint && <span className="tab-hint"> · {hint}</span>}</Link>;
  return <>
   <div className="page-heading"><div><div className="eyebrow">CIRCLE</div><h1>Trust starts close to home.</h1><p>The women you choose to trust. Only accepted trust shapes how far a Trust Ripple can travel.</p></div>
    {pending > 0 && <Link to="/circle" search={{ view: 'requests' }} className="requests-indicator" aria-label={`${pending} pending trust ${pending === 1 ? 'request' : 'requests'}`}><Inbox size={15} /><span className="requests-count">{pending}</span>Requests</Link>}
   </div>
-  <div className="ripple-tabs" role="tablist" aria-label="Circle views">{tab('direct', 'Direct')}{tab('extended', 'Extended')}{tab('messages', 'Messages')}</div>
-  {view === 'direct' && <DirectTab direct={direct} extendedCount={data.extendedCount} />}
+  <div className="ripple-tabs" role="tablist" aria-label="Circle views">{tab('direct', 'Direct')}{tab('extended', 'Extended', easing ? 'unlocks when you add someone' : undefined)}{tab('messages', 'Messages')}</div>
+  {view === 'direct' && <DirectTab direct={direct} extendedCount={data.extendedCount} easing={easing} />}
+  {view === 'extended' && easing && <p className="form-note discovery-hint">Extended Circle and Trust Bridges unlock when you add someone you trust — they’re the women trusted by your Direct Circle. <Link to="/circle" search={{ view: 'direct' }} className="member-link">Add your first trusted woman</Link></p>}
   {view === 'extended' && <ExtendedCircle direct={direct} />}
   {view === 'messages' && <InboxList />}
   {view === 'requests' && <RequestsTab />}
@@ -46,9 +50,10 @@ function Circle() {
  </>;
 }
 
-function DirectTab({ direct, extendedCount }: { direct: CircleEntry[]; extendedCount: number }) {
+function DirectTab({ direct, extendedCount, easing }: { direct: CircleEntry[]; extendedCount: number; easing: boolean }) {
  const qc = useQueryClient();
  const refresh = () => qc.invalidateQueries({ queryKey: circleQuery.queryKey });
+ if (easing) return <section className="circle-card" aria-labelledby="first-trust"><h2 id="first-trust">Add your first trusted woman</h2><p className="form-note mb-4">Start with one woman you already trust. Once she accepts, your Extended Circle and Trust Bridges open up.</p><AddMember onSent={refresh} /></section>;
  return <>
   <section className="circle-summary" aria-label="Your reach">
    <ReachRings direct={direct.length} extended={extendedCount} />

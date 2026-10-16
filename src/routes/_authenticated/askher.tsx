@@ -2,7 +2,8 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { zodValidator, fallback } from '@tanstack/zod-adapter';
 import { z } from 'zod';
-import { LockKeyhole, Plus } from 'lucide-react';
+import { LockKeyhole, Plus, Sparkle } from 'lucide-react';
+import { useDiscovery } from '@/hooks/discovery';
 import { Button } from '@/components/ui/button';
 import { EmptyRipple } from '@/components/brand';
 import { pageHead } from '@/lib/metadata';
@@ -62,7 +63,9 @@ function RipplesTab() {
  const sky = useQuery(skyQuery);
  const outcomes = new Set((sky.data ?? []).filter(r => r.has_outcome).map(r => r.id));
  const mine = data.filter(q => q.is_mine); const reached = data.filter(q => !q.is_mine);
+ const { isNew } = useDiscovery();
  return <>
+  {isNew && mine.length === 0 && <p className="form-note discovery-hint"><Sparkle size={12} className="inline mr-1" />Your Perspective Map and private My Instinct appear after your first Ripple. <Link to="/ripple" className="member-link">Ask anonymously</Link> whenever you’re ready.</p>}
   <MineList list={mine} outcomes={outcomes} map={map} />
   <ReachedList list={reached} map={map} initial={initial} />
  </>;
