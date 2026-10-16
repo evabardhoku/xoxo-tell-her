@@ -38,3 +38,9 @@ export function relativeTime(iso: string, now = Date.now()) {
  const v = Math.floor(s / unit[0]); return `${v} ${unit[1]}${v === 1 ? '' : 's'} ago`;
 }
 export const errorText = (e: unknown) => (e as { message?: string } | null)?.message || 'Something went wrong.';
+
+export function filterFeed(list: FeedQuestion[], f: { kw: string; cat: string; reach: string; sort: 'newest' | 'oldest'; unanswered: boolean }) {
+ const k = f.kw.trim().toLowerCase();
+ return list.filter(q => (!k || q.body.toLowerCase().includes(k) || q.category.toLowerCase().includes(k)) && (!f.cat || q.category === f.cat) && (!f.reach || q.audience_scope === f.reach) && (!f.unanswered || q.reply_count === 0))
+  .sort((a, b) => (f.sort === 'newest' ? -1 : 1) * (Date.parse(a.created_at) - Date.parse(b.created_at)));
+}

@@ -11,7 +11,7 @@ import { EmptyRipple } from '@/components/brand';
 import { pageHead } from '@/lib/metadata';
 import { PerspectiveStrip } from '@/components/perspective-map';
 import { feedMapQuery, type Counts } from '@/lib/perspectives';
-import { categories, errorText, feedQuery, instincts, reachContext, relativeTime, type FeedQuestion } from '@/lib/askher';
+import { categories, errorText, filterFeed, feedQuery, instincts, reachContext, relativeTime, type FeedQuestion } from '@/lib/askher';
 
 export const Route = createFileRoute('/_authenticated/askher')({
  validateSearch: zodValidator(z.object({ category: fallback(z.string(), '').default('') })),
@@ -59,8 +59,3 @@ function QuestionCard({ q, counts }: { q: FeedQuestion; counts?: Counts | undefi
  </li>;
 }
 
-export function filterFeed(list: FeedQuestion[], f: { kw: string; cat: string; reach: string; sort: 'newest' | 'oldest'; unanswered: boolean }) {
- const k = f.kw.trim().toLowerCase();
- return list.filter(q => (!k || q.body.toLowerCase().includes(k) || q.category.toLowerCase().includes(k)) && (!f.cat || q.category === f.cat) && (!f.reach || q.audience_scope === f.reach) && (!f.unanswered || q.reply_count === 0))
-  .sort((a, b) => (f.sort === 'newest' ? -1 : 1) * (Date.parse(a.created_at) - Date.parse(b.created_at)));
-}

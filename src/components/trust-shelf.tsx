@@ -26,19 +26,30 @@ export function TrustShelf({ memberId, firstName, editable = false }: { memberId
  const shelf = useQuery({ ...shelfQuery(memberId), enabled: Boolean(user) });
  const qc = useQueryClient(); const refresh = () => qc.invalidateQueries({ queryKey: ['trust-shelf', memberId] });
  const [editing, setEditing] = useState<ShelfItem | 'new' | null>(null);
+ const [topic, setTopic] = useState(''); const [place, setPlace] = useState('');
  const remove = useMutation({ mutationFn: async (id: string) => { const { error } = await supabase.from('trust_notes').delete().eq('id', id); if (error) throw error; }, onSuccess: refresh });
  if (shelf.isPending) return <p role="status" className="form-note">Loading Trust Shelf…</p>;
  if (shelf.isError) return <p role="alert" className="form-note form-error">The Trust Shelf couldn’t be loaded.</p>;
- const { notes, picks } = shelf.data;
+ const all = shelf.data;
+ const loc = place.trim().toLowerCase();
+ const keep = (r: ShelfItem) => (!topic || r.category === topic) && (!loc || (r.location ?? '').toLowerCase().includes(loc));
+ const notes = all.notes.filter(keep), picks = all.picks.filter(keep);
+ const topicsHere = Array.from(new Set([...all.notes, ...all.picks].map(r => r.category)));
+ const filtering = Boolean(topic || loc);
  return <section className="trust-shelf" aria-labelledby="shelf-title">
   <div className="picks-head"><div><div className="eyebrow">TRUST SHELF</div><h2 id="shelf-title">{editable ? 'What you know, under your name' : `What ${firstName} knows`}</h2><p className="form-note">Notes and picks shared deliberately with a real name. Never taken from anonymous questions, replies or Wingwoman.</p></div>{editable && !editing && <Button size="sm" variant="outline" onClick={() => setEditing('new')}><Plus />Write a Trust Note</Button>}</div>
   {editable && editing && <NoteForm note={editing === 'new' ? null : editing} authorId={user!.id} onDone={() => { setEditing(null); refresh(); }} onCancel={() => setEditing(null)} />}
+  {all.notes.length + all.picks.length > 1 && <div className="shelf-filters" role="search" aria-label="Filter Trust Shelf">
+   <div className="field"><label htmlFor={`shelf-topic-${memberId}`}>Topic</label><select id={`shelf-topic-${memberId}`} className="ext-select" value={topic} onChange={e => setTopic(e.target.value)}><option value="">All topics</option>{topicsHere.map(t => <option key={t}>{t}</option>)}</select></div>
+   <div className="field"><label htmlFor={`shelf-loc-${memberId}`}>Location</label><Input id={`shelf-loc-${memberId}`} value={place} onChange={e => setPlace(e.target.value)} placeholder="e.g. Rome" /></div>
+  </div>}
   <h3 className="picks-sub">Trust Notes</h3>
   {notes.length ? <ul className="shelf-list">{notes.map(n => <li key={n.id} className="shelf-note">
    <div className="question-meta"><span className="question-category">{n.category}</span>{n.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{n.location}</span>}</div>
    <h4>{n.title}</h4><p>{n.body}</p>
    {editable && <div className="pick-foot"><span /><span className="flex gap-1"><Button size="sm" variant="ghost" aria-label={`Edit note ${n.title}`} onClick={() => setEditing(n)}><Pencil /></Button><Button size="sm" variant="ghost" aria-label={`Delete note ${n.title}`} disabled={remove.isPending} onClick={() => remove.mutate(n.id)}><Trash2 /></Button></span></div>}
   </li>)}</ul> : <p className="form-note">{editable ? 'No notes yet. Share something you learned the hard way.' : 'No Trust Notes yet.'}</p>}
+  {filtering && !notes.length && !picks.length && <p className="form-note">Nothing on this shelf matches these filters.</p>}
   {(picks.length > 0 || editable) && <><h3 className="picks-sub">Trusted Picks</h3>
    {picks.length ? <ul className="pick-list">{picks.map(p => <li key={p.id} className="pick-item"><div className="question-meta"><span className="question-category">{p.category}</span>{p.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{p.location}</span>}</div><strong className="pick-title">{p.title}</strong><p className="pick-note">{p.body}</p></li>)}</ul> : <p className="form-note">Add picks from MyCircle. They show here only to women who trust you.</p>}</>}
  </section>;
