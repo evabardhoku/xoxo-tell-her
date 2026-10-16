@@ -137,3 +137,26 @@ export const createReflection = createServerFn({ method: 'POST' })
   if (error) { console.error(error); throw new Error('Your reflection could not be saved.'); }
   return { id: row.id, reflection };
  });
+
+const DRAFT = `You help a TellHer member turn her private Wingwoman conversation into a short anonymous Trust Ripple question for women she trusts.
+Write ONE question draft in her first-person voice, 1-4 sentences, under 600 characters, plain text.
+- Include only the situation details needed for others to offer a perspective, using the most current understanding from the whole conversation.
+- Remove names, workplaces, addresses, contact details and anything identifying. Never quote Wingwoman.
+- Never invent facts. Do not include her private instinct or feelings unless she stated them as part of what she wants to ask.
+- End with a clear question she could ask other women.`;
+
+export const proposeRippleDraft = createServerFn({ method: 'POST' })
+ .middleware([requireSupabaseAuth])
+ .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
+ .handler(async ({ data, context }) => {
+  const key = process.env['LOVABLE_API_KEY'];
+  if (!key) throw new Error('Wingwoman is not configured.');
+  const { data: s } = await context.supabase.from('wingwoman_sessions').select('id, context, situation').eq('id', data.sessionId).maybeSingle();
+  if (!s) throw new Error('This conversation could not be found.');
+  const { data: msgs, error } = await context.supabase.from('wingwoman_messages').select('role, content').eq('session_id', s.id).order('created_at', { ascending: false }).limit(HISTORY_TURNS);
+  if (error) throw new Error('Your conversation could not be loaded.');
+  const transcript = [`Her opening (${s.context ?? 'Other'}): ${s.situation ?? ''}`, ...(msgs ?? []).reverse().map(m => `${m.role === 'user' ? 'Her' : 'Wingwoman'}: ${m.content}`)].join('\n\n');
+  const draft = (await streamResponse({ instructions: DRAFT, input: [{ role: 'user', content: transcript }] }, key)).trim().slice(0, 2000);
+  // Returned only to the owner as an editable suggestion; never stored.
+  return { draft };
+ });

@@ -9,7 +9,9 @@ import { Input } from '@/components/ui/input';
 import { ReachRings } from '@/components/brand';
 import { pageHead } from '@/lib/metadata';
 import { categories, errorText, feedQuery, instincts, reachPreview, reaches, type Reach } from '@/lib/askher';
-import { ripplePublication } from '@/lib/ripple-draft';
+import { useServerFn } from '@tanstack/react-start';
+import { conversationExcerpt, ripplePublication } from '@/lib/ripple-draft';
+import { proposeRippleDraft } from '@/lib/wingwoman.functions';
 
 export const Route = createFileRoute('/_authenticated/ripple')({ validateSearch: (s: Record<string, unknown>): { from?: string } => (typeof s['from'] === 'string' ? { from: s['from'] } : {}), head: () => pageHead('Start a Trust Ripple', 'Ask a sensitive question anonymously and choose how far it travels.'), component: Composer });
 
@@ -24,7 +26,9 @@ function Composer() {
  const [instinct, setInstinct] = useState('');
  const [note, setNote] = useState('');
  const [scope, setScope] = useState<Reach | ''>('');
- const [source, setSource] = useState<string | null>(null);
+ const [source, setSource] = useState<ReturnType<typeof conversationExcerpt> | null>(null);
+ const [drafting, setDrafting] = useState(false); const [draftNote, setDraftNote] = useState('');
+ const propose = useServerFn(proposeRippleDraft);
  const [sourceLoading, setSourceLoading] = useState(Boolean(from));
  const [sourceError, setSourceError] = useState('');
  const [error, setError] = useState(''); const [busy, setBusy] = useState(false);
@@ -38,8 +42,17 @@ function Composer() {
     const { data, error } = await supabase.from('wingwoman_sessions').select('context, situation, instinct').eq('id', from).maybeSingle();
     if (!active) return;
     if (error || !data) { setSourceError('Your private Wingwoman conversation could not be loaded. Return to Wingwoman and try again.'); return; }
-    setSource(data.situation ?? '');
-    setBody((data.situation ?? '').slice(0, 2000)); setInstinct(data.instinct ?? ''); setCategory(contextCategory[data.context ?? ''] ?? '');
+    const { data: msgs } = await supabase.from('wingwoman_messages').select('role, content').eq('session_id', from).order('created_at');
+    if (!active) return;
+    setSource(conversationExcerpt(data.situation ?? '', msgs ?? []));
+    setBody((data.situation ?? '').slice(0, 2000));
+    if (msgs?.length) {
+     // Multi-turn: suggest an editable draft from the whole conversation. Nothing is stored or published here.
+     setDrafting(true); setDraftNote('');
+     propose({ data: { sessionId: from } }).then(r => { if (active && r.draft.length >= 10) { setBody(r.draft); setDraftNote('Suggested from your conversation. Edit it freely — nothing is shared until you send.'); } })
+      .catch(() => { if (active) setDraftNote('A suggested draft wasn’t available, so your opening words are prefilled instead.'); })
+      .finally(() => { if (active) setDrafting(false); });
+    } setInstinct(data.instinct ?? ''); setCategory(contextCategory[data.context ?? ''] ?? '');
    } catch { if (active) setSourceError('Your private Wingwoman conversation could not be loaded. Return to Wingwoman and try again.'); }
    finally { if (active) setSourceLoading(false); }
   };
@@ -64,13 +77,17 @@ function Composer() {
   <section className="composer-card">
    {from && <aside className="wingwoman-source" aria-label="Private Wingwoman source">
     <h2 className="field-legend">From your private Wingwoman conversation</h2>
-    <p className="private-note"><LockKeyhole size={13} />Only you can see this.</p>
-    {sourceLoading ? <p role="status" className="form-note">Loading your private conversation…</p> : sourceError ? <p role="alert" className="form-note form-error">{sourceError}</p> : <p className="wingwoman-source-text">{source}</p>}
+    <p className="private-note"><LockKeyhole size={13} />Private — only you can see this.</p>
+    {sourceLoading ? <p role="status" className="form-note">Loading your private conversation…</p> : sourceError ? <p role="alert" className="form-note form-error">{sourceError}</p> : source && <div className="wingwoman-source-text">
+     <p><strong>You began:</strong> {source.opening}</p>
+     {source.omitted > 0 && <p className="form-note">… {source.omitted} earlier {source.omitted === 1 ? 'message' : 'messages'}</p>}
+     {source.lines.map((l, i) => <p key={i}><strong>{l.role === 'you' ? 'You:' : 'Wingwoman:'}</strong> {l.text}</p>)}
+    </div>}
    </aside>}
    <ol className="composer-steps" aria-label="Steps">{steps.map((s, i) => <li key={s} data-state={i === step ? 'current' : i < step ? 'done' : 'todo'} aria-current={i === step ? 'step' : undefined}><span>{i + 1}</span>{s}</li>)}</ol>
    {step === 0 && <div key="s0" className="composer-body">
     <fieldset className="field" disabled={sourceLoading || Boolean(sourceError)}><legend className="field-legend">Category</legend><div className="choice-row">{categories.map(c => <Button variant="ghost" type="button" key={c} className="choice-chip" aria-pressed={category === c} onClick={() => setCategory(c)}>{c}</Button>)}</div></fieldset>
-    <div className="field"><label htmlFor="q-body">{from ? 'Your editable Ripple draft' : 'What would you like a perspective on?'}</label><Textarea id="q-body" maxLength={2000} disabled={sourceLoading || Boolean(sourceError)} value={body} onChange={e => setBody(e.target.value)} placeholder="Your words belong here…" /><span className="form-note">{body.trim().length < 10 ? 'At least 10 characters.' : `${body.length}/2000`}</span></div>
+    <div className="field"><label htmlFor="q-body">{from ? 'Your editable Ripple draft' : 'What would you like a perspective on?'}</label><Textarea id="q-body" maxLength={2000} disabled={sourceLoading || drafting || Boolean(sourceError)} value={body} onChange={e => setBody(e.target.value)} placeholder="Your words belong here…" />{drafting && <span role="status" className="form-note">Drafting a suggestion from your conversation…</span>}{draftNote && !drafting && <span className="form-note">{draftNote}</span>}<span className="form-note">{body.trim().length < 10 ? 'At least 10 characters.' : `${body.length}/2000`}</span></div>
    </div>}
    {step === 1 && <div key="s1" className="composer-body">
     <p className="private-note"><LockKeyhole size={13} />Private to you. Never shown to anyone who sees your question.</p>
@@ -84,8 +101,8 @@ function Composer() {
     <p className="form-note">Your name, photo and instinct are never shown with the question. Women may or may not choose to respond.</p>
    </div>}
    {error && <p role="alert" className="form-note form-error">{error}</p>}
-   {step === 3 && source !== null && <p className="private-note ripple-sharing-note"><LockKeyhole size={13} />Only this Ripple will be shared. Your Wingwoman conversation stays private.</p>}
-   <div className="composer-actions ripple-actions"><div className="ripple-back-actions">{step > 0 && <Button variant="ghost" disabled={busy} onClick={() => setStep(step - 1)}><ArrowLeft />Back</Button>}{from && <Button variant="ghost" disabled={busy} onClick={() => navigate({ to: '/wingwoman' })}>Cancel</Button>}</div>{step < 3 ? <Button variant="editorial" disabled={!valid || sourceLoading || Boolean(sourceError)} onClick={() => setStep(step + 1)}>Continue<ArrowRight /></Button> : <Button variant="editorial" disabled={busy} onClick={send}>{busy ? 'Sending…' : 'Send Trust Ripple'}</Button>}</div>
+   {step === 3 && source !== null && <p className="private-note ripple-sharing-note"><LockKeyhole size={13} />Only the Ripple below will be shared. Your Wingwoman conversation stays private.</p>}
+   <div className="composer-actions ripple-actions"><div className="ripple-back-actions">{step > 0 && <Button variant="ghost" disabled={busy} onClick={() => setStep(step - 1)}><ArrowLeft />Back</Button>}{from && <Button variant="ghost" disabled={busy} onClick={() => navigate({ to: '/wingwoman' })}>Cancel</Button>}</div>{step < 3 ? <Button variant="editorial" disabled={!valid || sourceLoading || drafting || Boolean(sourceError)} onClick={() => setStep(step + 1)}>Continue<ArrowRight /></Button> : <Button variant="editorial" disabled={busy} onClick={send}>{busy ? 'Sending…' : 'Send Trust Ripple'}</Button>}</div>
   </section>
  </>;
 }
