@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { pageHead } from '@/lib/metadata';
 import { instincts, errorText, relativeTime } from '@/lib/askher';
-import { createReflection, sendWingwomanMessage, wingwomanContexts, type Reflection } from '@/lib/wingwoman.functions';
+import { createReflection, sendWingwomanMessage, wingwomanContexts, wingwomanRelated, type Reflection } from '@/lib/wingwoman.functions';
 
 export const Route = createFileRoute('/_authenticated/wingwoman')({
  validateSearch: zodValidator(z.object({ s: fallback(z.string().uuid().optional(), undefined) })),
