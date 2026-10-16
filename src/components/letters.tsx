@@ -1,11 +1,12 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Flag, Heart, LockKeyhole, Trash2 } from 'lucide-react';
+import { Flag, Heart, MoreHorizontal, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { errorText, relativeTime } from '@/lib/askher';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 import { ScrollPanel } from './scroll-panel';
 
 type Letter = { id: string; body: string; where_now: string | null; created_at: string; mine: boolean; helped: boolean; help_count: number | null };
@@ -32,13 +33,14 @@ export function Letters({ id }: { id: string }) {
  const remove = async (l: Letter) => { if (!window.confirm('Remove your letter?')) return; const { error } = await supabase.rpc('tellher_delete_letter', { _id: l.id }); if (error) return setNote({ text: errorText(error), error: true }); refresh(); };
  return <section className="letters" aria-labelledby="letters-title">
   <div className="eyebrow" id="letters-title">LETTERS FROM THE OTHER SIDE</div>
-  <p className="form-note">Written by women who have lived something similar. Testimony, not advice.</p>
   {letters.length > 0 && <ScrollPanel label="Letters from the Other Side" className="letter-list">{letters.map(l => <li key={l.id} className={`letter-card ${l.mine ? 'letter-card--mine' : ''}`}>
    <p className="letter-body">{l.body}</p>
    <p className="letter-sign">— {l.mine ? 'You' : 'A woman who has been there'}{l.where_now ? `, ${l.where_now}` : ''}</p>
    <div className="letter-foot"><span className="form-note">{relativeTime(l.created_at)}</span>
-    {l.mine ? <>{l.help_count ? <span className="like-count"><Heart size={12} />{l.help_count} found this helpful <LockKeyhole size={11} aria-label="only you see this" /></span> : null}<Button size="sm" variant="ghost" onClick={() => setWriting(true)}>Edit</Button><Button size="sm" variant="ghost" onClick={() => remove(l)}><Trash2 />Remove</Button></>
-     : <><button type="button" className={`like-btn ${l.helped ? 'is-liked' : ''}`} aria-pressed={l.helped} onClick={() => help(l)}><Heart size={13} />This helped</button><button type="button" className="room-report" onClick={() => report(l)}><Flag size={12} />Report</button></>}
+    {!l.mine && <Button type="button" size="sm" variant="ghost" aria-pressed={l.helped} onClick={() => help(l)}><Heart size={13} />This helped</Button>}
+    <DropdownMenu><DropdownMenuTrigger asChild><Button size="icon" variant="ghost" aria-label="Letter options"><MoreHorizontal size={16} /></Button></DropdownMenuTrigger><DropdownMenuContent>
+     {l.mine ? <><DropdownMenuItem onSelect={() => setWriting(true)}>Edit letter</DropdownMenuItem><DropdownMenuItem onSelect={() => void remove(l)}><Trash2 />Remove letter</DropdownMenuItem></> : <DropdownMenuItem onSelect={() => void report(l)}><Flag />Report letter</DropdownMenuItem>}
+    </DropdownMenuContent></DropdownMenu>
    </div>
   </li>)}</ScrollPanel>}
   {note && <p role={note.error ? 'alert' : 'status'} className={`form-note ${note.error ? 'form-error' : 'form-success'}`}>{note.text}</p>}

@@ -10,7 +10,7 @@ export function RippleFieldNotes({ id }: { id: string }) {
   return r.data ?? [];
  } });
  if (!notes.data?.length) return null;
- return <section className="trust-shelf" aria-label="Field Notes written after this conversation">
+ return <section className="trust-shelf ripple-field-notes" aria-label="Field Notes written after this conversation">
   <h2>Field Notes written after this conversation</h2>
   <ul className="shelf-list">{notes.data.map(n => <li key={n.id} className="shelf-note">
    <span className="question-category">{n.category}</span><h4>{n.title}</h4><p>{n.body}</p>

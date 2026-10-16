@@ -24,10 +24,10 @@ export function NotificationBell() {
   </DropdownMenuTrigger>
   <DropdownMenuContent align="end" className="bell-panel">
    <p className="bell-title">Notifications</p>
-   {!list.data?.length ? <p className="form-note bell-empty">Nothing new yet. Replies, circle requests and messages will gather here.</p>
+   {!list.data?.length ? <p className="form-note bell-empty">Nothing new yet.</p>
     : <ul className="bell-list">{list.data.map(n => <li key={n.id} className={n.read ? '' : 'is-unread'}>
-      {n.link ? <Link to={n.link as '/askher'} className="bell-item"><strong>{n.title}</strong>{n.body && <span>{n.body}</span>}<em>{relativeTime(n.created_at)}</em></Link>
-       : <span className="bell-item"><strong>{n.title}</strong>{n.body && <span>{n.body}</span>}<em>{relativeTime(n.created_at)}</em></span>}
+      {n.link ? <Link to={n.link as '/askher'} className="bell-item"><strong>{n.title}</strong><em>{relativeTime(n.created_at)}</em></Link>
+       : <span className="bell-item"><strong>{n.title}</strong><em>{relativeTime(n.created_at)}</em></span>}
      </li>)}</ul>}
   </DropdownMenuContent>
  </DropdownMenu>;

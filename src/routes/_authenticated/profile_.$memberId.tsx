@@ -50,8 +50,8 @@ function MemberProfile() {
      {(m.occupation || place) && <p className="form-note">{m.occupation}{m.occupation && place && ' · '}{place && <><MapPin size={12} className="inline mr-1" />{place}</>}</p>}
      <span className="trust-context" data-relation={m.relation}>{context(m.relation, m.via)}</span>
      {m.bio && <p className="member-bio">{m.bio}</p>}
-     {m.known_for.length > 0 && <ul className="tag-list mt-3">{m.known_for.map(t => <li key={t}>{t}</li>)}</ul>}
-     <MessageHer memberId={memberId} />{m.relation === 'extended' && <Button asChild variant="editorial" size="sm" className="mt-3"><Link to="/circle">Request a Trust Bridge</Link></Button>}</div>
+     {m.known_for.length > 0 && <div className="member-section"><h2>Known for</h2><ul className="tag-list">{m.known_for.map(t => <li key={t}>{t}</li>)}</ul></div>}
+     <MessageHer memberId={memberId} />{m.relation === 'extended' && <Button asChild variant="editorial" size="sm" className="mt-3"><Link to="/circle">Connect</Link></Button>}</div>
    </header>
    {lists.slice(1).map(([label, items]) => items.length > 0 && <section key={label} className="member-section"><h2>{label}</h2><ul className="tag-list">{items.map(t => <li key={t}>{t}</li>)}</ul></section>)}
    {!m.bio && lists.every(([, i]) => !i.length) && <p className="form-note member-section">She hasn’t added more about herself yet.</p>}
@@ -67,5 +67,5 @@ function MessageHer({ memberId }: { memberId: string }) {
  const can = useQuery(canMessageQuery(memberId)); const navigate = useNavigate(); const [err, setErr] = useState('');
  if (!can.data) return null;
  const open = async () => { const { data, error } = await supabase.rpc('tellher_open_conversation', { _member: memberId }); if (error || !data) return setErr('This conversation couldn’t be opened.'); navigate({ to: '/between-us/$conversationId', params: { conversationId: data } }); };
- return <div className="mt-3"><Button variant="editorial" size="sm" onClick={open}><Mail />Message her</Button>{err && <p role="alert" className="form-note form-error">{err}</p>}</div>;
+ return <div className="mt-3"><Button variant="editorial" size="sm" onClick={open}><Mail />Message</Button>{err && <p role="alert" className="form-note form-error">{err}</p>}</div>;
 }

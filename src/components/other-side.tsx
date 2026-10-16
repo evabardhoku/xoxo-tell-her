@@ -35,7 +35,7 @@ export function OtherSide({ id, isAuthor, createdAt }: { id: string; isAuthor: b
    </>
    : <>
     <p className="other-side-summary">What happened in the end?</p>
-    <p className="form-note">When you’re ready, you can add a few words about how things turned out. It may help the next woman in a similar place. You can keep it private, and come back to it any time.</p>
+
     <Button variant="soft" onClick={() => setEditing(true)}>Add an update</Button>
    </>}
  </section>;

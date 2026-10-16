@@ -7,6 +7,7 @@ import { feedQuery } from '@/lib/askher';
 import { FIELD_NOTE_MAX, fieldNoteSchema, needsIdentityReveal } from '@/lib/field-notes';
 import { FieldNoteContext } from './field-note-context';
 import { AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel } from './ui/alert-dialog';
+import { TrustedPicks } from './trusted-picks';
 import { Button } from './ui/button';
 import { ScrollPanel } from './scroll-panel';
 import { Input } from './ui/input';
@@ -43,17 +44,17 @@ export function TrustShelf({ memberId, firstName, editable = false }: { memberId
   <div className="picks-head"><h2>{editable ? 'Shared by you' : `Shared by ${firstName}`}</h2>{editable && !editing && <Button size="sm" variant="outline" onClick={() => { setTab('notes'); setEditing('new'); }}><Plus />Write a Field Note</Button>}</div>
   {editable && editing && user && <NoteForm key={editing === 'new' ? 'new' : editing.id} note={editing === 'new' ? null : editing} authorId={user.id} onDone={() => { setEditing(null); refresh(); }} onCancel={() => setEditing(null)} />}
   <div className="ripple-tabs" role="tablist" aria-label="Shared knowledge"><Button type="button" variant="ghost" role="tab" className="ripple-tab" aria-selected={tab === 'notes'} data-active={tab === 'notes'} onClick={() => setTab('notes')}>Field Notes</Button><Button type="button" variant="ghost" role="tab" className="ripple-tab" aria-selected={tab === 'picks'} data-active={tab === 'picks'} onClick={() => setTab('picks')}>Picks</Button></div>
-  {all.notes.length + all.picks.length > 1 && <div className="shelf-filters" role="search" aria-label="Filter shared knowledge">
+  {all.notes.length + all.picks.length > 1 && <details><summary>Filter shared knowledge</summary><div className="shelf-filters" role="search" aria-label="Filter shared knowledge">
    <div className="field"><label htmlFor={`shelf-topic-${memberId}`}>Topic</label><select id={`shelf-topic-${memberId}`} className="ext-select" value={topic} onChange={e => setTopic(e.target.value)}><option value="">All topics</option>{topicsHere.map(t => <option key={t}>{t}</option>)}</select></div>
    <div className="field"><label htmlFor={`shelf-loc-${memberId}`}>Location</label><Input id={`shelf-loc-${memberId}`} value={place} onChange={e => setPlace(e.target.value)} placeholder="e.g. Rome" /></div>
-  </div>}
+  </div></details>}
   {tab === 'notes' && (notes.length ? <ScrollPanel label="Field Notes" className="shelf-list">{notes.map(n => <li key={n.id} className="shelf-note">
    <div className="question-meta"><span className="question-category">{n.category}</span>{n.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{n.location}</span>}</div>
    <h4>{n.title}</h4><p>{n.body}</p><FieldNoteContext id={n.id} />
    {editable && <div className="pick-foot"><span /><span className="flex gap-1"><Button size="sm" variant="ghost" aria-label={`Edit note ${n.title}`} onClick={() => setEditing(n)}><Pencil /></Button><Button size="sm" variant="ghost" aria-label={`Delete note ${n.title}`} disabled={remove.isPending} onClick={() => remove.mutate(n.id)}><Trash2 /></Button></span></div>}
   </li>)}</ScrollPanel> : <p className="form-note">{topic || loc ? 'No Field Notes match these filters.' : editable ? 'No Field Notes yet. What did your experience teach you?' : 'No Field Notes shared yet.'}</p>)}
   {remove.isError && <p className="form-note form-error" role="alert">This Field Note couldn’t be deleted. Please try again.</p>}
-  {tab === 'picks' && (picks.length ? <ScrollPanel label="Picks" className="pick-list">{picks.map(p => <li key={p.id} className="pick-item"><div className="question-meta"><span className="question-category">{p.category}</span>{p.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{p.location}</span>}</div><strong className="pick-title">{p.title}</strong><p className="pick-note">{p.body}</p></li>)}</ScrollPanel> : <p className="form-note">{topic || loc ? 'No Picks match these filters.' : editable ? 'Share a Pick in Circle. It appears here for women who trust you.' : 'No Picks shared with you yet.'}</p>)}
+  {tab === 'picks' && (editable ? <TrustedPicks ownerOnly /> : picks.length ? <ScrollPanel label="Picks" className="pick-list">{picks.map(p => <li key={p.id} className="pick-item"><div className="question-meta"><span className="question-category">{p.category}</span>{p.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{p.location}</span>}</div><strong className="pick-title">{p.title}</strong><p className="pick-note">{p.body}</p></li>)}</ScrollPanel> : <p className="form-note">{topic || loc ? 'No Picks match these filters.' : editable ? 'Share a Pick in Circle. It appears here for women who trust you.' : 'No Picks shared with you yet.'}</p>)}
  </section>;
 }
 

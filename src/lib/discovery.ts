@@ -11,11 +11,11 @@ export function discoveryItems(s: DiscoverySignals): DiscoveryItem[] {
   { key: 'profile', label: 'Tell women what you’re known for', to: '/profile', done: s.profileFilled },
   { key: 'direct', label: 'Add your first trusted woman', to: '/circle', done: s.direct > 0 },
   { key: 'ripple', label: 'Ask other women anonymously', to: '/ripple', done: s.ripples > 0 },
-  { key: 'map', label: 'See a Perspective Map form', to: '/askher', search: { view: 'ripples' }, done: s.ripplesWithReplies > 0 },
+  { key: 'map', label: 'See perspectives emerge', to: '/askher', search: { view: 'ripples' }, done: s.ripplesWithReplies > 0 },
   { key: 'extended', label: 'Reach your Extended Circle', to: '/circle', search: { view: 'extended' }, done: s.extended > 0 },
   { key: 'note', label: 'Share a Field Note', to: '/profile', done: s.notes > 0 },
   { key: 'pick', label: 'Recommend a Pick', to: '/circle', done: s.picks > 0 },
-  { key: 'between-us', label: 'Start a Between Us conversation', to: '/circle', search: { view: 'messages' }, done: s.conversations > 0 },
+  { key: 'between-us', label: 'Start a private conversation', to: '/circle', search: { view: 'messages' }, done: s.conversations > 0 },
  ];
 }
 
