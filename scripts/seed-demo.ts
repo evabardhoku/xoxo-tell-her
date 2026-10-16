@@ -63,6 +63,11 @@ const seedExtras = async () => {
   const { count } = await m[k]!.cl.from('trust_notes').select('id', { count: 'exact', head: true }).eq('title', title); if (count) continue;
   const r = await m[k]!.cl.from('trust_notes').insert({ author_id: m[k]!.uid, title, topic, body, location }); if (r.error) throw r.error;
  }
+ // Echoes on demo Ripples (demo members only): varied states — 0, below threshold, 3+, and a higher count.
+ const all: Record<string, { cl: SupabaseClient; uid: string }> = { ...m, june: await sign('june') };
+ const feed = ((await all['maya']!.cl.rpc('tellher_feed')).data ?? []) as { id: string; body: string }[];
+ const echoPlan: [string, string[]][] = [['My manager keeps presenting', ['lina', 'sofia', 'noor', 'iris', 'june']], ['I’m travelling alone for the first time', ['lina', 'sofia', 'noor', 'maya']], ['After two dates he suggested', ['maya']]];
+ for (const [start, who] of echoPlan) { const q = feed.find(f => f.body.startsWith(start)); if (!q) continue; for (const k of who) await all[k]!.cl.rpc('tellher_echo', { _id: q.id }); }
  const maya = m['maya']!;
  const { count: ww } = await maya.cl.from('wingwoman_sessions').select('id', { count: 'exact', head: true }).eq('title', 'Asked to cover a colleague’s project again'); if (ww) return;
  // Legacy-style one-shot reflection.

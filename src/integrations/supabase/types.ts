@@ -409,6 +409,39 @@ export type Database = {
           },
         ]
       }
+      ripple_echoes: {
+        Row: {
+          created_at: string
+          member_id: string
+          question_id: string
+        }
+        Insert: {
+          created_at?: string
+          member_id: string
+          question_id: string
+        }
+        Update: {
+          created_at?: string
+          member_id?: string
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ripple_echoes_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ripple_echoes_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trust_connections: {
         Row: {
           created_at: string
@@ -643,6 +676,15 @@ export type Database = {
       tellher_conversation_partner: { Args: { _c: string }; Returns: string }
       tellher_delete_question: { Args: { _id: string }; Returns: undefined }
       tellher_delete_reply: { Args: { _id: string }; Returns: undefined }
+      tellher_echo: { Args: { _id: string }; Returns: undefined }
+      tellher_echo_signal: {
+        Args: { _id: string }
+        Returns: {
+          below_threshold: boolean
+          echo_count: number
+          mine: boolean
+        }[]
+      }
       tellher_extended_circle: {
         Args: { _via?: string }
         Returns: {
@@ -838,6 +880,7 @@ export type Database = {
       }
       tellher_send_trust: { Args: { _recipient: string }; Returns: undefined }
       tellher_unblock: { Args: { _member: string }; Returns: undefined }
+      tellher_unecho: { Args: { _id: string }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never

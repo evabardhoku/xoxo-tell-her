@@ -1,0 +1,1 @@
+- Persisted fictional demo accounts, connections, questions, replies, and picks already exist; keep demo setup in the existing controlled scripts (scripts/seed-demo.ts and scripts/seed-eva-network.ts), never seed on app load or mistake demo content for display-only mocks, so normal member workflows retain their privacy checks.
