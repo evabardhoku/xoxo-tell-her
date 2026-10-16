@@ -8,7 +8,7 @@ describe.skipIf(!url || !key)('Independent Ripple reach and identity', () => {
  const client = (i: number) => { const c = clients[i]; if (!c) throw new Error('Missing test member'); return c; };
  const identity = async (q: string, who = 1) => { const r = await client(who).rpc('tellher_ripple_identities', { _ids: [q] }); if (r.error) throw r.error; return r.data?.[0]; };
  const publish = async (scope: string, visibility?: string) => {
-  const body = `${name}testtoken practical question ${questions.length}`;
+  const body = `testtoken practical question ${questions.length}`;
   const args = { _category: 'Work', _body: body, _scope: scope, _instinct: 'unsure', _note: 'PRIVATE_INSTINCT_TOKEN' };
   const r = visibility ? await client(0).rpc('tellher_publish_question_identity', { ...args, _author_visibility: visibility }) : await client(0).rpc('tellher_publish_question', args);
   if (r.error) throw r.error; questions.push(r.data); return r.data as string;
@@ -54,7 +54,7 @@ describe.skipIf(!url || !key)('Independent Ripple reach and identity', () => {
   for (const r of [detail, feed, sky, search]) expect(r.error).toBeNull();
   const rows = [detail.data?.[0], feed.data?.find((r: { id: string }) => r.id === anonymous), sky.data?.find((r: { id: string }) => r.id === anonymous), search.data?.find((r: { id: string }) => r.id === anonymous)];
   const text = JSON.stringify(rows);
-  for (const secret of [ids[0], 'PrivateSurname', 'PRIVATE_INSTINCT_TOKEN', 'owner_id', 'avatar_path']) expect(text).not.toContain(secret);
+  for (const secret of [name, ids[0], 'PrivateSurname', 'PRIVATE_INSTINCT_TOKEN', 'owner_id', 'avatar_path']) expect(text).not.toContain(secret);
   expect(search.data?.find((r: { id: string }) => r.id === anonymous)).toMatchObject({ member_name: null, member_id: null });
   expect((await client(1).from('question_private_meta').select('*').eq('question_id', anonymous)).data).toEqual([]);
   expect((await client(1).from('questions').select('*').eq('id', anonymous)).data).toEqual([]);

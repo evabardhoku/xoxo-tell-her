@@ -1,5 +1,5 @@
 # TellHer foundation
-- [ ] Named/anonymous Ripples: preserve recovery copy, extend checked publication/attribution, update existing surfaces and demos, verify privacy and composer layouts
+- [x] Named/anonymous Ripples: preserve recovery copy, extend checked publication/attribution, update existing surfaces and demos, verify privacy and composer layouts
 - [x] Editorial design system and public landing page
 - [x] Real accounts and private profile storage
 - [x] Protected app shell, navigation, and six empty states
