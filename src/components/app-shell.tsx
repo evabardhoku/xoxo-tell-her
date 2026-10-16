@@ -12,7 +12,7 @@ import { ProfileEditor } from './profile-editor';
 
 // Primary areas. `match` lists sub-areas that live under each one (My Ripples and the composer under AskHer).
 const navigation = [
- { to: '/home', label: 'The Current', mobile: 'Current', icon: Home, match: ['/home'] },
+ { to: '/home', label: 'The Current', mobile: 'Current', icon: Home, match: ['/home', '/constellations'] },
  { to: '/askher', label: 'AskHer', icon: MessageCircle, match: ['/askher', '/my-ripples', '/ripple'] },
  { to: '/circle', label: 'My Circle', mobile: 'Circle', icon: Users, match: ['/circle'] },
  { to: '/wingwoman', label: 'Wingwoman', icon: Sparkles, match: ['/wingwoman'] },
