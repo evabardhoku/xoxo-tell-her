@@ -4,6 +4,7 @@ import { MapPin, Plus, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAccount } from '@/hooks/account';
 import { Button } from './ui/button';
+import { ScrollPanel } from './scroll-panel';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 
@@ -62,8 +63,8 @@ export function TrustedPicks() {
    <p className="form-note">Shared with women who have you in their direct circle, shown with your first name.</p>
   </form>}
   {picks.isPending ? <p role="status" className="form-note">Loading picks…</p> : picks.isError ? <p role="alert" className="form-note form-error">Trusted Picks couldn’t be loaded.</p> : <>
-   {picks.data.circle.length ? <ul className="pick-list">{picks.data.circle.map(p => <PickItem key={p.id} p={p} provenance={`Recommended by ${p.recommender} · in your direct circle`} />)}</ul> : <p className="form-note">No picks from your circle yet.</p>}
-   {picks.data.mine.length > 0 && <><h3 className="picks-sub">Your picks</h3><ul className="pick-list">{picks.data.mine.map(p => <PickItem key={p.id} p={p} provenance="Shared by you"><Button size="sm" variant="ghost" aria-label={`Delete pick ${p.title}`} disabled={remove.isPending} onClick={() => remove.mutate(p.id)}><Trash2 /></Button></PickItem>)}</ul></>}
+{picks.data.circle.length ? <ScrollPanel label="Trusted Picks from your circle" className="pick-list">{picks.data.circle.map(p => <PickItem key={p.id} p={p} provenance={`Recommended by ${p.recommender} · in your direct circle`} />)}</ScrollPanel> : <p className="form-note">No picks from your circle yet.</p>}
+   {picks.data.mine.length > 0 && <><h3 className="picks-sub">Your picks</h3><ScrollPanel label="Your picks" className="pick-list">{picks.data.mine.map(p => <PickItem key={p.id} p={p} provenance="Shared by you"><Button size="sm" variant="ghost" aria-label={`Delete pick ${p.title}`} disabled={remove.isPending} onClick={() => remove.mutate(p.id)}><Trash2 /></Button></PickItem>)}</ScrollPanel></>}
   </>}
  </section>;
 }
