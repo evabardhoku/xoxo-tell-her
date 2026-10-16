@@ -15,6 +15,7 @@ import { pageHead } from '@/lib/metadata';
 import { categories, errorText, feedQuery, instincts, reachPreview, reaches, type Reach } from '@/lib/askher';
 import { useServerFn } from '@tanstack/react-start';
 import { conversationExcerpt, rippleIdentityPublication } from '@/lib/ripple-draft';
+import { detectPii } from '@/lib/safety';
 import { proposeRippleDraft } from '@/lib/wingwoman.functions';
 
 export const Route = createFileRoute('/_authenticated/ripple')({ validateSearch: (s: Record<string, unknown>): { from?: string } => (typeof s['from'] === 'string' ? { from: s['from'] } : {}), head: () => pageHead('Start a Trust Ripple', 'Choose who sees your question and whether to ask anonymously or with your name.'), component: Composer });

@@ -122,6 +122,7 @@ function Thread({ id }: { id: string }) {
    {r && r.constellations > 0 && <button type="button" className="member-link ww-context-link" onClick={() => navigate({ to: '/constellations/$topic', params: { topic: r.topic } })}>Explore similar stories</button>}
    {r?.lettersRippleId && <button type="button" className="member-link ww-context-link" onClick={() => navigate({ to: '/askher/$id', params: { id: r.lettersRippleId ?? '' } })}>Read relevant Letters</button>}
   </div>}
+  {atRisk && <SafetyPanel />}
   <div ref={end} />
   {error && <p role="alert" className="form-note form-error">{error}</p>}
   <div className="ww-composer"><label htmlFor="ww-reply" className="sr-only">Reply to Wingwoman</label><Textarea id="ww-reply" ref={box} rows={2} maxLength={4000} value={text} onChange={e => setText(e.target.value)} onKeyDown={onKey} disabled={!!pending} placeholder="Say what’s on your mind…" /><Button variant="editorial" size="icon" aria-label="Send" disabled={!text.trim() || !!pending} onClick={() => void submit()}><Send /></Button></div>
