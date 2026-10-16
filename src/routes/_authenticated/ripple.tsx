@@ -79,7 +79,7 @@ function Composer() {
   setBusy(true); setError('');
   const { error } = await supabase.rpc('tellher_publish_question_identity', rippleIdentityPublication({ category, body, scope, instinct, note, author_visibility: visibility }));
   setBusy(false); if (error) return setError(errorText(error));
-  await qc.invalidateQueries({ queryKey: feedQuery.queryKey }); markRippleSent(); navigate({ to: '/askher' });
+  await qc.invalidateQueries({ queryKey: feedQuery.queryKey }); markRippleSent(); navigate({ to: visibility === 'named' ? '/feed' : '/home' });
  };
  return <>
   <div className="page-heading"><div><div className="eyebrow">TRUST RIPPLE</div><h1>Some things are worth asking.</h1><p>Choose who sees your question and how you appear. Only you see your instinct.</p></div></div>
