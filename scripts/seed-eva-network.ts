@@ -134,7 +134,6 @@ console.log('Seeded network around Eva.');
 // ── Wider fictional community (data in demo-community-data.ts). Every step is check-then-write, so re-runs add nothing new.
 // Eva is never signed in: only trust edges where she is a party are written with the admin key, as above.
 {
-console.log('community start', community.members.length);
  const { members, directOfEva, mutualPairs, acceptedBridges, pendingToEva, pendingBetween, declined, cancelled, notes: cNotes, picks: cPicks, ripples, threads, sessions } = community;
  for (const m of members) {
   const email = `${m.k}.demo@example.com`;
