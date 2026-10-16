@@ -3,7 +3,8 @@ import { useQuery, useQueries } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { ArrowRight, LockKeyhole, MapPin } from 'lucide-react';
 import { ConstellationSky } from '@/components/constellation-sky';
-import { skyQuery } from '@/lib/constellations';
+import { placeTitle, skyQuery } from '@/lib/constellations';
+import { useDiscovery } from '@/hooks/discovery';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { QuestionCard } from '@/components/question-feed';
@@ -28,14 +29,28 @@ const SHELF_LIMIT = 12;
 function SkyHub() {
  const { view } = Route.useSearch();
  const sky = useQuery(skyQuery);
+ const { newcomer } = useDiscovery();
+ const mind = <Link to="/wingwoman" className="mind-card"><span className="mind-card-rings" aria-hidden /><span className="eyebrow">WHAT’S ON YOUR MIND?</span><span className="mind-card-input">Something you can’t quite put down…</span><span className="form-note"><LockKeyhole size={12} className="inline mr-1" />Private until you choose to share.</span></Link>;
+ // New accounts with no Ripples or circle yet get a calmer Sky; navigating to a view directly still shows it.
+ if (newcomer && !view) return <div className="sky-hub">{mind}<StarterConstellations /></div>;
  return <div className="sky-hub">
-  <Link to="/wingwoman" className="mind-card"><span className="mind-card-rings" aria-hidden /><span className="eyebrow">WHAT’S ON YOUR MIND?</span><span className="mind-card-input">Something you can’t quite put down…</span><span className="form-note"><LockKeyhole size={12} className="inline mr-1" />Private until you choose to share.</span></Link>
+  {mind}
   <div className="segmented" role="tablist" aria-label="Sky">
    <Link to="/home" search={{}} role="tab" aria-selected={!view} className="segmented-option">The Current</Link>
    <Link to="/home" search={{ view: 'constellations' }} role="tab" aria-selected={view === 'constellations'} className="segmented-option">Constellations</Link>
   </div>
   {view === 'constellations' ? (sky.data ? <ConstellationSky rows={sky.data} /> : <p role="status" className="form-note">Drawing the sky…</p>) : <CurrentPage />}
  </div>;
+}
+
+const STARTERS = ['Everyday Life', 'Work', 'Dating & Boundaries'];
+function StarterConstellations() {
+ return <section className="circle-card" aria-labelledby="starter-title">
+  <div className="eyebrow" id="starter-title">A FEW PLACES TO BEGIN</div>
+  <p className="form-note">Situations women here have lived. Wander in whenever you like — nothing you read is shared.</p>
+  <ul className="member-list mt-3">{STARTERS.map(t => <li key={t}><Link to="/constellations/$topic" params={{ topic: t }} className="member-link inline-flex items-center gap-1">{placeTitle(t)}<ArrowRight size={14} /></Link></li>)}</ul>
+  <p className="form-note mt-4">The Current fills in as you add trusted women. <Link to="/home" search={{ view: 'constellations' }} className="member-link">See the whole sky</Link></p>
+ </section>;
 }
 
 function CurrentPage() {
