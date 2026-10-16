@@ -1143,6 +1143,7 @@ export type Database = {
           member_id: string
         }[]
       }
+      tellher_my_impact: { Args: never; Returns: Json }
       tellher_notifications: {
         Args: never
         Returns: {
