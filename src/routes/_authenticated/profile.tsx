@@ -43,7 +43,7 @@ function Profile() {
  const stats: { icon: typeof Heart; label: string; value: number }[] = impact.data ? [
   { icon: Heart, label: 'Women you’ve helped', value: impact.data.helped },
   { icon: Users, label: 'Women who trust you', value: impact.data.trusted_by },
-  { icon: Ripple, label: 'Ripples you started', value: impact.data.ripples_started },
+  { icon: Waves, label: 'Ripples you started', value: impact.data.ripples_started },
   { icon: Sparkles, label: 'Picks you recommended', value: impact.data.picks_shared },
  ] : [];
  const withOutcomes = impact.data?.instincts.filter(i => i.outcome) ?? [];
