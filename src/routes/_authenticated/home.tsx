@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { ArrowRight, LockKeyhole } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { ConstellationSky } from '@/components/constellation-sky';
-import { placeTitle, skyQuery } from '@/lib/constellations';
+import { placeTitle, skyQuery, trendingThemes, type SkyRow } from '@/lib/constellations';
 import { useDiscovery } from '@/hooks/discovery';
 import { Button } from '@/components/ui/button';
 import { QuestionCard } from '@/components/question-feed';
@@ -19,21 +19,24 @@ export const Route = createFileRoute('/_authenticated/home')({
 
 
 function SkyHub() {
- const { view } = Route.useSearch();
  const sky = useQuery(skyQuery);
  const { newcomer } = useDiscovery();
- const mind = <Link to="/wingwoman" className="mind-card"><span className="mind-card-rings" aria-hidden /><span className="eyebrow">WHAT’S ON YOUR MIND?</span><span className="mind-card-input">Something you can’t quite put down…</span><span className="form-note"><LockKeyhole size={12} className="inline mr-1" />Private until you choose to share.</span></Link>;
- // New accounts with no Ripples or circle yet get a calmer Sky; navigating to a view directly still shows it.
-
+ const { view } = Route.useSearch();
  return <div className="sky-hub">
-  {mind}
-  <div className="segmented" role="tablist" aria-label="Sky">
-   <Link to="/home" search={{}} role="tab" aria-selected={view !== 'ripples'} className="segmented-option">Constellations</Link>
-   <Link to="/home" search={{ view: 'ripples' }} role="tab" aria-selected={view === 'ripples'} className="segmented-option">Anonymous Ripples</Link>
-  </div>
-  {view === 'ripples' ? <AnonymousRipples /> : newcomer && !sky.data?.length ? <StarterConstellations /> : sky.data ? <ConstellationSky rows={sky.data} /> : <p role="status" className="form-note">Drawing the sky…</p>}
-  <p className="form-note"><Link to="/askher" className="member-link">Your Ripples</Link> · <Link to="/wingwoman" search={{}} className="member-link">Think this through privately with Wingwoman</Link></p>
+  <header className="sky-head"><div><h1>Sky</h1><p className="form-note">Stories connect even when identities don’t.</p></div><Button asChild variant="soft" size="sm"><Link to="/ripple">Ask anonymously</Link></Button></header>
+  {sky.isError ? <p role="alert" className="form-note form-error">The sky could not be loaded. Please refresh.</p> : newcomer && !sky.data?.length ? <StarterConstellations /> : sky.data ? <ConstellationSky rows={sky.data} /> : <p role="status" className="form-note">Drawing the sky…</p>}
+  {sky.data && <Trending rows={sky.data} />}
+  <section id="anonymous-ripples" aria-labelledby="anon-title" ref={el => { if (el && view === 'ripples') el.scrollIntoView(); }}><h2 id="anon-title" className="sky-section-title">Recent anonymous Ripples</h2><AnonymousRipples /></section>
  </div>;
+}
+
+/** Themes, not people: newest activity first, counts only at or above the privacy threshold. */
+function Trending({ rows }: { rows: SkyRow[] }) {
+ const themes = trendingThemes(rows);
+ if (!themes.length) return null;
+ return <section aria-labelledby="trending-title"><h2 id="trending-title" className="sky-section-title">Trending in the Sky</h2>
+  <ul className="sky-trending">{themes.map(t => <li key={t.category}><Link to="/constellations/$topic" params={{ topic: t.category }} className="sky-theme"><strong>{placeTitle(t.category)}</strong><span className="sky-theme-excerpt">“{t.excerpt}”</span><span className="form-note">{t.recent ? `${t.recent} recent anonymous Ripples` : 'A few recent stories'}</span></Link></li>)}</ul>
+ </section>;
 }
 
 const STARTERS = ['Everyday Life', 'Work', 'Dating & Boundaries'];
