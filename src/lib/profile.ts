@@ -26,7 +26,7 @@ export const profileQuery = {
  queryFn: async () => {
   const { data: auth, error: authError } = await supabase.auth.getUser();
   if (authError || !auth.user) throw new Error('Please sign in again.');
-  const { data, error } = await supabase.from('profiles').select('id, created_at, first_name, last_name, city, country, bio, avatar_path, woman_attested_at, languages, occupation, known_for, ask_me_about, discoverability').eq('id', auth.user.id).single();
+  const { data, error } = await supabase.from('profiles').select('id, created_at, first_name, last_name, city, country, bio, avatar_path, woman_attested_at, languages, occupation, known_for, ask_me_about, discoverability, open_avatar_type, open_avatar_config, anonymous_style_config').eq('id', auth.user.id).single();
   if (error) throw error;
   return data;
  },

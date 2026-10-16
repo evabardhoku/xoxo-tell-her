@@ -1,3 +1,6 @@
+import { AvatarStudio } from '@/components/avatar-studio';
+import { IllustratedAvatar } from '@/components/avatars';
+import { safeOpen } from '@/lib/avatar';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -33,7 +36,7 @@ function Profile() {
 
   <section className="circle-card me-header" aria-labelledby="me-title">
    <div className="me-identity">
-    {avatarUrl ? <img src={avatarUrl} alt="" className="me-avatar" /> : <span className="me-avatar me-initial" aria-hidden>{data.first_name.slice(0, 1).toUpperCase()}</span>}
+    {data.open_avatar_type === 'illustrated' && data.open_avatar_config ? <span className="me-avatar avatar-frame" aria-hidden><IllustratedAvatar config={safeOpen(data.open_avatar_config)} size={72} /></span> : avatarUrl ? <img src={avatarUrl} alt="" className="me-avatar" /> : <span className="me-avatar me-initial" aria-hidden>{data.first_name.slice(0, 1).toUpperCase()}</span>}
     <div>
      <h2 id="me-title">{data.first_name} {data.last_name}</h2>
      {(data.city || data.country) && <p className="form-note inline-flex items-center gap-1"><MapPin size={12} />{[data.city, data.country].filter(Boolean).join(', ')}</p>}
@@ -54,6 +57,8 @@ function Profile() {
   {editing && <ProfileEditor profile={data} onSaved={async () => { await refetch(); setEditing(false); }} />}
 
   <TrustShelf memberId={data.id} firstName={data.first_name} editable />
+
+  <AvatarStudio profile={data} photoUrl={avatarUrl} />
 
   <PrivacyData userId={data.id} discoverability={discovery?.label} onEditDiscoverability={() => setEditing(true)} />
   {isMod.data && <p className="form-note"><Link to="/admin/reports" className="member-link">Moderation reports</Link></p>}
