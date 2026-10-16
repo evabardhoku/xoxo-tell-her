@@ -24,7 +24,7 @@ export const Route = createFileRoute('/_authenticated/askher_/$id')({
 });
 
 function Unavailable() {
- return <section className="empty-panel"><h2>This question isn’t available.</h2><p>It may have been removed, or it wasn’t shared with you.</p><Button asChild variant="soft"><Link to="/askher">Back to AskHer</Link></Button></section>;
+ return <section className="empty-panel"><h2>This question isn’t available.</h2><p>It may have been removed, or it wasn’t shared with you.</p><Button asChild variant="soft"><Link to="/askher">Back to Ask</Link></Button></section>;
 }
 
 function QuestionPage() {

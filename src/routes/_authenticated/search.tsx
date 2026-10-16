@@ -25,7 +25,7 @@ function SearchPage() {
  const submit = (e: FormEvent) => { e.preventDefault(); navigate({ search: { q: text.trim() } }); };
  const rows = res.data ?? []; const of = (k: SearchRow['kind']) => rows.filter(r => r.kind === k);
  const topics = matchTopics(term);
- const groups: [string, SearchRow['kind']][] = [['People', 'person'], ['Trust Notes', 'note'], ['Trusted Picks', 'pick'], ['AskHer / Trust Ripples', 'question']];
+ const groups: [string, SearchRow['kind']][] = [['People', 'person'], ['Trust Notes', 'note'], ['Trusted Picks', 'pick'], ['Trust Ripples', 'question']];
  return <>
   <div className="page-heading"><div><div className="eyebrow">SEARCH</div><h1>Find what’s already shared with you.</h1><p>Only people, notes, picks and questions you can already see. Never emails, private instincts or Wingwoman.</p></div></div>
   <form className="search-bar" onSubmit={submit} role="search"><label htmlFor="global-q" className="sr-only">Search TellHer</label><Input id="global-q" value={text} maxLength={80} onChange={e => setText(e.target.value)} placeholder="A name, a city, a topic…" autoFocus /><Button type="submit" variant="editorial"><SearchIcon />Search</Button></form>

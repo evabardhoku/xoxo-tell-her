@@ -52,7 +52,7 @@ export function TrustedPicks() {
   add.mutate({ title, note, location });
  };
  return <section className="circle-card picks-card" aria-labelledby="picks-title">
-  <div className="picks-head"><div><h2 id="picks-title">Trusted Picks</h2><p className="form-note">Practical recommendations from women in your direct circle. Valued for who shared them, never ranked.</p></div>{!open && <Button size="sm" variant="outline" onClick={() => setOpen(true)}><Plus />Share a pick</Button>}</div>
+  <div className="picks-head"><div><h2 id="picks-title">Trusted Picks</h2><p className="form-note">Practical recommendations from women in your Direct Circle. Valued for who shared them, never ranked.</p></div>{!open && <Button size="sm" variant="outline" onClick={() => setOpen(true)}><Plus />Share a pick</Button>}</div>
   {open && <form className="pick-form" onSubmit={submit}>
    <fieldset className="field"><legend className="field-legend">Category</legend><div className="choice-row">{pickCategories.map(c => <button type="button" key={c} className="choice-chip" aria-pressed={category === c} onClick={() => setCategory(c)}>{c}</button>)}</div></fieldset>
    <div className="field"><label htmlFor="pick-title">Title</label><Input id="pick-title" name="title" maxLength={120} placeholder="e.g. A plumber who explains everything" /></div>
@@ -60,10 +60,10 @@ export function TrustedPicks() {
    <div className="field"><label htmlFor="pick-location">Location (optional)</label><Input id="pick-location" name="location" maxLength={120} /></div>
    {error && <p role="alert" className="form-note form-error">{error}</p>}
    <div className="flex gap-2"><Button type="submit" variant="editorial" size="sm" disabled={add.isPending}>{add.isPending ? 'Saving…' : 'Share with my circle'}</Button><Button type="button" variant="ghost" size="sm" onClick={() => { setOpen(false); setError(''); }}>Cancel</Button></div>
-   <p className="form-note">Shared with women who have you in their direct circle, shown with your first name.</p>
+   <p className="form-note">Shared with women who have you in their Direct Circle, shown with your first name.</p>
   </form>}
   {picks.isPending ? <p role="status" className="form-note">Loading picks…</p> : picks.isError ? <p role="alert" className="form-note form-error">Trusted Picks couldn’t be loaded.</p> : <>
-{picks.data.circle.length ? <ScrollPanel label="Trusted Picks from your circle" className="pick-list">{picks.data.circle.map(p => <PickItem key={p.id} p={p} provenance={`Recommended by ${p.recommender} · in your direct circle`} />)}</ScrollPanel> : <p className="form-note">No picks from your circle yet.</p>}
+{picks.data.circle.length ? <ScrollPanel label="Trusted Picks from your circle" className="pick-list">{picks.data.circle.map(p => <PickItem key={p.id} p={p} provenance={`Recommended by ${p.recommender} · in your Direct Circle`} />)}</ScrollPanel> : <p className="form-note">No picks from your circle yet.</p>}
    {picks.data.mine.length > 0 && <><h3 className="picks-sub">Your picks</h3><ScrollPanel label="Your picks" className="pick-list">{picks.data.mine.map(p => <PickItem key={p.id} p={p} provenance="Shared by you"><Button size="sm" variant="ghost" aria-label={`Delete pick ${p.title}`} disabled={remove.isPending} onClick={() => remove.mutate(p.id)}><Trash2 /></Button></PickItem>)}</ScrollPanel></>}
   </>}
  </section>;
