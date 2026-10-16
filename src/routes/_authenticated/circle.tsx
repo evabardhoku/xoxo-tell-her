@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useState, type FormEvent } from 'react';
 import { Check, Search, X } from 'lucide-react';
@@ -48,7 +48,7 @@ function Circle() {
 }
 
 function Member({ m, children }: { m: CircleEntry; children?: React.ReactNode }) {
- return <li className="member-row"><span className="member-initial" aria-hidden>{m.first_name.slice(0, 1).toUpperCase()}</span><div className="member-meta"><strong>{memberName(m)}</strong>{m.city && <span>{m.city}</span>}</div>{children && <div className="member-actions">{children}</div>}</li>;
+ return <li className="member-row"><span className="member-initial" aria-hidden>{m.first_name.slice(0, 1).toUpperCase()}</span><div className="member-meta"><Link to="/profile/$memberId" params={{ memberId: m.member_id }} className="member-link"><strong>{memberName(m)}</strong></Link>{m.city && <span>{m.city}</span>}</div>{children && <div className="member-actions">{children}</div>}</li>;
 }
 
 function AddMember({ onSent }: { onSent: () => void }) {

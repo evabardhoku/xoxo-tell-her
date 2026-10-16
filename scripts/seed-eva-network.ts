@@ -13,6 +13,16 @@ const people: [string, string, string, string, string][] = [
  ['hana', 'Hana', 'Mori', 'Florence', 'Freelance translator.'],
  ['valentina', 'Valentina', 'Greco', 'Naples', 'Lawyer, mother of two.'],
 ];
+// Safe member-profile details for the fictional members only; discoverability varies on purpose.
+const details: Record<string, Record<string, unknown>> = {
+ giulia: { bio: 'Architect who has rented five flats in Rome in ten years. I read contracts slowly so you don’t have to panic.', languages: ['Italian', 'English'], occupation: 'Architect', known_for: ['Renting in Rome', 'Reading leases'], ask_me_about: ['Landlord red flags', 'Flat viewings'], discoverability: 'extended' },
+ amira: { bio: 'Product designer who travels alone a lot for work. Practical about airports, late arrivals and saying no politely.', languages: ['Arabic', 'Italian', 'English', 'French'], occupation: 'Product designer', known_for: ['Solo travel', 'Design careers'], ask_me_about: ['Late-night arrivals', 'Portfolio reviews'], discoverability: 'community' },
+ elena: { bio: 'Ward nurse in Tirana. Night shifts taught me a lot about boundaries at work and getting home safely.', languages: ['Albanian', 'Italian', 'English'], occupation: 'Nurse', known_for: ['Shift work', 'Healthcare'], ask_me_about: ['Negotiating rotas', 'Night commutes'], discoverability: 'direct' },
+ chiara: { bio: 'PhD student in sociology, new to Bologna. Still learning the city, happy to share what I find.', languages: ['Italian', 'English', 'Spanish'], occupation: 'PhD student, sociology', known_for: ['Academia', 'Moving cities'], ask_me_about: ['Starting a PhD', 'Making friends as an adult'], discoverability: 'extended' },
+ nadia: { bio: 'I run a small bakery in Turin. Ask me about suppliers, leases for shops, or starting something on your own.', languages: ['Italian', 'French'], occupation: 'Bakery owner', known_for: ['Small business', 'Commercial leases'], ask_me_about: ['Starting a business', 'Working with suppliers'], discoverability: 'extended' },
+ hana: { bio: 'Freelance translator in Florence. Good at contracts with clients and at late invoices.', languages: ['Japanese', 'Italian', 'English'], occupation: 'Translator', known_for: ['Freelancing', 'Living abroad'], ask_me_about: ['Client contracts', 'Getting paid on time'], discoverability: 'community' },
+ valentina: { bio: 'Family lawyer in Naples and mother of two. I can explain processes in plain words, not give advice.', languages: ['Italian', 'English'], occupation: 'Lawyer', known_for: ['Family law processes', 'Parenting'], ask_me_about: ['Understanding paperwork', 'Balancing work and kids'], discoverability: 'direct' },
+};
 const { data: list } = await admin.auth.admin.listUsers({ perPage: 1000 });
 const resume = list.users.some(u => u.email === 'giulia.demo@example.com');
 const c: Record<string, SupabaseClient> = {}; const id: Record<string, string> = { eva: EVA };
@@ -23,7 +33,7 @@ for (const [k, first, last, city, bio] of people) {
  id[k] = data.user!.id;
  const cl = createClient(url, process.env['SUPABASE_PUBLISHABLE_KEY']!, { auth: { persistSession: false } });
  const s = await cl.auth.signInWithPassword({ email, password: PASSWORD }); if (s.error) throw s.error; c[k] = cl;
- const p = await cl.from('profiles').update({ city, country: 'Italy', bio }).eq('id', data.user.id); if (p.error) throw p.error;
+ const p = await cl.from('profiles').update({ city, country: k === 'elena' ? 'Albania' : 'Italy', bio, ...details[k] }).eq('id', data.user.id); if (p.error) throw p.error;
 }
 const trust = async (a: string, b: string) => {
  const e1 = await c[a]!.rpc('tellher_send_trust', { _recipient: id[b]! }); if (e1.error) throw e1.error;
