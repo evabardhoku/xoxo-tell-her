@@ -14,7 +14,7 @@ export function OtherSide({ id, isAuthor }: { id: string; isAuthor: boolean }) {
  const q = useQuery({ queryKey: ['outcome', id], queryFn: async () => { const { data, error } = await supabase.rpc('tellher_outcome', { _q: id }); if (error) throw error; return ((data ?? [])[0] ?? null) as Outcome | null; } });
  const [editing, setEditing] = useState(false);
  if (q.isPending) return null;
- const o = q.data;
+ const o = q.data ?? null;
  if (!o && !isAuthor) return null;
  const done = () => { setEditing(false); qc.invalidateQueries({ queryKey: ['outcome', id] }); };
  return <section className="other-side" aria-labelledby="other-side-title">
