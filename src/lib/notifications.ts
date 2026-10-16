@@ -41,4 +41,4 @@ export function notificationTarget(n: Pick<Notification, 'kind' | 'link'>): { to
  if (n.link === '/between-us') return { to: '/circle', search: { view: 'messages' } };
  return { to: n.link };
 }
-export const notificationTitle = (title: string) => title.replace(/Between Us/g, 'Messages').replace(/Direct Circle/g, 'My Circle').replace(/trust request/gi, m => m[0] === 'T' ? 'Circle request' : 'circle request');
+export const notificationTitle = (title: string) => title.replace(/ in Between Us/g, '').replace(/Between Us/g, 'Messages').replace(/Direct Circle/g, 'My Circle').replace(/trust request/gi, m => m[0] === 'T' ? 'Circle request' : 'circle request');
