@@ -379,3 +379,15 @@ a.bell-item:hover { background:color-mix(in oklab, var(--secondary) 12%, transpa
 .current-item--request { border-left:3px solid var(--primary);background:color-mix(in oklab, var(--primary) 8%, var(--card));border-radius:0 14px 14px 0;padding:14px 16px; }
 .current-item--request .search-item { border-color:color-mix(in oklab, var(--primary) 30%, var(--border));background:color-mix(in oklab, var(--primary) 5%, var(--card)); }
 .current-item--request .current-provenance { color:var(--primary); }
+
+/* Unified shell: four areas, hub row, "What's on your mind?" */
+.hub-tabs { display:flex;flex-wrap:wrap;justify-content:center;gap:4px 28px;border-bottom:1px solid var(--border);padding:0 24px; }
+.hub-tabs a { padding:12px 0;font-size:13px;color:var(--muted-foreground);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .25s var(--ease-calm); }
+.hub-tabs a:hover, .hub-tabs a[data-active="true"] { color:var(--primary); } .hub-tabs a[data-active="true"] { border-bottom-color:var(--secondary);font-weight:500; }
+.hub-tabs a:focus-visible, .mind-fab:focus-visible { outline:2px solid var(--ring);outline-offset:2px; }
+.mind-fab { display:none; }
+@media (max-width: 760px) {
+ .mind-button { display:none !important; }
+ .hub-tabs { justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;gap:22px;padding:0 20px; } .hub-tabs a { white-space:nowrap; }
+ .mind-fab { display:grid;place-items:center;position:fixed;right:18px;bottom:calc(92px + env(safe-area-inset-bottom));width:54px;height:54px;border-radius:50%;background:var(--primary);color:var(--primary-foreground);box-shadow:0 8px 24px -10px var(--primary);z-index:21; }
+}

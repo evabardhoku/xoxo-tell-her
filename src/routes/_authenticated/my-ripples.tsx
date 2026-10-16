@@ -1,4 +1,3 @@
-import { AskHerTabs } from '@/components/app-shell';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { zodValidator, fallback } from '@tanstack/zod-adapter';
@@ -25,7 +24,6 @@ function MyRipples() {
  const tab = (v: 'started' | 'reached', label: string, n: number) => <Link to="/my-ripples" search={{ view: v }} className="ripple-tab" role="tab" aria-selected={view === v} data-active={view === v}>{label} <span className="form-note">{n}</span></Link>;
  return <>
   <div className="page-heading"><div><div className="eyebrow">MY RIPPLES</div><h1>Your Ripple activity.</h1><p>{view === 'started' ? 'Questions you started. Your private instinct stays visible only to you.' : 'Questions that reached you, and why. Authors are never shown.'}</p></div></div>
-  <AskHerTabs />
   <div className="ripple-tabs" role="tablist" aria-label="My Ripples views">{tab('started', 'Started by me', data.filter(q => q.is_mine).length)}{tab('reached', 'Reached me', data.filter(q => !q.is_mine).length)}</div>
   {list.length === 0 ? <section className="empty-panel"><EmptyRipple /><h2>{view === 'started' ? 'You haven’t started a Ripple yet.' : 'Nothing has reached you yet.'}</h2><p>{view === 'started' ? 'When you send a question, it will appear here with its perspectives.' : 'Questions from your circle and the community will appear here.'}</p></section>
    : <><FeedFilters key={view} f={f} setF={setF} id={`mr-${view}`} />
