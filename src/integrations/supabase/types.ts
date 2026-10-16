@@ -424,6 +424,7 @@ export type Database = {
       questions: {
         Row: {
           audience_scope: string
+          author_visibility: string
           body: string
           category: string
           created_at: string
@@ -434,6 +435,7 @@ export type Database = {
         }
         Insert: {
           audience_scope?: string
+          author_visibility?: string
           body: string
           category?: string
           created_at?: string
@@ -444,6 +446,7 @@ export type Database = {
         }
         Update: {
           audience_scope?: string
+          author_visibility?: string
           body?: string
           category?: string
           created_at?: string
@@ -1195,6 +1198,17 @@ export type Database = {
         }
         Returns: string
       }
+      tellher_publish_question_identity: {
+        Args: {
+          _author_visibility?: string
+          _body: string
+          _category: string
+          _instinct: string
+          _note: string
+          _scope: string
+        }
+        Returns: string
+      }
       tellher_question: {
         Args: { _id: string }
         Returns: {
@@ -1253,6 +1267,16 @@ export type Database = {
         Returns: {
           recipient_id: string
           trust_distance: number
+        }[]
+      }
+      tellher_ripple_identities: {
+        Args: { _ids: string[] }
+        Returns: {
+          author_visibility: string
+          first_name: string
+          has_avatar: boolean
+          profile_id: string
+          question_id: string
         }[]
       }
       tellher_search: {
