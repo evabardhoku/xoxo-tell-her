@@ -14,8 +14,8 @@ import { NotificationBell } from './notification-bell';
 // The four primary areas (same list on desktop and mobile). `match` lists every route that belongs to the area; `hub` is the thin in-area link row that keeps each sub-page reachable.
 const navigation = [
  { to: '/home', label: 'Sky', icon: Sparkle, match: ['/home', '/constellations'], hub: [] },
- { to: '/askher', label: 'Ask', icon: MessageCircle, match: ['/wingwoman', '/askher', '/my-ripples', '/ripple'], hub: [{ to: '/wingwoman', label: 'Wingwoman' }, { to: '/askher', label: 'Ask hub' }, { to: '/ripple', label: 'Ask anonymously' }] },
- { to: '/circle', label: 'Circle', icon: Users, match: ['/circle', '/between-us', '/profile/'], hub: [{ to: '/circle', label: 'Circle' }, { to: '/circle', label: 'Messages', search: { view: 'messages' } }] },
+ { to: '/askher', label: 'Ask', icon: MessageCircle, match: ['/wingwoman', '/askher', '/my-ripples', '/ripple'], hub: [] },
+ { to: '/circle', label: 'Circle', icon: Users, match: ['/circle', '/between-us', '/profile/'], hub: [] },
  { to: '/profile', label: 'Me', icon: UserRound, match: [], hub: [] },
 ] as const;
 const isIn = (pathname: string, paths: readonly string[]) => paths.some(p => p.endsWith('/') ? pathname.startsWith(p) : pathname === p || pathname.startsWith(`${p}/`));
