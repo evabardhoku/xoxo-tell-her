@@ -28,7 +28,7 @@ const message = (e: unknown) => (e as { message?: string } | null)?.message || '
 type View = 'direct' | 'extended' | 'messages' | 'requests';
 
 function Circle() {
- const { view: raw } = Route.useSearch();
+ const { view: raw, code } = Route.useSearch();
  const view: View = (['direct', 'extended', 'messages', 'requests'] as const).includes(raw as View) ? raw as View : 'direct';
  const { data } = useSuspenseQuery(circleQuery);
  const direct = data.entries.filter(e => e.kind === 'direct');
