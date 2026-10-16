@@ -4,6 +4,7 @@ import { MapPin, Pencil, Plus, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAccount } from '@/hooks/account';
 import { Button } from './ui/button';
+import { ScrollPanel } from './scroll-panel';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 
@@ -48,10 +49,10 @@ export function TrustShelf({ memberId, firstName, editable = false }: { memberId
    <div className="question-meta"><span className="question-category">{n.category}</span>{n.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{n.location}</span>}</div>
    <h4>{n.title}</h4><p>{n.body}</p>
    {editable && <div className="pick-foot"><span /><span className="flex gap-1"><Button size="sm" variant="ghost" aria-label={`Edit note ${n.title}`} onClick={() => setEditing(n)}><Pencil /></Button><Button size="sm" variant="ghost" aria-label={`Delete note ${n.title}`} disabled={remove.isPending} onClick={() => remove.mutate(n.id)}><Trash2 /></Button></span></div>}
-  </li>)}</ul> : <p className="form-note">{editable ? 'No notes yet. Share something you learned the hard way.' : 'No Trust Notes yet.'}</p>)}
+  </li>)}</ScrollPanel> : <p className="form-note">{editable ? 'No notes yet. Share something you learned the hard way.' : 'No Trust Notes yet.'}</p>)}
   {filtering && !notes.length && !picks.length && <p className="form-note">Nothing on this shelf matches these filters.</p>}
   {tab === 'picks' && <>
-   {picks.length ? <ul className="pick-list">{picks.map(p => <li key={p.id} className="pick-item"><div className="question-meta"><span className="question-category">{p.category}</span>{p.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{p.location}</span>}</div><strong className="pick-title">{p.title}</strong><p className="pick-note">{p.body}</p></li>)}</ul> : <p className="form-note">{editable ? 'Add picks from Circle. They show here only to women who trust you.' : 'No Trusted Picks shared with you yet.'}</p>}</>}
+   {picks.length ? <ScrollPanel label="Trusted Picks" className="pick-list">{picks.map(p => <li key={p.id} className="pick-item"><div className="question-meta"><span className="question-category">{p.category}</span>{p.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{p.location}</span>}</div><strong className="pick-title">{p.title}</strong><p className="pick-note">{p.body}</p></li>)}</ScrollPanel> : <p className="form-note">{editable ? 'Add picks from Circle. They show here only to women who trust you.' : 'No Trusted Picks shared with you yet.'}</p>}</>}
  </section>;
 }
 
