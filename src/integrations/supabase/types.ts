@@ -14,6 +14,129 @@ export type Database = {
   }
   public: {
     Tables: {
+      conversation_participants: {
+        Row: {
+          conversation_id: string
+          last_read_at: string
+          member_id: string
+        }
+        Insert: {
+          conversation_id: string
+          last_read_at?: string
+          member_id: string
+        }
+        Update: {
+          conversation_id?: string
+          last_read_at?: string
+          member_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_participants_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversation_participants_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          created_at: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      member_blocks: {
+        Row: {
+          blocked_id: string
+          blocker_id: string
+          created_at: string
+        }
+        Insert: {
+          blocked_id: string
+          blocker_id: string
+          created_at?: string
+        }
+        Update: {
+          blocked_id?: string
+          blocker_id?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_blocks_blocked_id_fkey"
+            columns: ["blocked_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_blocks_blocker_id_fkey"
+            columns: ["blocker_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          body: string
+          conversation_id: string
+          created_at: string
+          id: string
+          sender_id: string
+        }
+        Insert: {
+          body: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          sender_id: string
+        }
+        Update: {
+          body?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           ask_me_about: string[]
@@ -228,6 +351,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          message_id: string | null
           question_id: string | null
           reason: string
           reply_id: string | null
@@ -237,6 +361,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          message_id?: string | null
           question_id?: string | null
           reason: string
           reply_id?: string | null
@@ -246,6 +371,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          message_id?: string | null
           question_id?: string | null
           reason?: string
           reply_id?: string | null
@@ -253,6 +379,13 @@ export type Database = {
           status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "reports_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "reports_question_id_fkey"
             columns: ["question_id"]
@@ -491,6 +624,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      tellher_block: { Args: { _member: string }; Returns: undefined }
+      tellher_can_message: { Args: { _member: string }; Returns: boolean }
       tellher_can_view: { Args: { _q: string }; Returns: boolean }
       tellher_cancel_trust: { Args: { _id: string }; Returns: undefined }
       tellher_circle_picks: {
@@ -505,6 +640,7 @@ export type Database = {
           title: string
         }[]
       }
+      tellher_conversation_partner: { Args: { _c: string }; Returns: string }
       tellher_delete_question: { Args: { _id: string }; Returns: undefined }
       tellher_delete_reply: { Args: { _id: string }; Returns: undefined }
       tellher_extended_circle: {
@@ -555,6 +691,26 @@ export type Database = {
           member_id: string
         }[]
       }
+      tellher_inbox: {
+        Args: never
+        Returns: {
+          blocked_by_me: boolean
+          can_message: boolean
+          conversation_id: string
+          first_name: string
+          has_avatar: boolean
+          last_at: string
+          last_body: string
+          last_initial: string
+          last_mine: boolean
+          member_id: string
+          unread: boolean
+        }[]
+      }
+      tellher_is_blocked: { Args: { _a: string; _b: string }; Returns: boolean }
+      tellher_is_direct: { Args: { _a: string; _b: string }; Returns: boolean }
+      tellher_is_participant: { Args: { _c: string }; Returns: boolean }
+      tellher_mark_read: { Args: { _c: string }; Returns: undefined }
       tellher_member_profile: {
         Args: { _id: string }
         Returns: {
@@ -597,6 +753,7 @@ export type Database = {
           member_id: string
         }[]
       }
+      tellher_open_conversation: { Args: { _member: string }; Returns: string }
       tellher_post_reply: {
         Args: { _body: string; _id: string; _tag: string }
         Returns: string
@@ -636,6 +793,10 @@ export type Database = {
           perspective_tag: string
         }[]
       }
+      tellher_report_message: {
+        Args: { _id: string; _reason: string }
+        Returns: undefined
+      }
       tellher_report_question: {
         Args: { _id: string; _reason: string }
         Returns: undefined
@@ -671,7 +832,12 @@ export type Database = {
           title: string
         }[]
       }
+      tellher_send_message: {
+        Args: { _body: string; _c: string }
+        Returns: string
+      }
       tellher_send_trust: { Args: { _recipient: string }; Returns: undefined }
+      tellher_unblock: { Args: { _member: string }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
