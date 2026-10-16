@@ -1,6 +1,8 @@
 // One-off: fictional members (@example.com) connected to the project owner's account, with Ripples, replies and picks.
 // Uses member functions for everything members can do themselves; only trust edges where the owner is the requester are written with the admin key.
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import * as community from './demo-community-data';
 
 const url = process.env['SUPABASE_URL']!; const admin = createClient(url, process.env['SUPABASE_SERVICE_ROLE_KEY']!, { auth: { persistSession: false } });
 const EVA = '549c72b0-03c4-439f-a866-e11f12b13123'; const PASSWORD = 'TellHerDemo-2026';
@@ -26,13 +28,25 @@ const details: Record<string, Record<string, unknown>> = {
 const { data: list } = await admin.auth.admin.listUsers({ perPage: 1000 });
 const resume = list.users.some(u => u.email === 'giulia.demo@example.com');
 const c: Record<string, SupabaseClient> = {}; const id: Record<string, string> = { eva: EVA };
+// Demo sessions are cached in /tmp (refresh tokens only) so re-runs don't hit the sign-in rate limit.
+const CACHE = '/tmp/tellher-demo-sessions.json';
+const cache: Record<string, string> = existsSync(CACHE) ? JSON.parse(readFileSync(CACHE, 'utf8')) : {};
+const signDemo = async (k: string) => {
+ const cl = createClient(url, process.env['SUPABASE_PUBLISHABLE_KEY']!, { auth: { persistSession: false, autoRefreshToken: false } });
+ const keep = (t: string) => { cache[k] = t; writeFileSync(CACHE, JSON.stringify(cache)); };
+ if (cache[k]) { const r = await cl.auth.refreshSession({ refresh_token: cache[k]! }); if (!r.error && r.data.session) { keep(r.data.session.refresh_token); return cl; } }
+ for (let i = 0; ; i++) {
+  const s = await cl.auth.signInWithPassword({ email: `${k}.demo@example.com`, password: PASSWORD });
+  if (!s.error) { keep(s.data.session.refresh_token); return cl; }
+  if (s.error.status !== 429 || i > 8) throw s.error; await new Promise(r => setTimeout(r, 30000));
+ }
+};
 for (const [k, first, last, city, bio] of people) {
  const email = `${k}.demo@example.com`;
  const existing = list.users.find(u => u.email === email);
  const data = existing ? { user: existing } : (await admin.auth.admin.createUser({ email, password: PASSWORD, email_confirm: true, user_metadata: { first_name: first, last_name: last, woman_attested: true } })).data!;
  id[k] = data.user!.id;
- const cl = createClient(url, process.env['SUPABASE_PUBLISHABLE_KEY']!, { auth: { persistSession: false } });
- const s = await cl.auth.signInWithPassword({ email, password: PASSWORD }); if (s.error) throw s.error; c[k] = cl;
+ const cl = await signDemo(k); c[k] = cl;
  const p = await cl.from('profiles').update({ city, country: k === 'elena' ? 'Albania' : 'Italy', bio, ...details[k] }).eq('id', data.user.id); if (p.error) throw p.error;
 }
 // Trust Notes: fictional, written by each member under her own session; only added if she has none yet.
@@ -116,3 +130,65 @@ await pick('amira', 'Travel', 'Airport transfer booked through the hotel', 'Fixe
 await pick('elena', 'Health & Care', 'A physiotherapist who doesn’t rush', 'She explained every exercise and checked in after a week.', 'Tirana');
 await pick('chiara', 'Food & Drink', 'A quiet café where studying alone feels normal', 'Good light, kind staff, and nobody hurries you out.', 'Bologna · Santo Stefano');
 console.log('Seeded network around Eva.');
+
+// ── Wider fictional community (data in demo-community-data.ts). Every step is check-then-write, so re-runs add nothing new.
+// Eva is never signed in: only trust edges where she is a party are written with the admin key, as above.
+{
+ const { members, directOfEva, mutualPairs, acceptedBridges, pendingToEva, pendingBetween, declined, cancelled, notes: cNotes, picks: cPicks, ripples, threads, sessions } = community;
+ for (const m of members) {
+  const email = `${m.k}.demo@example.com`;
+  const existing = list.users.find(u => u.email === email);
+  const data = existing ? { user: existing } : (await admin.auth.admin.createUser({ email, password: PASSWORD, email_confirm: true, user_metadata: { first_name: m.first, last_name: m.last, woman_attested: true } })).data!;
+  id[m.k] = data.user!.id; c[m.k] = await signDemo(m.k);
+  const p = await c[m.k]!.from('profiles').update({ city: m.city, country: m.country, bio: m.bio ?? null, occupation: m.occupation ?? null, languages: m.languages ?? [], known_for: m.known_for ?? [], ask_me_about: m.ask_me_about ?? [], discoverability: m.discoverability }).eq('id', id[m.k]!); if (p.error) throw p.error;
+ }
+ // The Lisbon demo network (seed-demo.ts) joins as authors/responders; never Eva.
+ for (const k of ['maya', 'lina', 'sofia', 'noor', 'iris', 'june']) { const u = list.users.find(x => x.email === `${k}.demo@example.com`); if (u) { id[k] = u.id; c[k] = await signDemo(k); } }
+ const rows = async (a: string, b: string, statuses?: string[]) => { let q = admin.from('trust_connections').select('id, status').eq('requester_id', id[a]!).eq('recipient_id', id[b]!); if (statuses) q = q.in('status', statuses); return (await q).data ?? []; };
+ const incoming = async (to: string, from: string) => ((await c[to]!.rpc('tellher_my_circle')).data as { connection_id: string; kind: string; member_id: string }[]).find(x => x.kind === 'incoming' && x.member_id === id[from]);
+ const accept = async (a: string, b: string) => {
+  const ex = await rows(a, b, ['pending', 'accepted']); if (ex.some(e => e.status === 'accepted')) return;
+  if (!ex.length) { const r = await c[a]!.rpc('tellher_send_trust', { _recipient: id[b]! }); if (r.error) throw r.error; }
+  const req = await incoming(b, a); if (req) { const r = await c[b]!.rpc('tellher_respond_trust', { _id: req.connection_id, _accept: true }); if (r.error) throw r.error; }
+ };
+ for (const k of directOfEva) for (const [a, b] of [[EVA, id[k]!], [id[k]!, EVA]]) {
+  const { data } = await admin.from('trust_connections').select('id').eq('requester_id', a!).eq('recipient_id', b!).eq('status', 'accepted');
+  if (!data?.length) { const r = await admin.from('trust_connections').insert({ requester_id: a, recipient_id: b, status: 'accepted' }); if (r.error) throw r.error; }
+ }
+ for (const [a, b] of [...mutualPairs]) { await accept(a, b); await accept(b, a); }
+ for (const [a, b] of acceptedBridges) await accept(a, b);
+ for (const k of pendingToEva) if (!(await rows(k, 'eva')).length) { const r = await c[k]!.rpc('tellher_send_trust', { _recipient: EVA }); if (r.error) throw r.error; }
+ for (const [a, b] of pendingBetween) if (!(await rows(a, b)).length) { const r = await c[a]!.rpc('tellher_send_trust', { _recipient: id[b]! }); if (r.error) throw r.error; }
+ for (const [a, b] of declined) if (!(await rows(a, b)).length) { await c[a]!.rpc('tellher_send_trust', { _recipient: id[b]! }); const req = await incoming(b, a); if (req) await c[b]!.rpc('tellher_respond_trust', { _id: req.connection_id, _accept: false }); }
+ for (const [a, b] of cancelled) if (!(await rows(a, b)).length) { await c[a]!.rpc('tellher_send_trust', { _recipient: id[b]! }); const [r] = await rows(a, b, ['pending']); if (r) await c[a]!.rpc('tellher_cancel_trust', { _id: r.id }); }
+ for (const [k, title, topic, body, location] of cNotes) {
+  const { count } = await c[k]!.from('trust_notes').select('id', { count: 'exact', head: true }).eq('title', title); if (count) continue;
+  const r = await c[k]!.from('trust_notes').insert({ author_id: id[k]!, title, topic, body, location }); if (r.error) throw r.error;
+ }
+ for (const [k, category, title, note, location] of cPicks) await pick(k, category, title, note, location);
+ // Ripples are found again by exact body under the author's own private ownership row.
+ const pool = Object.keys(c).sort();
+ const owned = async (k: string) => ((await admin.from('question_private_meta').select('question_id, questions!inner(body)').eq('owner_id', id[k]!)).data ?? []) as unknown as { question_id: string; questions: { body: string } }[];
+ for (const [i, r] of ripples.entries()) {
+  const qid = (await owned(r.by)).find(x => x.questions.body === r.body)?.question_id ?? await ask(r.by, r.cat, r.body, r.scope, r.instinct, r.note ?? null);
+  const order = (shift: number) => { const o = pool.filter(k => k !== r.by); const s = (i * 7 + shift) % o.length; return [...o.slice(s), ...o.slice(0, s)]; };
+  let n = 0;
+  for (const k of order(0)) { if (n >= r.replies.length) break; const [tag, body] = r.replies[n]!; const e = await c[k]!.rpc('tellher_post_reply', { _id: qid, _tag: tag, _body: body }); if (!e.error || /already shared/.test(e.error.message)) n++; }
+  const echoers: string[] = [];
+  for (const k of order(11)) { if (echoers.length >= r.echoes) break; const e = await c[k]!.rpc('tellher_echo', { _id: qid }); if (!e.error) echoers.push(k); }
+  if (r.room && echoers.length >= 3 && !((await c[r.by]!.rpc('tellher_echo_room', { _q: qid })).data ?? []).length)
+   for (const [v, body] of r.room) { const who = v === 0 ? r.by : echoers[v - 1]; if (!who) continue; const e = await c[who]!.rpc('tellher_echo_room_post', { _q: qid, _body: body }); if (e.error) throw e.error; }
+  if (r.outcome) { const [status, summary, note, shared] = r.outcome; const e = await c[r.by]!.rpc('tellher_set_outcome', { _q: qid, _status: status, _summary: summary, _note: note as string, _shared: shared }); if (e.error) throw e.error; }
+ }
+ for (const [a, b, msgs] of threads) {
+  const conv = await c[a]!.rpc('tellher_open_conversation', { _member: id[b]! }); if (conv.error) throw conv.error;
+  const { count } = await c[a]!.from('messages').select('id', { count: 'exact', head: true }).eq('conversation_id', conv.data as string); if (count) continue;
+  for (const [fromA, body] of msgs) { const e = await c[fromA ? a : b]!.rpc('tellher_send_message', { _c: conv.data as string, _body: body }); if (e.error) throw e.error; }
+ }
+ for (const s of sessions) {
+  const cl = c[s.by]!; const { count } = await cl.from('wingwoman_sessions').select('id', { count: 'exact', head: true }).eq('title', s.title); if (count) continue;
+  const row = await cl.from('wingwoman_sessions').insert({ owner_id: id[s.by]!, title: s.title, context: s.context, instinct: s.instinct, situation: s.situation, reflection: s.reflection }).select('id').single(); if (row.error) throw row.error;
+  for (const [role, content] of s.turns) { const e = await cl.from('wingwoman_messages').insert({ session_id: row.data.id, owner_id: id[s.by]!, role, content }); if (e.error) throw e.error; }
+ }
+ console.log('Seeded wider demo community.');
+}
