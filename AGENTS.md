@@ -23,7 +23,7 @@
 - Subdirectories (e.g. scripts/) have their own `AGENTS.md`; read it first.
 - Trusted Picks are owner-written rows readable by others only through a function limited to the reader's accepted direct circle, exposing just the recommender's first name; no ratings or ranking,.
 - Member profiles are read only through the viewer-checked tellher_member_profile function (owner discoverability + viewer trust context); avatars are signed server-side after that check, so raw profiles stay owner-only and storage paths never leave the server.
-- Extended Circle discovery lists only discoverable second-degree members through the checked tellher_extended_circle function (one trust path shown); Trust Bridges are ordinary trust requests, so there is a single relationship model.
+- Extended Circle discovery lists only discoverable second-degree members through the checked tellher_extended_circle function; Trust Bridges are ordinary trust requests, so there is a single relationship model.
 - Global search (tellher_search) only composes the viewer-checked profile, shelf and feed functions and matches fields they already return; section filters run client-side over data those same functions return.
 - The Current and Constellations only compose existing checked sources client-side (no feed table), ordered by trust distance, topic, freshness, so they never grant access their sources don't.
 - Between Us messaging is one-to-one only, readable by participants via RLS, with all writes (open, send, read marker, block, report) through checked database functions that re-check accepted Direct trust and blocks on every send; it is never initiated from anonymous content.
@@ -32,4 +32,4 @@
 - Progressive disclosure uses owner-scoped activity and account cutoff only to soften emphasis; no scores, hidden routes or blocked direct navigation.
 - Field Notes reuse trust_notes; writes and optional Ripple linkage go through tellher_save_field_note, with append-only consent receipts for own anonymous links and viewer-checked context/read functions, so links never broaden Ripple or profile access.
 - Moderation roles live only in user_roles; queue/actions use checked mod functions returning content without identities, logged, removal in place. Abuse limits are insert triggers on the rate_limits table; notification copy is neutralised by trigger.
-- Account deletion deletes the auth user (rows cascade); safety resources are config in src/lib/safety.ts. Trust Codes are hashed, row-locked checked functions that create ordinary accepted trust_connections.
+- Account deletion deletes the auth user (rows cascade); safety resources are config in src/lib/safety.ts. Trust Codes: hashed, row-locked checked functions that create ordinary accepted trust_connections.
