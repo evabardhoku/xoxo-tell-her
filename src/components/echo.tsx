@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+import { Link } from '@tanstack/react-router';
 import { supabase } from '@/integrations/supabase/client';
 import { errorText } from '@/lib/askher';
 
@@ -16,6 +17,7 @@ export function echoLine(s: Signal, isAuthor: boolean): string | null {
 
 export function Echo({ id, isAuthor }: { id: string; isAuthor: boolean }) {
  const qc = useQueryClient(); const q = useQuery(echoQuery(id));
+ const room = useQuery({ queryKey: ['echo', id, 'room'], queryFn: async () => { const { data, error } = await supabase.rpc('tellher_echo_room_status', { _q: id }); if (error) throw error; return (data ?? [])[0] as { unlocked: boolean; can_enter: boolean } | undefined; } });
  const [busy, setBusy] = useState(false); const [note, setNote] = useState<{ text: string; error?: boolean } | null>(null);
  if (!q.data) return null;
  const s = q.data; const line = echoLine(s, isAuthor);
@@ -34,6 +36,7 @@ export function Echo({ id, isAuthor }: { id: string; isAuthor: boolean }) {
    {line && <p className="echo-line">{line}</p>}
    {!isAuthor && <p className="form-note">An Echo means “this happened to me too.” It’s anonymous and separate from perspectives.</p>}
    {note && <p role={note.error ? 'alert' : 'status'} className={`form-note ${note.error ? 'form-error' : ''}`}>{note.text}</p>}
+   {room.data?.can_enter ? <Link to="/askher/$id/room" params={{ id }} className="member-link text-sm">Open Echo Room</Link> : !room.data?.unlocked && !isAuthor ? <p className="form-note">Echo Room unlocks when enough women have shared this experience.</p> : null}
   </div>
   {!isAuthor && <button type="button" className="echo-button" aria-pressed={s.mine} disabled={busy} onClick={toggle}>{s.mine ? 'You echoed this · Remove' : 'This happened to me too'}</button>}
  </section>;
