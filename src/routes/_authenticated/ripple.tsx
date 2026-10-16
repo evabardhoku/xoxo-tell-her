@@ -1,3 +1,4 @@
+import { markRippleSent } from '@/lib/motion';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
@@ -70,7 +71,7 @@ function Composer() {
   setBusy(true); setError('');
   const { error } = await supabase.rpc('tellher_publish_question', ripplePublication({ category, body, scope, instinct, note }));
   setBusy(false); if (error) return setError(errorText(error));
-  await qc.invalidateQueries({ queryKey: feedQuery.queryKey }); navigate({ to: '/askher' });
+  await qc.invalidateQueries({ queryKey: feedQuery.queryKey }); markRippleSent(); navigate({ to: '/askher' });
  };
  return <>
   <div className="page-heading"><div><div className="eyebrow">TRUST RIPPLE</div><h1>Some things are worth asking.</h1><p>Your question travels without your name. Only you see your instinct.</p></div></div>

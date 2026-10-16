@@ -294,3 +294,39 @@ input:focus-visible,textarea:focus-visible,select:focus-visible { outline:2px so
 .sky-legend dt { position:relative;width:22px;height:22px;border-radius:50%;background:var(--primary); } .sky-legend .star { left:50%;top:50%; }
 .sky-topics { display:flex;flex-wrap:wrap;gap:8px 22px;font-size:14px; }
 @media (max-width: 760px) { .sky { aspect-ratio:auto;height:520px;min-height:0; } .sky-label { font-size:9.5px; } }
+/* ---- Motion pass: quiet, editorial; everything below is disabled under reduced motion ---- */
+:root { --ease-calm: cubic-bezier(.22,.61,.36,1); }
+@media (prefers-reduced-motion: no-preference) {
+ /* Page and card entrances */
+ .app-main > .page-heading, .question-detail > .question-card { animation:th-rise .5s var(--ease-calm) both; }
+ .question-list > li, .search-list > li, .room-thread > li { animation:th-rise .45s var(--ease-calm) both; }
+ .question-list > li:nth-child(2), .search-list > li:nth-child(2) { animation-delay:.04s; } .question-list > li:nth-child(3), .search-list > li:nth-child(3) { animation-delay:.08s; } .question-list > li:nth-child(n+4), .search-list > li:nth-child(n+4) { animation-delay:.12s; }
+ .question-card, .search-item, .reply-card { transition:border-color .3s var(--ease-calm), box-shadow .3s var(--ease-calm), transform .3s var(--ease-calm); }
+ .nav-link { transition:color .25s var(--ease-calm); }
+ /* Ripple sent: rings travel outward once */
+ .sent-ripple { animation:th-rise .4s var(--ease-calm) both; } .sent-rings i { animation:th-ring 1.8s var(--ease-calm) both; } .sent-rings i:nth-child(2) { animation-delay:.25s; } .sent-rings i:nth-child(3) { animation-delay:.5s; }
+ /* Echo: halo fills with light once when activated */
+ .echo[data-active="true"] .echo-halo { animation:th-fill .9s var(--ease-calm) both; }
+ /* Echo Room unlocks: link eases in with a soft underline sweep */
+ .echo-room-link { animation:th-unlock .8s var(--ease-calm) both; }
+ /* The Other Side: reflective unfold */
+ .other-side { animation:th-unfold .7s var(--ease-calm) both;transform-origin:top; }
+ /* Constellations: lines draw in, stars settle, preview rises */
+ .sky-lines line { stroke-dasharray:60;stroke-dashoffset:60;animation:th-draw 1.6s .3s var(--ease-calm) forwards; }
+ .sky-label { animation:th-fade 1s .2s both; }
+ .sky-card { animation:th-rise .3s var(--ease-calm) both; }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+ .question-card:hover, .search-item:hover { border-color:color-mix(in oklab, var(--secondary) 45%, var(--border));box-shadow:0 10px 30px -22px color-mix(in oklab, var(--primary) 60%, transparent);transform:translateY(-1px); }
+}
+.sent-ripple { display:flex;align-items:center;gap:14px;margin:-8px 0 22px;font-family:var(--font-editorial);color:var(--primary); }
+.sent-rings { position:relative;width:28px;height:28px;flex:none; } .sent-rings::before { content:"";position:absolute;inset:11px;border-radius:50%;background:var(--secondary); }
+.sent-rings i { position:absolute;inset:0;border-radius:50%;border:1px solid var(--secondary);opacity:0; }
+@keyframes th-rise { from { opacity:0;transform:translateY(8px); } to { opacity:1;transform:none; } }
+@keyframes th-fade { from { opacity:0; } }
+@keyframes th-ring { 0% { opacity:.7;transform:scale(.35); } 100% { opacity:0;transform:scale(1.9); } }
+@keyframes th-fill { 0% { background:transparent;box-shadow:0 0 0 0 color-mix(in oklab, var(--secondary) 30%, transparent); } 60% { box-shadow:0 0 0 9px color-mix(in oklab, var(--secondary) 16%, transparent), 0 0 0 16px color-mix(in oklab, var(--secondary) 6%, transparent); } }
+@keyframes th-unlock { from { opacity:0;letter-spacing:.06em;filter:blur(2px); } to { opacity:1;letter-spacing:normal;filter:none; } }
+@keyframes th-unfold { from { opacity:0;transform:translateY(6px) scaleY(.98); } to { opacity:1;transform:none; } }
+@keyframes th-draw { to { stroke-dashoffset:0; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.001ms!important;animation-iteration-count:1!important;animation-delay:0s!important; } .sent-rings i { display:none; } }

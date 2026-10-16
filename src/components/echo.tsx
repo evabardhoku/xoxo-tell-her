@@ -36,7 +36,7 @@ export function Echo({ id, isAuthor }: { id: string; isAuthor: boolean }) {
    {line && <p className="echo-line">{line}</p>}
    {!isAuthor && <p className="form-note">An Echo means “this happened to me too.” It’s anonymous and separate from perspectives.</p>}
    {note && <p role={note.error ? 'alert' : 'status'} className={`form-note ${note.error ? 'form-error' : ''}`}>{note.text}</p>}
-   {room.data?.can_enter ? <Link to="/askher/$id/room" params={{ id }} className="member-link text-sm">Open Echo Room</Link> : !room.data?.unlocked && !isAuthor ? <p className="form-note">Echo Room unlocks when enough women have shared this experience.</p> : null}
+   {room.data?.can_enter ? <Link to="/askher/$id/room" params={{ id }} className="member-link text-sm echo-room-link">Open Echo Room</Link> : !room.data?.unlocked && !isAuthor ? <p className="form-note">Echo Room unlocks when enough women have shared this experience.</p> : null}
   </div>
   {!isAuthor && <button type="button" className="echo-button" aria-pressed={s.mine} disabled={busy} onClick={toggle}>{s.mine ? 'You echoed this · Remove' : 'This happened to me too'}</button>}
  </section>;
