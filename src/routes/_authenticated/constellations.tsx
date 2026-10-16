@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react';
 import { ArrowRight, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { AskHerTabs } from '@/components/app-shell';
 import { pageHead } from '@/lib/metadata';
 import { buildSky, echoWords, type SkyRow, type Star } from '@/lib/constellations';
 
@@ -22,7 +21,6 @@ function Constellations() {
  const [sel, setSel] = useState<Star | null>(null);
  return <>
   <div className="page-heading"><div><div className="eyebrow">CONSTELLATIONS</div><h1>You’re not the only one.</h1><p>Ripples that reached you, gathered by topic.</p></div></div>
-  <AskHerTabs />
   {!data.length ? <section className="empty-panel"><h2>The sky is still quiet.</h2><p>As Ripples reach you through your circles and the community, they’ll gather here.</p></section> : <>
    <section className="sky" aria-label="Constellations of Ripples by topic">
     <svg className="sky-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden>
