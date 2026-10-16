@@ -796,6 +796,17 @@ export type Database = {
           title: string
         }[]
       }
+      tellher_constellation: {
+        Args: never
+        Returns: {
+          category: string
+          created_at: string
+          echo_level: number
+          excerpt: string
+          has_outcome: boolean
+          id: string
+        }[]
+      }
       tellher_conversation_partner: { Args: { _c: string }; Returns: string }
       tellher_delete_outcome: { Args: { _q: string }; Returns: undefined }
       tellher_delete_question: { Args: { _id: string }; Returns: undefined }
