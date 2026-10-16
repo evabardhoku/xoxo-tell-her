@@ -1,9 +1,8 @@
-import { Link } from '@tanstack/react-router';
 import { profileQuery } from '@/lib/profile';
 import { RippleAuthor } from '@/components/ripple-author';
 import type { AuthorVisibility } from '@/lib/ripple-identity';
 import { markRippleSent } from '@/lib/motion';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, LockKeyhole } from 'lucide-react';
