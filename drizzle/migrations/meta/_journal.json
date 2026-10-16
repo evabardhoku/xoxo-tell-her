@@ -253,6 +253,13 @@
       "when": 1792189453220,
       "tag": "0035_open_comments",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1792189469730,
+      "tag": "0036_open_ripples_no_anonymous_replies",
+      "breakpoints": true
     }
   ]
 }
