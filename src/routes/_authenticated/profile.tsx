@@ -10,6 +10,19 @@ import { pageHead } from '@/lib/metadata';
 import { supabase } from '@/integrations/supabase/client';
 import { instincts } from '@/lib/askher';
 import { outcomeStatuses } from '@/lib/outcome';
+import { useDiscovery } from '@/hooks/discovery';
+import { Check, Circle as Dot } from 'lucide-react';
+
+function DiscoveryProgress() {
+ const { isNew, ready, items } = useDiscovery();
+ const [open, setOpen] = useState(false);
+ if (!isNew || !ready) return null;
+ const done = items.filter(i => i.done).length;
+ return <section className="discovery-progress" aria-label="Your discoveries">
+  <button type="button" className="member-link text-sm" aria-expanded={open} onClick={() => setOpen(o => !o)}>You’ve discovered {done} of {items.length} things in TellHer</button>
+  {open && <ul className="discovery-list">{items.map(i => <li key={i.key} data-done={i.done}>{i.done ? <Check size={13} aria-label="Discovered" /> : <Dot size={13} aria-hidden />}<Link to={i.to} {...(i.search ? { search: i.search } : {})} className="member-link">{i.label}</Link></li>)}</ul>}
+ </section>;
+}
 import { Button } from '@/components/ui/button';
 import { ScrollPanel } from '@/components/scroll-panel';
 
