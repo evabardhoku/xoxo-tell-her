@@ -2,7 +2,7 @@ import { profileQuery } from '@/lib/profile';
 import { RippleAuthor } from '@/components/ripple-author';
 import type { AuthorVisibility } from '@/lib/ripple-identity';
 import { markRippleSent } from '@/lib/motion';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, LockKeyhole } from 'lucide-react';
@@ -93,6 +93,7 @@ function Composer() {
      {source.lines.map((l, i) => <p key={i}><strong>{l.role === 'you' ? 'You:' : 'Wingwoman:'}</strong> {l.text}</p>)}
     </div>}
    </aside>}
+   {!from && step === 0 && <p className="form-note"><LockKeyhole size={12} className="inline mr-1" />Want to think it through first? <Link to="/wingwoman" search={{}} className="member-link">Talk privately with Wingwoman</Link></p>}
    <ol className="composer-steps" aria-label="Steps">{steps.map((s, i) => <li key={s} data-state={i === step ? 'current' : i < step ? 'done' : 'todo'} aria-current={i === step ? 'step' : undefined}><span>{i + 1}</span>{s}</li>)}</ol>
    {step === 0 && <div key="s0" className="composer-body">
     <fieldset className="field" disabled={sourceLoading || Boolean(sourceError)}><legend className="field-legend">Category</legend><div className="choice-row">{categories.map(c => <Button variant="ghost" type="button" key={c} className="choice-chip" aria-pressed={category === c} onClick={() => setCategory(c)}>{c}</Button>)}</div></fieldset>

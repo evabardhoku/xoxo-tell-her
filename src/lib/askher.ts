@@ -8,17 +8,17 @@ export const instincts = [
  { value: 'feels_off', label: 'Something feels off' },
 ] as const;
 export const reaches = [
- { value: 'circle', label: 'Direct Circle', hint: 'Only women you trust directly.' },
+ { value: 'circle', label: 'My Circle', hint: 'Only women you trust directly.' },
  { value: 'extended', label: 'Extended Circle', hint: 'Travels through your Direct Circle to the women they trust. Two layers at most.' },
- { value: 'community', label: 'All TellHer women', hint: 'Signed-in TellHer members.' },
+ { value: 'community', label: 'TellHer Community', hint: 'Signed-in TellHer members.' },
 ] as const;
 export type Reach = (typeof reaches)[number]['value'];
-export const reachContext = (s: string) => (s === 'circle' ? 'Direct Circle' : s === 'extended' ? 'Extended Circle' : 'All TellHer women');
+export const reachContext = (s: string) => (s === 'circle' ? 'My Circle' : s === 'extended' ? 'Circle + Extended' : 'TellHer Community');
 
 const women = (n: number) => `${n} ${n === 1 ? 'woman' : 'women'}`;
 /** Extended reach = Direct Circle + additional Extended Circle; counts stay separate in wording. */
 export function reachPreview(scope: Reach, count: number | null | undefined, direct?: number | null) {
- if (scope === 'community') return 'All TellHer women';
+ if (scope === 'community') return 'TellHer Community';
  const n = count ?? 0;
  if (scope === 'circle') return `${women(n)} in your Direct Circle`;
  const d = Math.min(direct ?? 0, n);
