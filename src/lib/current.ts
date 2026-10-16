@@ -15,8 +15,9 @@ export type CurrentItem =
  | (Base & { kind: 'pick'; p: { id: string; title: string; category: string; note: string; location: string | null } })
  | (Base & { kind: 'person'; member_id: string; name: string; location: string | null; known_for: string[]; has_avatar: boolean; bridge_pending: boolean });
 
-export function questionProvenance(q: Pick<FeedQuestion, 'is_mine' | 'audience_scope'>) {
+export function questionProvenance(q: Pick<FeedQuestion, 'is_mine' | 'audience_scope' | 'author_visibility' | 'first_name'>) {
  if (q.is_mine) return 'Your Ripple';
+ if (q.author_visibility === 'named' && q.first_name) return `${q.first_name} · Trust Ripple · ${q.audience_scope === 'circle' ? 'Direct reach' : q.audience_scope === 'extended' ? 'Extended reach' : 'All TellHer women'}`;
  return q.audience_scope === 'circle' ? 'Anonymous Ripple · Direct reach' : q.audience_scope === 'extended' ? 'Anonymous Ripple · Extended reach' : 'Anonymous Ripple · All TellHer women';
 }
 export const questionTier = (s: string): Tier => (s === 'circle' ? 0 : s === 'extended' ? 1 : 2);

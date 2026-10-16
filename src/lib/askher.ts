@@ -1,3 +1,4 @@
+import { withRippleIdentities, type RippleIdentity } from '@/lib/ripple-identity';
 import { supabase } from '@/integrations/supabase/client';
 
 export const categories = ['Work', 'Dating & Boundaries', 'Housing & Moving', 'Travel', 'Services', 'Everyday Life'] as const;
@@ -24,10 +25,10 @@ export function reachPreview(scope: Reach, count: number | null | undefined, dir
  return `Up to ${women(n)} through your trust network · ${d} Direct Circle + ${n - d} additional Extended Circle`;
 }
 
-export type FeedQuestion = { id: string; category: string; body: string; audience_scope: string; created_at: string; reply_count: number; is_mine: boolean; my_instinct: string | null; my_note: string | null };
+export type FeedQuestion = { id: string; category: string; body: string; audience_scope: string; created_at: string; reply_count: number; is_mine: boolean; my_instinct: string | null; my_note: string | null } & Partial<RippleIdentity>;
 export const feedQuery = {
  queryKey: ['askher-feed'],
- queryFn: async () => { const { data, error } = await supabase.rpc('tellher_feed'); if (error) throw error; return (data ?? []) as FeedQuestion[]; },
+ queryFn: async () => { const { data, error } = await supabase.rpc('tellher_feed'); if (error) throw error; return withRippleIdentities((data ?? []) as FeedQuestion[]); },
 };
 
 export function relativeTime(iso: string, now = Date.now()) {
