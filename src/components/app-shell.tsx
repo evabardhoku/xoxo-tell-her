@@ -10,13 +10,12 @@ import { useAccount } from '@/hooks/account';
 import { profileQuery } from '@/lib/profile';
 import { ProfileEditor } from './profile-editor';
 
-// Primary areas. `match` lists sub-areas that live under each one (My Ripples and the composer under AskHer).
+// Four primary areas; Between Us, Search and Profile are header utilities. `match` lists sub-areas that live under each one (My Ripples and the composer under AskHer).
 const navigation = [
- { to: '/home', label: 'The Current', mobile: 'Current', icon: Home, match: ['/home', '/constellations'] },
- { to: '/askher', label: 'AskHer', icon: MessageCircle, match: ['/askher', '/my-ripples', '/ripple'] },
- { to: '/circle', label: 'My Circle', mobile: 'Circle', icon: Users, match: ['/circle'] },
+ { to: '/home', label: 'The Current', mobile: 'Current', icon: Home, match: ['/home'] },
+ { to: '/askher', label: 'AskHer', icon: MessageCircle, match: ['/askher', '/my-ripples', '/ripple', '/constellations'] },
+ { to: '/circle', label: 'Circle', icon: Users, match: ['/circle'] },
  { to: '/wingwoman', label: 'Wingwoman', icon: Sparkles, match: ['/wingwoman'] },
- { to: '/between-us', label: 'Between Us', icon: Mail, match: ['/between-us'], desktopOnly: true },
 ] as const;
 const mobileOrder = ['/home', '/askher', '/wingwoman', '/circle'];
 const isIn = (pathname: string, paths: readonly string[]) => paths.some(p => pathname === p || pathname.startsWith(`${p}/`));
@@ -57,7 +56,12 @@ export function SignOut() {
  return <Button variant="ghost" onClick={() => { void signOut(); }}><LogOut />Sign out</Button>;
 }
 
-/** Secondary navigation inside a primary area (AskHer, My Circle). */
+/** Shared AskHer sub-navigation: Ripples · My Ripples · Constellations, with Start a Ripple as the one primary action. */
+export function AskHerTabs() {
+ return <div className="section-bar"><nav className="section-tabs" aria-label="AskHer sections"><Link to="/askher" activeOptions={{ exact: true, includeSearch: false }}>Ripples</Link><Link to="/my-ripples" activeOptions={{ includeSearch: false }}>My Ripples</Link><Link to="/constellations">Constellations</Link></nav></div>;
+}
+
+/** Secondary navigation inside a primary area (AskHer, Circle). */
 export function SectionTabs({ label, children }: { label: string; children: ReactNode }) {
  return <nav className="section-tabs" aria-label={label}>{children}</nav>;
 }

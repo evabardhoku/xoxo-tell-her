@@ -38,6 +38,7 @@ function CurrentPage() {
  ].slice(0, SHELF_LIMIT);
  const shelves = useQueries({ queries: shelfOwners.map(o => shelfQuery(o.id)) });
  const [filter, setFilter] = useState<CurrentFilter>('all');
+ const [limit, setLimit] = useState(6);
 
  const loading = circle.isPending || feed.isPending || picks.isPending || ext.isPending;
  const items = useMemo(() => {
@@ -57,12 +58,12 @@ function CurrentPage() {
 
  return <>
   <div className="page-heading current-heading"><div><div className="eyebrow">THE CURRENT</div><h1>{first ? `Welcome back, ${first}.` : 'Welcome back.'}</h1><p>What useful things are moving through your trust network right now.</p></div>
-   <div className="current-actions"><Button asChild variant="editorial"><Link to="/ripple">Start a Trust Ripple<ArrowRight /></Link></Button><Button asChild variant="outline"><Link to="/wingwoman"><LockKeyhole />Talk to Wingwoman</Link></Button><Button asChild variant="ghost"><Link to="/constellations"><Sparkle />Constellations</Link></Button><Button asChild variant="ghost"><Link to="/search" search={{ q: '' }} aria-label="Search TellHer"><SearchIcon />Search</Link></Button></div></div>
+   <div className="current-actions"><Button asChild variant="editorial"><Link to="/ripple">Start a Trust Ripple<ArrowRight /></Link></Button><Button asChild variant="outline"><Link to="/wingwoman"><LockKeyhole />Talk to Wingwoman</Link></Button><Link to="/search" search={{ q: '' }} className="member-link inline-flex items-center gap-1 text-sm" aria-label="Search TellHer"><SearchIcon size={14} />Search</Link></div></div>
   {loading ? <p role="status" className="form-note">Gathering what’s moving…</p>
-   : !items.length ? <section className="empty-panel"><h2>The Current is quiet for now.</h2><p>As your Direct Circle grows, their questions, notes and picks will gather here.</p><Button asChild variant="editorial" className="mt-6"><Link to="/circle">Go to MyCircle<ArrowRight /></Link></Button></section>
+   : !items.length ? <section className="empty-panel"><h2>The Current is quiet for now.</h2><p>As your Direct Circle grows, their questions, notes and picks will gather here.</p><Button asChild variant="editorial" className="mt-6"><Link to="/circle">Go to Circle<ArrowRight /></Link></Button></section>
    : <>
-    {filters.length > 1 && <div className="current-filters" role="group" aria-label="Filter The Current">{filters.map(f => <button key={f.value} type="button" className="current-filter" aria-pressed={filter === f.value} onClick={() => setFilter(f.value)}>{f.label}</button>)}</div>}
-    <ol className="current-stream">{shown.map(i => <li key={i.key} className="current-item"><p className="current-provenance">{i.provenance}</p><CurrentCard i={i} counts={i.kind === 'question' ? maps.data?.[i.q.id] : undefined} /></li>)}</ol>
+    {filters.length > 1 && <div className="current-filters" role="group" aria-label="Filter The Current">{filters.map(f => <button key={f.value} type="button" className="current-filter" aria-pressed={filter === f.value} onClick={() => { setFilter(f.value); setLimit(6); }}>{f.label}</button>)}</div>}
+    <ol className="current-stream">{shown.slice(0, limit).map(i => <li key={i.key} className="current-item"><p className="current-provenance">{i.provenance}</p><CurrentCard i={i} counts={i.kind === 'question' ? maps.data?.[i.q.id] : undefined} /></li>)}</ol>
    </>}
  </>;
 }
@@ -71,6 +72,6 @@ function CurrentCard({ i, counts }: { i: CurrentItem; counts?: Parameters<typeof
  if (i.kind === 'question') return <ul className="list-none p-0"><QuestionCard q={i.q} counts={counts} /></ul>;
  if (i.kind === 'pick') return <ul className="list-none p-0"><PickItem p={i.p} provenance={`Recommended by ${i.provenance.split(' · ')[0]}`} /></ul>;
  if (i.kind === 'note') return <div className="search-item"><div className="question-meta"><span className="question-category">{i.topic}</span>{i.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{i.location}</span>}<span>{relativeTime(i.at)}</span></div><strong>{i.title}</strong><p className="search-snippet">{i.body}</p><Link to="/profile/$memberId" params={{ memberId: i.member_id }} className="member-link">Trust Note · view her shelf</Link></div>;
- if (i.kind === 'request') return <div className="search-item"><strong><Link to="/profile/$memberId" params={{ memberId: i.member_id }} className="member-link">{i.name}</Link> sent you a trust request</strong><p className="search-snippet">Accepting adds her to your Direct Circle. You can decide in MyCircle.</p><Link to="/circle" className="member-link inline-flex items-center gap-1">Review in MyCircle<ArrowRight size={14} /></Link></div>;
- return <div className="search-item"><strong><Link to="/profile/$memberId" params={{ memberId: i.member_id }} className="member-link">{i.name}</Link></strong>{i.location && <span className="form-note"><MapPin size={12} className="inline mr-1" />{i.location}</span>}{i.known_for.length > 0 && <span className="form-note">Known for {i.known_for.join(', ')}</span>}<Link to="/circle" className="member-link">{i.bridge_pending ? 'Trust Bridge requested' : 'Request a Trust Bridge in MyCircle'}</Link></div>;
+ if (i.kind === 'request') return <div className="search-item"><strong><Link to="/profile/$memberId" params={{ memberId: i.member_id }} className="member-link">{i.name}</Link> sent you a trust request</strong><p className="search-snippet">Accepting adds her to your Direct Circle. You can decide in Circle.</p><Link to="/circle" className="member-link inline-flex items-center gap-1">Review in Circle<ArrowRight size={14} /></Link></div>;
+ return <div className="search-item"><strong><Link to="/profile/$memberId" params={{ memberId: i.member_id }} className="member-link">{i.name}</Link></strong>{i.location && <span className="form-note"><MapPin size={12} className="inline mr-1" />{i.location}</span>}{i.known_for.length > 0 && <span className="form-note">Known for {i.known_for.join(', ')}</span>}<Link to="/circle" className="member-link">{i.bridge_pending ? 'Trust Bridge requested' : 'Request a Trust Bridge in Circle'}</Link></div>;
 }

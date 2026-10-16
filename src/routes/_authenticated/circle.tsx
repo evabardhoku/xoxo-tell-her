@@ -14,7 +14,7 @@ import { ExtendedCircle } from '@/components/extended-circle';
 
 export const Route = createFileRoute('/_authenticated/circle')({
  loader: ({ context }) => context.queryClient.ensureQueryData(circleQuery),
- head: () => pageHead('My Circle', 'Your small circle of trusted women on TellHer.'),
+ head: () => pageHead('Circle', 'Your small circle of trusted women on TellHer.'),
  errorComponent: () => <p role="alert" className="form-note form-error">Your circle could not be loaded. Please refresh.</p>,
  component: Circle,
 });
@@ -31,7 +31,7 @@ function Circle() {
  const cancel = useMutation({ mutationFn: async (id: string) => { const { error } = await supabase.rpc('tellher_cancel_trust', { _id: id }); if (error) throw error; }, onSuccess: refresh });
  return <>
   <div className="page-heading"><div><div className="eyebrow">MY CIRCLE</div><h1>Trust starts close to home.</h1><p>The women you choose to trust. Only accepted trust shapes how far a Trust Ripple can travel.</p></div></div>
-  <SectionTabs label="My Circle sections"><a href="#direct-circle">Direct Circle</a><a href="#extended-circle">Extended Circle</a><a href="#requests">Requests &amp; Trust Bridges</a><a href="#trusted-picks">Trusted Picks</a></SectionTabs>
+  <SectionTabs label="Circle sections"><a href="#direct-circle">Direct Circle</a><a href="#extended-circle">Extended Circle</a><a href="#requests">Requests &amp; Trust Bridges</a><a href="#trusted-picks">Trusted Picks</a></SectionTabs>
   <section className="circle-summary" aria-label="Your reach">
    <ReachRings direct={direct.length} extended={data.extendedCount} />
    <dl className="reach-stats">
