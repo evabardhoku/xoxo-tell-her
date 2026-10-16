@@ -30,8 +30,6 @@
 - One app-shell `navigation` list (Sky, Ask, Circle, Me) drives desktop/mobile navigation; nested-route `match` and hub controls keep every sub-page reachable from this single IA source.
 - Echo/Echo Rooms/The Other Side/Letters: anonymous Ripple add-ons via checked functions only. One Echo per member; counts and room entry (author + echoers) only at ECHO_THRESHOLD (mirrors DB); room voices are stable numbers; outcomes are author-only, private by default, shared only within Ripple reach; Letters (echoers, or the author after a shared outcome) are read only via tellher_letters with author_id column-revoked; none are searchable.
 - Progressive disclosure uses owner-scoped activity and account cutoff only to soften emphasis; no scores, hidden routes or blocked direct navigation.
-
 - Field Notes reuse trust_notes; writes and optional Ripple linkage go through tellher_save_field_note, with append-only consent receipts for own anonymous links and viewer-checked context/read functions, so links never broaden Ripple or profile access.
-- Moderation: roles live only in user_roles (has_role/tellher_is_moderator); the queue and actions go through tellher_mod_reports/tellher_mod_act, which return content but never reporter/author identity and log to moderation_actions; removal overwrites content in place so checked read paths stay unchanged.
-- Abuse limits are BEFORE INSERT triggers reading the rate_limits table (configurable per action); reads are never limited. Notification copy is neutralised by a trigger so sensitive kinds never carry previews.
-- Account deletion is one authenticated server function deleting the auth user; profile-linked rows cascade, so private ownership of anonymous Ripples disappears with it. Safety resources are config in src/lib/safety.ts, never AI prose.
+- Moderation roles live only in user_roles; queue/actions use checked mod functions returning content without identities, logged, removal in place. Abuse limits are insert triggers on the rate_limits table; notification copy is neutralised by trigger.
+- Account deletion deletes the auth user so profile-linked rows cascade; safety resources are config in src/lib/safety.ts.
