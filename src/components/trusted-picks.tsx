@@ -10,7 +10,7 @@ import { Textarea } from './ui/textarea';
 export const pickCategories = ['Services', 'Food & Drink', 'Health & Care', 'Housing & Moving', 'Travel', 'Everyday Life'] as const;
 type Pick = { id: string; title: string; category: string; note: string; location: string | null };
 
-const picksQuery = {
+export const picksQuery = {
  queryKey: ['trusted-picks'],
  queryFn: async () => {
   const [mine, circle] = await Promise.all([
@@ -22,7 +22,7 @@ const picksQuery = {
  },
 };
 
-function PickItem({ p, provenance, children }: { p: Pick; provenance: string; children?: React.ReactNode }) {
+export function PickItem({ p, provenance, children }: { p: Pick; provenance: string; children?: React.ReactNode }) {
  return <li className="pick-item">
   <div className="question-meta"><span className="question-category">{p.category}</span>{p.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{p.location}</span>}</div>
   <strong className="pick-title">{p.title}</strong>
