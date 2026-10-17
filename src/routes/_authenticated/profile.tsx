@@ -6,7 +6,7 @@ import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { MapPin, Pencil, Star, Waves } from 'lucide-react';
 import { ProfileEditor } from '@/components/profile-editor';
-import { profileQuery } from '@/lib/profile';
+import { discoverabilityOptions, profileQuery } from '@/lib/profile';
 import { SignOut } from '@/components/app-shell';
 import { TrustedPicks } from '@/components/trusted-picks';
 import { pageHead } from '@/lib/metadata';
@@ -87,7 +87,7 @@ function Profile() {
     <div className="profile-edit-scroll">
      <ProfileEditor profile={data} onSaved={async () => { await refetch(); setEditing(false); }} />
      <details className="profile-disclosure"><summary>Open Avatar</summary><AvatarStudio profile={data} photoUrl={avatarUrl} /></details>
-     <details className="profile-disclosure"><summary>Privacy &amp; data</summary><PrivacyData userId={data.id} discoverability={undefined} onEditDiscoverability={() => {}} /></details>
+     <details className="profile-disclosure"><summary>Privacy &amp; data</summary><PrivacyData userId={data.id} discoverability={discoverabilityOptions.find(o => o.value === data.discoverability)?.label} onEditDiscoverability={() => {}} /></details>
      {isMod.data && <p className="form-note"><Link to="/admin/reports" className="member-link">Moderation reports</Link></p>}
      <section className="account-settings"><SignOut /></section>
     </div>
