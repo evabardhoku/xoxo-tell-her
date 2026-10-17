@@ -20,7 +20,7 @@ export function Echo({ id, isAuthor, compact = false, signalOnly = false, quiet 
  const [pulse, setPulse] = useState(0);
  const [busy, setBusy] = useState(false); const [note, setNote] = useState<{ text: string; error?: boolean } | null>(null);
  if (!q.data) return null;
- const s = q.data; const line = echoLine(s, isAuthor);
+ const s = q.data; const line = echoLine(s, isAuthor, quiet);
  const toggle = async () => {
   setBusy(true); setNote(null);
   const { error } = await supabase.rpc(s.mine ? 'tellher_unecho' : 'tellher_echo', { _id: id });

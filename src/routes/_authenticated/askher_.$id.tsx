@@ -13,6 +13,7 @@ import { Echo } from '@/components/echo';
 import { ScrollPanel } from '@/components/scroll-panel';
 import { replyLikesQuery } from '@/lib/notifications';
 import { OtherSide } from '@/components/other-side';
+import { isSensitive } from '@/lib/voice';
 import { PerspectiveMap } from '@/components/perspective-map';
 import { PerspectiveSynthesis } from '@/components/perspective-synthesis';
 import { pageHead } from '@/lib/metadata';
@@ -41,6 +42,7 @@ function QuestionPage() {
  const [note, setNote] = useState<{ text: string; error?: boolean } | null>(null);
  if (!data.question) return <Unavailable />;
  const q = data.question;
+ const quiet = isSensitive(q.body, q.category);
  const refresh = () => Promise.all([qc.invalidateQueries({ queryKey: questionQuery(id).queryKey }), qc.invalidateQueries({ queryKey: feedQuery.queryKey }), qc.invalidateQueries({ queryKey: feedMapQuery.queryKey })]);
  const removeReply = async (rid: string) => {
   if (!window.confirm('Delete your perspective?')) return;
@@ -77,7 +79,7 @@ function QuestionPage() {
    <PerspectiveSynthesis key={data.replies.length} id={id} replies={data.replies} />
    </section>
   {q.is_mine && q.my_instinct && <aside className="first-instinct" aria-label="My first instinct"><p className="private-note"><LockKeyhole size={12} />My first instinct · only you</p><p className="instinct-line">{instincts.find(i => i.value === q.my_instinct)?.label}</p>{q.my_note && <p className="form-note">{q.my_note}</p>}</aside>}
-    <section className="trust-letter-section" aria-label="Star Letter"><OtherSide id={id} isAuthor={q.is_mine} /></section>
+    <section className="trust-letter-section" aria-label="Star Letter"><OtherSide id={id} isAuthor={q.is_mine} quiet={quiet} /></section>
   </>}
   {(sky.data ?? []).some(r => r.category === q.category) && <Link to="/constellations/$topic" params={{ topic: q.category }} className="member-link related-constellation">Explore similar stories in Constellations</Link>}
  </div>;
