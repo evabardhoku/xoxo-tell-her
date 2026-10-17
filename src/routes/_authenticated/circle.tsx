@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tansta
 import { zodValidator, fallback } from '@tanstack/zod-adapter';
 import { z } from 'zod';
 import { useMemo, useState } from 'react';
-import { Check, Search, X } from 'lucide-react';
+import { Check, Search, UserPlus, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,7 @@ import { ExtendedCircle } from '@/components/extended-circle';
 import { InboxList } from '@/components/inbox-list';
 import { ScrollPanel } from '@/components/scroll-panel';
 import { useDiscovery } from '@/hooks/discovery';
+import { searchQuery } from '@/lib/search';
 
 export const Route = createFileRoute('/_authenticated/circle')({
  validateSearch: zodValidator(z.object({ view: fallback(z.string(), 'direct').default('direct'), code: fallback(z.string().max(20).optional(), undefined) })),
