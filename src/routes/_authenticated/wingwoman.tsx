@@ -13,6 +13,7 @@ import { instincts, errorText, relativeTime } from '@/lib/askher';
 import { SafetyPanel } from '@/components/safety';
 import { mentionsImmediateRisk } from '@/lib/safety';
 import { createReflection, sendWingwomanMessage, wingwomanContexts, wingwomanRelated, type Reflection } from '@/lib/wingwoman.functions';
+import { PrivateStars } from '@/components/profile-discussions';
 
 export const Route = createFileRoute('/_authenticated/wingwoman')({
  validateSearch: zodValidator(z.object({ s: fallback(z.string().uuid().optional(), undefined) })),
@@ -43,7 +44,7 @@ function Wingwoman() {
     <Button asChild variant="editorial" size="sm" className="w-full"><Link to="/wingwoman" search={{}}><Plus />New conversation</Link></Button>
     {sessions.isError ? <p role="alert" className="form-note form-error">History could not be loaded. <Button variant="ghost" size="sm" onClick={() => void sessions.refetch()}>Try again</Button></p> : sessions.isPending ? <p role="status" className="form-note">Loading conversations…</p> : !sessions.data?.length ? <p className="form-note">No conversations yet.</p> : <ul className="ww-sessions">{sessions.data.map(x => <li key={x.id}><Link to="/wingwoman" search={{ s: x.id }} className="ww-session" aria-current={s === x.id ? 'page' : undefined}><span className="question-category">{x.context ?? 'Other'}</span><span className="ww-session-title">{x.title || 'Untitled'}</span><span className="form-note">{relativeTime(x.updated_at)}</span></Link></li>)}</ul>}
    </aside>
-   <div className="ww-main"><Wings />{s ? <Thread key={s} id={s} /> : <Start />}</div>
+   <div className="ww-main"><Wings />{s ? <Thread key={s} id={s} /> : <Start />}<PrivateStars /></div>
   </div>
  </>;
 }

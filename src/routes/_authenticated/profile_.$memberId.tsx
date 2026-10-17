@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { pageHead } from '@/lib/metadata';
 import { MemberAvatar } from '@/components/avatars';
 import { TrustShelf } from '@/components/trust-shelf';
+import { MemberRipples } from '@/components/profile-discussions';
 
 const memberQuery = (id: string) => ({
  queryKey: ['member-profile', id],
@@ -56,6 +57,7 @@ function MemberProfile() {
    {!m.bio && lists.every(([, i]) => !i.length) && <p className="form-note member-section">She hasn’t added more about herself yet.</p>}
   </article>
   <TrustShelf memberId={memberId} firstName={m.first_name} />
+  <MemberRipples memberId={memberId} firstName={m.first_name} own={m.relation === 'self'} />
  </>;
 }
 
