@@ -295,6 +295,13 @@
       "when": 1792249014698,
       "tag": "0041_retire_letters_and_echo_rooms",
       "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "7",
+      "when": 1792250119473,
+      "tag": "0042_retire_field_notes",
+      "breakpoints": true
     }
   ]
 }
