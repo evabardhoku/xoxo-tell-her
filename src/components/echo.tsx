@@ -29,6 +29,7 @@ export function EchoRoomEntry({ id }: { id: string }) {
 
 export function Echo({ id, isAuthor, compact = false, signalOnly = false }: { id: string; isAuthor: boolean; compact?: boolean; signalOnly?: boolean }) {
  const qc = useQueryClient(); const q = useQuery(echoQuery(id));
+ const [pulse, setPulse] = useState(0);
  const [busy, setBusy] = useState(false); const [note, setNote] = useState<{ text: string; error?: boolean } | null>(null);
  if (!q.data) return null;
  const s = q.data; const line = echoLine(s, isAuthor);
@@ -37,6 +38,7 @@ export function Echo({ id, isAuthor, compact = false, signalOnly = false }: { id
   const { error } = await supabase.rpc(s.mine ? 'tellher_unecho' : 'tellher_echo', { _id: id });
   setBusy(false);
   if (error) return setNote({ text: errorText(error), error: true });
+  if (!s.mine) setPulse(value => value + 1);
   setNote({ text: s.mine ? 'Your Echo was removed.' : 'Echoed quietly. No one will see it was you.' });
   qc.invalidateQueries({ queryKey: ['echo', id] });
  };
@@ -44,8 +46,8 @@ export function Echo({ id, isAuthor, compact = false, signalOnly = false }: { id
  if (signalOnly) return line ? <p className="echo-line">{line}</p> : null;
  if (isAuthor && !line) return null;
  return <section className={compact ? 'echo-compact' : 'echo'} data-active={s.mine} aria-label="Echo">
-  {!compact && line && <p className="echo-line">{line}</p>}
-  {!isAuthor && <Button type="button" variant="outline" aria-pressed={s.mine} disabled={busy} onClick={toggle}>{s.mine ? 'You echoed this · Remove' : 'This happened to me too'}</Button>}
+  {!compact && <><span key={pulse} className={`echo-halo ${pulse > 0 ? 'echo-halo--pulse' : ''}`} aria-hidden><span /><span /><span /></span><div className="echo-text"><p className="eyebrow">ECHO</p><p className="echo-line">{line ?? 'You’re not alone in this.'}</p></div></>}
+  {!isAuthor && <Button type="button" variant="outline" className="echo-button" aria-pressed={s.mine} disabled={busy} onClick={toggle}>{s.mine ? 'You echoed this · Remove' : 'This happened to me too'}</Button>}
   {note && <p role={note.error ? 'alert' : 'status'} className={`form-note ${note.error ? 'form-error' : ''}`}>{note.text}</p>}
  </section>;
 }
