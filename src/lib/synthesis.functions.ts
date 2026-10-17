@@ -11,7 +11,7 @@ export function synthesisReady(replies: { body: string }[]) {
  return meaningful.size >= MIN_REPLIES;
 }
 
-const SYSTEM = `You summarize perspectives women shared on one anonymous question in TellHer.
+const SYSTEM = `You summarize responses women shared on one Ripple in TellHer.
 Use ONLY the replies provided. Never add facts, advice, or ideas absent from them.
 Preserve disagreement and uncertainty; do not pick a winner or deliver a verdict.
 This is a small sample: never use percentages, "most", "majority", or language implying statistical certainty. Prefer "some", "a few", "one reply".
@@ -26,15 +26,21 @@ export const synthesizePerspectives = createServerFn({ method: 'POST' })
  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
  .handler(async ({ data, context }): Promise<Synthesis> => {
   const key = process.env['LOVABLE_API_KEY']; if (!key) throw new Error('Synthesis is not configured.');
-  const [q, r] = await Promise.all([context.supabase.rpc('tellher_question', { _id: data.id }), context.supabase.rpc('tellher_replies', { _id: data.id })]);
-  const question = q.data?.[0]; if (q.error || r.error || !question) throw new Error('This question isn’t available.');
-  const replies = (r.data ?? []).map(x => ({ tag: x.perspective_tag, body: x.body }));
+  const q = await context.supabase.rpc('tellher_question', { _id: data.id });
+  const question = q.data?.[0]; if (q.error || !question) throw new Error('This question isn’t available.');
+  const identity = await context.supabase.rpc('tellher_ripple_identities', { _ids: [data.id] });
+  if (identity.error) throw new Error('This question isn’t available.');
+  const named = identity.data?.[0]?.author_visibility === 'named';
+  const r = named ? await context.supabase.rpc('tellher_open_comments', { _id: data.id }) : await context.supabase.rpc('tellher_replies', { _id: data.id });
+  if (r.error) throw new Error('These responses aren’t available.');
+  // Only response text reaches AI, never identities or private author context.
+  const replies = (r.data ?? []).map(x => ({ body: x.body }));
   const none: Synthesis = { enough: false, common_thread: '', different_perspective: '', questions_open: [] };
   if (!synthesisReady(replies)) return none;
   const res = await fetch('https://ai.gateway.lovable.dev/v1/responses', {
    method: 'POST', headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', 'X-Lovable-AIG-SDK': 'fetch' },
    body: JSON.stringify({ model: 'openai/gpt-6-astra', stream: true, store: false, reasoning: { effort: 'low' }, instructions: SYSTEM,
-    input: [{ role: 'user', content: `Question (${question.category}): ${question.body}\n\nReplies (${replies.length}):\n${replies.map((x, i) => `${i + 1}. [${x.tag}] ${x.body}`).join('\n')}` }],
+    input: [{ role: 'user', content: `Question (${question.category}): ${question.body}\n\nReplies (${replies.length}):\n${replies.map((x, i) => `${i + 1}. ${x.body}`).join('\n')}` }],
     text: { format: { type: 'json_schema', name: 'synthesis', strict: true, schema } } }),
   });
   if (!res.ok || !res.body) {

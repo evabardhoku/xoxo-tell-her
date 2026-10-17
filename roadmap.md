@@ -1,4 +1,5 @@
 # TellHer foundation
+- [ ] Automatic anonymous avatars, focused Open Avatar editor, and optional AI comment summaries; verify tests and signed-in pages
 - [x] Final submission pass: verified recovery, compact unranked comments, own-post emphasis, narrow-phone safety header, safe export failures; 180 checks passed across suite and isolated reruns; four-size signed-in review and reflection/cancel/publish/readback passed
 - [x] Submission cleanup: calmer hubs, contextual Ripple navigation, wording, three-size browser review, private reflection/cancel/publish/readback; failing full-suite files passed on isolated rerun
 - [x] Platform regression pass: member avatars, compact feed comments, phone layouts, account switching, full tests and signed-in journeys

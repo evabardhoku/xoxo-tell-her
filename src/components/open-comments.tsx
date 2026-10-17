@@ -5,6 +5,7 @@ import { MessageCircle, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { MemberAvatar } from '@/components/avatars';
+import { PerspectiveSynthesis } from '@/components/perspective-synthesis';
 import { errorText, feedQuery, relativeTime } from '@/lib/askher';
 import { openCommentsQuery, type OpenComment } from '@/lib/open-feed';
 
@@ -31,6 +32,7 @@ export function OpenComments({ id, preview = 0, isAuthor = false }: { id: string
     </div>
    </li>)}</ul>}
   </>}
+  {(all || preview === 0) && comments.isSuccess && <PerspectiveSynthesis key={JSON.stringify(list.map(c => [c.id, c.body]))} id={id} replies={list} comments />}
   {(all || preview === 0) && <form onSubmit={send} className="open-comment-form">
    <label htmlFor={`comment-${id}`} className="sr-only">Add a comment</label>
    <input id={`comment-${id}`} className="field-input" maxLength={1000} placeholder={isAuthor ? 'Reply in the comments…' : 'Add a comment…'} value={body} onChange={e => setBody(e.target.value)} />

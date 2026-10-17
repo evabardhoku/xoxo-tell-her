@@ -58,7 +58,7 @@ function Profile() {
 
   <TrustShelf memberId={data.id} firstName={data.first_name} editable />
 
-  <details className="profile-disclosure"><summary>Avatar Studio</summary><AvatarStudio profile={data} photoUrl={avatarUrl} /></details>
+  <details className="profile-disclosure"><summary>Open Avatar</summary><AvatarStudio profile={data} photoUrl={avatarUrl} /></details>
 
   <details className="profile-disclosure"><summary>Privacy &amp; data</summary><PrivacyData userId={data.id} discoverability={discovery?.label} onEditDiscoverability={() => { setEditing(true); requestAnimationFrame(() => document.getElementById('profile-editor-region')?.scrollIntoView({ block: 'start' })); }} /></details>
   {isMod.data && <p className="form-note"><Link to="/admin/reports" className="member-link">Moderation reports</Link></p>}

@@ -26,13 +26,16 @@ export type Reply = { id: string; perspective_tag: string; body: string; created
 export const questionQuery = (id: string) => ({
  queryKey: ['askher-question', id],
  queryFn: async () => {
-  const [q, r] = await Promise.all([supabase.rpc('tellher_question', { _id: id }), supabase.rpc('tellher_replies', { _id: id })]);
+  const q = await supabase.rpc('tellher_question', { _id: id });
   if (q.error) throw q.error;
   const question = (q.data?.[0] ?? null) as QuestionDetail | null;
   if (!question) return { question: null, replies: [] as Reply[] };
-  if (r.error) throw r.error;
   const identified = await withRippleIdentities([question]);
-  return { question: identified[0] ?? question, replies: (r.data ?? []) as Reply[] };
+  const resolved = identified[0] ?? question;
+  if (resolved.author_visibility === 'named') return { question: resolved, replies: [] as Reply[] };
+  const r = await supabase.rpc('tellher_replies', { _id: id });
+  if (r.error) throw r.error;
+  return { question: resolved, replies: (r.data ?? []) as Reply[] };
  },
 });
 
