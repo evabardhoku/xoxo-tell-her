@@ -26,7 +26,7 @@ function SkyHub() {
   <header className="sky-head"><div><h1>Sky</h1><p className="form-note">Stories connect even when identities don’t.</p></div><Button asChild variant="soft" size="sm"><Link to="/ripple">Ask anonymously</Link></Button></header>
   {sky.isError ? <p role="alert" className="form-note form-error">The sky could not be loaded. Please refresh.</p> : newcomer && !sky.data?.length ? <StarterConstellations /> : sky.data ? <ConstellationSky rows={sky.data} /> : <p role="status" className="form-note">Drawing the sky…</p>}
   {sky.data && <Trending rows={sky.data} />}
-  <section id="anonymous-ripples" aria-labelledby="anon-title" ref={el => { if (el && view === 'ripples') el.scrollIntoView(); }}><h2 id="anon-title" className="sky-section-title">Recent anonymous Ripples</h2><AnonymousRipples /></section>
+  <section id="anonymous-ripples" aria-labelledby="anon-title" ref={el => { if (el && view === 'ripples') el.scrollIntoView(); }}><h2 id="anon-title" className="sky-section-title">Recent stars</h2><AnonymousRipples /></section>
  </div>;
 }
 
