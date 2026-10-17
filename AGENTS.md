@@ -11,7 +11,7 @@
 
 - Public routes stay top-level; private routes use client-only `_authenticated` to avoid redirect loops.
 - One root auth subscriber clears queries before identity changes and ignores stale lookups; profiles stay owner-scoped.
-- Extend checked systems/demo data; never duplicate paths.
+- Extend checked systems; never duplicate paths.
 - Trust/content writes use checked functions. Ripple identity uses additive checked publication/representation, immutable visibility, and private ownership. Named first names are Ripple-scoped; anonymous identity and responder privacy never change.
 - Onboarding and Profile share validation/editing; triggers independently enforce attestation and field limits.
 - Open Avatars use private storage, stripped metadata, short-lived links and checked photo/illustration rendering. Anonymous display masks randomize on checked reads independently of profiles; historical storage stays untouched.
@@ -20,7 +20,7 @@
 - Wingwoman AI turns run only in authenticated server functions sharing one gateway helper and safety prompt, saved under the caller's rows; drafts reload by owner-scoped session id, never URL text, so situations stay private.
 - Keep Wingwoman source context separate from editable Ripple state in the existing four-step composer, and publish through the explicit ripplePublication field allowlist only at final confirmation; this prevents private source/session data from leaking into shared questions.
 - AI synthesis is authenticated and on-demand: checked Ripple identity selects checked replies/comments, and only bodies reach AI. Shared meaningful-response gating avoids filler; summaries are not stored and never replace responses or the map.
-- Read scoped `AGENTS.md` first.
+- Read scoped guidance first.
 - Picks are owner-written, read by others only through an accepted Direct Circle check exposing the recommender's first name; no ratings or ranking.
 - Profiles use tellher_member_profile viewer checks; avatars are signed afterward server-side. Raw profiles and storage paths stay private.
 - Extended discovery uses tellher_extended_circle; Connect uses ordinary trust requests, not a second relationship model.
@@ -29,7 +29,7 @@
 - Between Us messaging is one-to-one only, readable by participants via RLS, with all writes (open, send, read marker, block, report) through checked database functions that re-check accepted Direct trust and blocks on every send; it is never initiated from anonymous content.
 - One shell navigation includes Wingwoman. Shared identity navigation returns named Ripples to Feed and anonymous to Sky. Hubs preserve sub-page access and checked feeds.
 - Echo/Echo Rooms/The Other Side/Letters: anonymous Ripple add-ons via checked functions only. One Echo per member; counts and room entry (author + echoers) only at ECHO_THRESHOLD (mirrors DB); room voices are stable numbers; outcomes are author-only, private by default, shared only within Ripple reach; Letters (echoers, or the author after a shared outcome) are read only via tellher_letters with author_id column-revoked; none are searchable.
-- Progressive disclosure uses owner-scoped activity and account cutoff only to soften emphasis; no scores, hidden routes or blocked direct navigation.
+- Disclosure uses owner activity/account cutoff only for emphasis; never scores, hides routes or blocks navigation.
 - Field Notes reuse trust_notes; writes and optional Ripple linkage go through tellher_save_field_note, with append-only consent receipts for own anonymous links and viewer-checked context/read functions, so links never broaden Ripple or profile access.
 - Moderation roles live only in user_roles; queue/actions use checked mod functions returning content without identities, logged, removal in place. Abuse limits are insert triggers on the rate_limits table; notification copy is neutralised by trigger.
 - Account deletion removes auth with cascading rows. Safety uses src/lib/safety.ts. Trust Codes are hashed, row-locked and create ordinary accepted connections.
