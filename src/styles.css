@@ -22,6 +22,43 @@
  --section-rule: color-mix(in oklab, var(--primary) 22%, var(--border));
  --shadow-soft: 0 8px 24px -18px color-mix(in oklab, var(--primary) 28%, transparent);
 }
+.tellher-guide-trigger { position:fixed;right:18px;top:48%;z-index:40;width:44px;height:44px;border:1px solid var(--secondary);border-radius:50%;background:var(--card);color:var(--primary);box-shadow:var(--shadow-soft); }
+.tellher-guide-panel { position:fixed;right:16px;top:108px;bottom:24px;width:350px;max-width:calc(100vw - 32px);z-index:45;border:1px solid var(--section-rule);border-radius:16px;background:var(--card);box-shadow:var(--shadow-soft);display:flex;flex-direction:column;overflow:hidden;animation:guide-arrive .3s ease-out; }
+.tellher-guide-panel--rose { --guide-tint:var(--surface-rose); }
+.tellher-guide-panel--blue { --guide-tint:var(--surface-blue); }
+.tellher-guide-panel--gold { --guide-tint:var(--surface-gold); }
+.tellher-guide-panel--sage { --guide-tint:var(--surface-sage); }
+.tellher-guide-header { display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--guide-tint);border-bottom:1px solid var(--border);flex-shrink:0; }
+.tellher-guide-header>span { display:flex;align-items:center;gap:8px;font-size:12px;color:var(--primary);font-weight:600; }
+.tellher-guide-scroll { overflow:auto;overscroll-behavior:contain;padding:22px;scrollbar-width:thin; }
+.tellher-guide-emblem { position:relative;width:66px;height:66px;display:grid;place-items:center;color:var(--primary);margin-bottom:18px; }
+.tellher-guide-emblem i { position:absolute;inset:0;border:1px solid var(--secondary);border-radius:50%;animation:guide-breathe 4s ease-in-out infinite; }
+.tellher-guide-emblem i:nth-child(2) { inset:9px;border-color:var(--accent);animation-delay:1s; }
+.tellher-guide-emblem svg { width:25px;height:25px; }
+.tellher-guide-count { font-size:11px;color:var(--muted-foreground);margin-bottom:8px; }
+.tellher-guide-title { font-size:25px;line-height:1.35;color:var(--primary); }
+.tellher-guide-intro { font-size:12px;line-height:1.7;color:var(--muted-foreground);margin-top:10px; }
+.tellher-guide-points { display:grid;gap:16px;font-size:13px;line-height:1.75;margin:22px 0;padding-left:18px; }
+.tellher-guide-points li::marker { color:var(--secondary); }
+.tellher-guide-actions { display:flex;justify-content:space-between;gap:12px;margin-top:20px; }
+.tellher-guide-chapters { margin-top:24px;border-top:1px solid var(--border);padding-top:16px;font-size:12px;color:var(--primary); }
+.tellher-guide-chapters summary { cursor:pointer; }
+.tellher-guide-chapters ol { list-style:none;padding:8px 0 0;display:grid;gap:4px; }
+.tellher-guide-chapters button { width:100%;height:auto;min-height:40px;justify-content:flex-start;white-space:normal;text-align:left;font-size:12px; }
+.tellher-guide-chapters button[aria-current=step] { background:var(--guide-tint); }
+.tellher-guide-chapters button span { min-width:18px;color:var(--muted-foreground); }
+.nav-link[data-guide-current=true], .search-link[data-guide-current=true] { outline:2px solid var(--accent);outline-offset:5px;border-radius:6px; }
+@keyframes guide-arrive { from { opacity:0;transform:translateX(16px); } to { opacity:1;transform:translateX(0); } }
+@keyframes guide-breathe { 50% { transform:scale(.92);opacity:.55; } }
+@media (min-width:1200px) { body:has(.tellher-guide-panel) .app-main { margin-right:382px;max-width:calc(100% - 382px); } }
+@media (max-width:760px) {
+ .tellher-guide-trigger { top:auto;bottom:calc(96px + env(safe-area-inset-bottom));right:12px; }
+ .tellher-guide-panel { top:auto;right:10px;left:10px;bottom:calc(84px + env(safe-area-inset-bottom));width:auto;max-width:none;max-height:60svh; }
+ .tellher-guide-scroll { padding:16px 20px; }
+ .tellher-guide-emblem { display:none; }
+ .tellher-guide-title { font-size:23px; }
+}
+@media (prefers-reduced-motion:reduce) { .tellher-guide-panel,.tellher-guide-emblem i { animation:none; } }
 @theme inline {
  --color-background: var(--background); --color-foreground: var(--foreground);
  --color-primary: var(--primary); --color-primary-foreground: var(--primary-foreground);
