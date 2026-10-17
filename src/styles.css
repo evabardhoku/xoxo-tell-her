@@ -903,3 +903,5 @@ summary:focus-visible { outline:2px solid var(--ring);outline-offset:3px; }
 @media (prefers-reduced-motion: reduce) { .comet { animation:none;left:50%; } }
 @media (max-width: 900px) { .sky-with-legend { grid-template-columns:1fr; } .sky-legend-panel { position:static;order:-1; } }
 .ww-wings svg { filter:drop-shadow(0 6px 14px color-mix(in oklab, var(--secondary) 45%, transparent)); }
+.ww-user { color:var(--foreground); }
+.ww-user p { color:var(--foreground); }
