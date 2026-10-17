@@ -1,5 +1,7 @@
 import { seedNamedRipples } from './seed-named-ripples';
 import { refineDemoFieldNotes } from './refine-demo-field-notes';
+import { seedTester } from './seed-tester';
+if (process.argv.includes('--tester')) { await seedTester(); process.exit(0); }
 // Seeds a small fictional TellHer demo network through the real member functions.
 // Run: bun scripts/seed-demo.ts  (requires SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY)
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';

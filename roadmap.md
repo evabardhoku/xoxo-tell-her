@@ -1,4 +1,5 @@
 # TellHer foundation
+- [x] Prepare fictional Blair tester account: password sign-in, Feed, Profile/Picks, Circle requests, own Star Letter and message readback verified; 20 related privacy/messaging/Feed checks passed.
 - [x] Explicit Skip tour and shared XOXO, TellHer logo; 8 checks passed, skip/replay and all main-page headers verified at four widths.
 - [x] First-visit guide with 10 chapters and side replay; signed-in navigation, dismissal, reload suppression and phone layout verified; account-scoped storage checks passed.
 - [x] Profile connection requests with recipient Direct/Extended choice; 25 focused tests passed; signed-in request, acceptance and reload verified.
