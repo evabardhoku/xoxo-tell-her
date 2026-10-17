@@ -19,7 +19,7 @@ export function ConnectInPerson({ embedded = false }: { embedded?: boolean }) {
  const qc = useQueryClient(); const now = useNow();
  const [created, setCreated] = useState<Created | null>(null); const [error, setError] = useState(''); const [busy, setBusy] = useState(false);
  const active = useQuery({ queryKey: ['trust-codes'], queryFn: async () => {
-  const { data, error } = await supabase.from('trust_codes').select('id, max_uses, uses, expires_at, cancelled_at').is('cancelled_at', null).gt('expires_at', new Date().toISOString()).order('created_at', { ascending: false }).limit(5);
+  const { data, error } = await supabase.from('trust_codes').select('id, max_uses, uses, expires_at, cancelled_at').eq('membership_invite', false).is('cancelled_at', null).gt('expires_at', new Date().toISOString()).order('created_at', { ascending: false }).limit(5);
   if (error) throw error; return (data ?? []).filter(c => c.uses < c.max_uses);
  } });
  const create = async (group: boolean) => {
