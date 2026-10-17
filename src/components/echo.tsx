@@ -1,6 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Link } from '@tanstack/react-router';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from './ui/button';
 import { errorText } from '@/lib/askher';
@@ -14,17 +13,6 @@ export function echoLine(s: Signal, isAuthor: boolean): string | null {
  if (s.echo_count && s.echo_count >= ECHO_THRESHOLD) return isAuthor ? `${s.echo_count} women have been through something similar. You’re not alone in this.` : `${s.echo_count} women have been through something similar.`;
  if (s.below_threshold) return 'Others may relate to this too.';
  return null;
-}
-
-export const echoRoomQuery = (id: string) => ({ queryKey: ['echo', id, 'room'], queryFn: async () => { const { data, error } = await supabase.rpc('tellher_echo_room_status', { _q: id }); if (error) throw error; return (data ?? [])[0] as { unlocked: boolean; can_enter: boolean } | undefined; } });
-
-/** Echo Room entry, shown only when the viewer is eligible to enter. */
-export function EchoRoomEntry({ id }: { id: string }) {
- const room = useQuery(echoRoomQuery(id));
- if (!room.data?.can_enter) return null;
- return <section className="echo-room-entry" aria-label="Women who’ve been here">
-  <Link to="/askher/$id/room" params={{ id }} className="member-link text-sm echo-room-link">Talk with women who’ve been here</Link>
- </section>;
 }
 
 export function Echo({ id, isAuthor, compact = false, signalOnly = false }: { id: string; isAuthor: boolean; compact?: boolean; signalOnly?: boolean }) {

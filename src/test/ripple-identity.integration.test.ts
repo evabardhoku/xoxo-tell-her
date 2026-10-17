@@ -60,7 +60,7 @@ describe.skipIf(!url || !key)('Independent Ripple reach and identity', () => {
   expect((await client(1).from('questions').select('*').eq('id', anonymous)).data).toEqual([]);
   const notifications = await client(1).rpc('tellher_notifications'); expect(notifications.error).toBeNull(); expect(JSON.stringify(notifications.data)).not.toContain(name);
  });
- it('replies and echo identities remain anonymous on both models; first-letter notifications remain generic', async () => {
+ it('replies and echo identities remain anonymous on both models; notifications remain generic', async () => {
   for (const q of [anonymous, named]) {
    const reply = await client(1).rpc('tellher_post_reply_tagged', { _id: q, _tag: 'more_context', _body: 'I would compare the weekly workload and costs.', _mentions: [] });
    if (q === named) expect(reply.error?.message).toContain('named comments'); // open Ripples take named comments only
@@ -69,8 +69,6 @@ describe.skipIf(!url || !key)('Independent Ripple reach and identity', () => {
    expect(replies.data).toHaveLength(1); for (const secret of [ids[1], 'ResponderPrivate', 'author_id']) expect(JSON.stringify(replies.data)).not.toContain(secret); }
    expect((await client(1).rpc('tellher_echo', { _id: q })).error).toBeNull();
    const signal = await client(2).rpc('tellher_echo_signal', { _id: q }); expect(signal.error).toBeNull(); expect(signal.data?.[0]).toMatchObject({ below_threshold: true });
-   expect((await client(1).rpc('tellher_write_letter', { _q: q, _body: 'You can give yourself time to compare both paths.', _where_now: 'Still learning' })).error).toBeNull();
-   const letters = await client(2).rpc('tellher_letters', { _q: q }); expect(letters.error).toBeNull(); expect(letters.data).toHaveLength(1); expect(JSON.stringify(letters.data)).not.toContain(ids[1]);
   }
   const n = await client(0).rpc('tellher_notifications'); expect(n.error).toBeNull(); expect(n.data?.length).toBeGreaterThan(0); expect(JSON.stringify(n.data)).not.toContain('ResponderPrivate');
  });

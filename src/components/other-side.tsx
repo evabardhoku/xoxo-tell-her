@@ -25,10 +25,10 @@ export function OtherSide({ id, isAuthor, createdAt }: { id: string; isAuthor: b
  if (!o && !due && !editing) return null;
  const done = () => { setEditing(false); qc.invalidateQueries({ queryKey: ['outcome', id] }); };
  return <section className="other-side trust-letter" aria-labelledby={`trust-letter-title-${id}`}>
-  <div className="trust-letter-heading"><div><div className="eyebrow">WHAT HAPPENED NEXT</div><h2 id={`trust-letter-title-${id}`}>Trust Letter</h2></div><span className="trust-letter-mark" aria-hidden><Heart size={20} /></span></div>
+  <div className="trust-letter-heading"><div><div className="eyebrow">WHAT HAPPENED NEXT</div><h2 id={`trust-letter-title-${id}`}>Star Letter</h2></div><span className="trust-letter-mark" aria-hidden><Heart size={20} /></span></div>
   {editing ? <OutcomeForm id={id} initial={o} onDone={done} onCancel={() => setEditing(false)} />
    : o ? <>
-    <Button type="button" variant="ghost" className="trust-envelope" data-open={opened} aria-expanded={opened} aria-controls={`trust-letter-paper-${id}`} aria-label={opened ? 'Close Trust Letter' : 'Open Trust Letter'} onClick={() => setOpened(value => !value)}>
+    <Button type="button" variant="ghost" className="trust-envelope" data-open={opened} aria-expanded={opened} aria-controls={`trust-letter-paper-${id}`} aria-label={opened ? 'Close Star Letter' : 'Open Star Letter'} onClick={() => setOpened(value => !value)}>
      <span className="envelope-back" aria-hidden /><span className="envelope-insert" aria-hidden /><span className="envelope-front" aria-hidden /><span className="envelope-flap" aria-hidden /><span className="envelope-seal" aria-hidden><Heart size={20} /></span><span className="envelope-caption">{opened ? 'Close letter' : 'A letter from the woman who asked'}</span>
     </Button>
     {opened && <article className="trust-letter-paper" id={`trust-letter-paper-${id}`}>
@@ -44,7 +44,7 @@ export function OtherSide({ id, isAuthor, createdAt }: { id: string; isAuthor: b
    : <>
     <p className="other-side-summary">What happened in the end?</p>
 
-    <Button variant="soft" onClick={() => setEditing(true)}>Write your Trust Letter</Button>
+    <Button variant="soft" onClick={() => setEditing(true)}>Write your Star Letter</Button>
    </>}
  </section>;
 }
