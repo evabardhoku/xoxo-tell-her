@@ -351,6 +351,13 @@
       "when": 1792268739912,
       "tag": "0049_bind_invitation_to_verified_signup",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1792270626619,
+      "tag": "0050_open_membership_without_invitation",
+      "breakpoints": true
     }
   ]
 }
