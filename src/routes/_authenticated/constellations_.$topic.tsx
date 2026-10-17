@@ -11,7 +11,7 @@ import { feedMapQuery } from '@/lib/perspectives';
 import { placeTitle, skyQuery } from '@/lib/constellations';
 
 export const Route = createFileRoute('/_authenticated/constellations_/$topic')({
- head: ({ params }) => pageHead(placeTitle(params.topic), 'Stars, Field Notes and trusted recommendations from women who’ve been here.'),
+ head: ({ params }) => pageHead(placeTitle(params.topic), 'Anonymous stars and trusted picks from women who’ve been here on TellHer.'),
  component: Place,
 });
 
@@ -41,7 +41,7 @@ function Place() {
    <p className="form-note">Women choose whether to name their Ripple. Echoes stay anonymous.</p>
   </header>
   {echoTarget && <Echo id={echoTarget.id} isAuthor={false} />}
-  <section className="member-section"><h2>Recent anonymous Ripples</h2><ul className="question-list">{ripples.map(q => <QuestionCard key={q.id} q={q} counts={maps.data?.[q.id]} />)}</ul></section>
+  <section className="member-section"><h2>Recent stars</h2><ul className="question-list">{ripples.map(q => <QuestionCard key={q.id} q={q} counts={maps.data?.[q.id]} />)}</ul></section>
   {topicPicks.length > 0 && <section className="member-section"><h2>From women who’ve been there</h2>
    <div className="place-trusted"><ul className="list-none p-0 grid gap-3">{topicPicks.map(p => <PickItem key={p.id} p={p} provenance={`Recommended by ${p.recommender}`} />)}</ul></div>
      </section>}

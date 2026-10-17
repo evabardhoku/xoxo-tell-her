@@ -48,9 +48,9 @@ export function PrivacyData({ userId, discoverability, onEditDiscoverability }: 
   <div className="flex gap-2 flex-wrap"><Button variant="ghost" onClick={onEditDiscoverability}>Change discoverability</Button>
    <Button variant="ghost" disabled={busy} onClick={() => void exportData()}>Download my data</Button>
    <Button variant="ghost" disabled={busy} onClick={() => void clearWingwoman()}>Delete Wingwoman history</Button></div>
-  <p className="form-note">The download includes your profile, Field Notes, Picks and Wingwoman conversations.</p>
+  <p className="form-note">The download includes your profile, Picks, Wingwoman conversations and any archived notes.</p>
   <details className="danger-zone"><summary className="form-note">Delete my account</summary>
-   <p className="form-note">This permanently removes your profile, Circle, messages, Wingwoman conversations, replies, Letters and Field Notes. Anonymous Ripples you started stay anonymous, with no link back to you.</p>
+   <p className="form-note">This permanently removes your profile, Circle, messages, Wingwoman conversations, replies, letters and archived notes. Anonymous stars you started stay anonymous, with no link back to you.</p>
    <label htmlFor="del-confirm" className="form-note">Type DELETE to confirm</label>
    <Input id="del-confirm" value={confirm} onChange={e => setConfirm(e.target.value)} autoComplete="off" />
    <Button variant="destructive" className="mt-2" disabled={busy || confirm !== 'DELETE'} onClick={() => void deleteAccount()}>Permanently delete account</Button>
