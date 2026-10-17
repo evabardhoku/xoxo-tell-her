@@ -13,7 +13,6 @@ import { Echo } from '@/components/echo';
 import { ScrollPanel } from '@/components/scroll-panel';
 import { replyLikesQuery } from '@/lib/notifications';
 import { OtherSide } from '@/components/other-side';
-import { RippleFieldNotes } from '@/components/ripple-field-notes';
 import { PerspectiveMap } from '@/components/perspective-map';
 import { PerspectiveSynthesis } from '@/components/perspective-synthesis';
 import { pageHead } from '@/lib/metadata';
