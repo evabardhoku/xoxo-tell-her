@@ -9,6 +9,10 @@ vi.mock('@/integrations/supabase/client', () => ({ supabase: { auth: { signInWit
 vi.mock('@/integrations/lovable', () => ({ lovable: { auth: {} } }));
 const Auth = Route.options.component as React.ComponentType;
 describe('Email account forms', () => {
+ it('selects signup only from the explicit signup mode', () => {
+  expect(Route.options.validateSearch?.({ mode: 'signup' })).toEqual({ mode: 'signup' });
+  expect(Route.options.validateSearch?.({ mode: 'anything-else' })).toEqual({ mode: 'signin' });
+ });
  beforeEach(() => { mocks.navigate.mockClear(); mocks.signIn.mockResolvedValue({ error: null }); mocks.signUp.mockResolvedValue({ error: null }); });
  it('does not navigate ahead of the shared account state after password sign-in', async () => {
   render(<Auth />);

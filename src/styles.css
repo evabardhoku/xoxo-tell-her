@@ -204,7 +204,7 @@ input:focus-visible,textarea:focus-visible,select:focus-visible { outline:2px so
 @media (prefers-reduced-motion: reduce) { .hr-ring,.rr-ring.is-on,.composer-body { animation:none!important; } .pm-fill { transition:none!important; } }
 
 /* Public opening: a living, illustrated trust field. */
-.landing-page .hero { min-height:540px;background:var(--surface-rose);border-block:1px solid var(--section-rule); }
+.landing-page .hero { min-height:500px;background:var(--surface-rose);border-block:1px solid var(--section-rule); }
 .landing-page .hero-content { padding:52px 0 62px;width:610px;z-index:1;animation:landing-arrive .8s ease-out both; }
 .landing-page .hero h1 { font-size:52px; }
 .landing-page .header-actions { gap:12px; }
@@ -257,7 +257,7 @@ input:focus-visible,textarea:focus-visible,select:focus-visible { outline:2px so
  .landing-page .hero-content { width:100%;padding:32px 24px 218px; }
  .landing-page .hero h1 { font-size:34px; }
  .landing-page .hero-cta { flex-wrap:wrap;gap:12px; }
- .landing-scene-image { object-position:right;opacity:.2; }
+ .landing-scene-image { object-position:right;opacity:.07; }
  .landing-orbits { width:280px;top:auto;bottom:-55px;left:66%;transform:translateX(-50%); }
  .landing-wings svg { width:86px; }
  .landing-stars { top:65%; }
