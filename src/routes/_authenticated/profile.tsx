@@ -54,7 +54,7 @@ function Profile() {
 
   </section>
 
-  {editing && <ProfileEditor profile={data} onSaved={async () => { await refetch(); setEditing(false); }} />}
+  {editing && <div id="profile-editor-region"><ProfileEditor profile={data} onSaved={async () => { await refetch(); setEditing(false); }} /></div>}
 
   <TrustShelf memberId={data.id} firstName={data.first_name} editable />
 
