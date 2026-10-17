@@ -1,5 +1,6 @@
 import { OpenComments } from '@/components/open-comments';
 import { RippleAuthor } from '@/components/ripple-author';
+import { rippleDestination } from '@/lib/ripple-identity';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -26,7 +27,7 @@ export const Route = createFileRoute('/_authenticated/askher_/$id')({
 });
 
 function Unavailable() {
- return <section className="empty-panel"><h2>This question isn’t available.</h2><p>It may have been removed, or it wasn’t shared with you.</p><Button asChild variant="soft"><Link to="/askher">Back to Ask</Link></Button></section>;
+ return <section className="empty-panel"><h2>This Ripple isn’t available.</h2><p>It may have been removed, or it wasn’t shared with you.</p><Button asChild variant="soft"><Link to="/home">Back to Sky</Link></Button></section>;
 }
 
 function QuestionPage() {
@@ -46,7 +47,7 @@ function QuestionPage() {
   setNote({ text: 'Your perspective was deleted.' }); refresh();
  };
  return <div className="question-detail">
-  <Link to="/askher" className="back-link"><ArrowLeft size={14} />Ask</Link>
+  <Link to={rippleDestination(q.author_visibility)} className="back-link"><ArrowLeft size={14} />{q.author_visibility === 'named' ? 'My Feed' : 'Sky'}</Link>
   <article className={`ripple-question ${q.is_mine ? 'ripple-question--mine' : ''}`}>
    <p className="question-body">{q.body}</p>
    <RippleAuthor identity={q} showAnonymous />
@@ -68,7 +69,7 @@ function QuestionPage() {
    <PerspectiveSynthesis key={data.replies.length} id={id} replies={data.replies} />
   </section>
   {q.is_mine && q.my_instinct && <aside className="first-instinct" aria-label="My first instinct"><p className="private-note"><LockKeyhole size={12} />My first instinct · only you</p><p className="instinct-line">{instincts.find(i => i.value === q.my_instinct)?.label}</p>{q.my_note && <p className="form-note">{q.my_note}</p>}</aside>}
-  <div className="afterwards"><h2>Afterwards</h2><OtherSide id={id} isAuthor={q.is_mine} createdAt={q.created_at} /><Letters id={id} /><RippleFieldNotes id={id} /></div>
+  <details className="afterwards"><summary>Afterwards</summary><div className="afterwards-content"><OtherSide id={id} isAuthor={q.is_mine} createdAt={q.created_at} /><Letters id={id} /><RippleFieldNotes id={id} /></div></details>
   <section className="women-here"><Echo id={id} isAuthor={q.is_mine} signalOnly /><EchoRoomEntry id={id} /></section>
   </>}
   {(sky.data ?? []).some(r => r.category === q.category) && <Link to="/constellations/$topic" params={{ topic: q.category }} className="member-link related-constellation">Explore similar stories in Constellations</Link>}

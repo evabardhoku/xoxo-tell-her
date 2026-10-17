@@ -35,12 +35,12 @@ function Wingwoman() {
  const { s } = Route.useSearch();
  const sessions = useQuery(sessionsQuery);
  return <>
-  <div className="page-heading"><div><div className="eyebrow">WINGWOMAN</div><h1>Wingwoman</h1><p className="form-note">Wingwoman is a reflection tool, not a therapist, lawyer or emergency service.</p></div></div>
+  <div className="page-heading"><div><h1>Wingwoman</h1><p className="private-note"><LockKeyhole size={12} />A private conversation, at your own pace.</p><p className="form-note">A reflection tool, not a therapist, lawyer or emergency service.</p></div></div>
   <div className="ww-layout">
    <details className="ww-sessions"><summary>Conversation history</summary>
     <Button asChild variant="editorial" size="sm" className="w-full"><Link to="/wingwoman" search={{}}><Plus />New conversation</Link></Button>
     <p className="private-note"><LockKeyhole size={12} />Only you can see these.</p>
-    <ul>{(sessions.data ?? []).map(x => <li key={x.id}><Link to="/wingwoman" search={{ s: x.id }} className="ww-session" aria-current={s === x.id ? 'page' : undefined}><span className="question-category">{x.context ?? 'Other'}</span><span className="ww-session-title">{x.title || 'Untitled'}</span><span className="form-note">{relativeTime(x.updated_at)}</span></Link></li>)}</ul>
+    {sessions.isError ? <p role="alert" className="form-note form-error">History could not be loaded. <Button variant="ghost" size="sm" onClick={() => void sessions.refetch()}>Try again</Button></p> : sessions.isPending ? <p role="status" className="form-note">Loading conversations…</p> : !sessions.data?.length ? <p className="form-note">No conversations yet.</p> : <ul>{sessions.data.map(x => <li key={x.id}><Link to="/wingwoman" search={{ s: x.id }} className="ww-session" aria-current={s === x.id ? 'page' : undefined}><span className="question-category">{x.context ?? 'Other'}</span><span className="ww-session-title">{x.title || 'Untitled'}</span><span className="form-note">{relativeTime(x.updated_at)}</span></Link></li>)}</ul>}
    </details>
    <div className="ww-main">{s ? <Thread key={s} id={s} /> : <Start />}</div>
   </div>
@@ -58,11 +58,11 @@ function Start() {
   catch (e) { setError(errorText(e)); setBusy(false); }
  };
  return <section className="composer-card"><div className="composer-body">
-  <fieldset className="field"><legend className="field-legend">Context</legend><div className="choice-row">{wingwomanContexts.map(c => <button type="button" key={c} className="choice-chip" aria-pressed={ctx === c} onClick={() => setCtx(c)} disabled={busy}>{c}</button>)}</div></fieldset>
+  <fieldset className="field"><legend className="field-legend">What’s it about?</legend><div className="choice-row">{wingwomanContexts.map(c => <Button variant="ghost" type="button" key={c} className="choice-chip" aria-pressed={ctx === c} onClick={() => setCtx(c)} disabled={busy}>{c}</Button>)}</div></fieldset>
   <div className="field"><label htmlFor="ww-situation">What happened?</label><Textarea id="ww-situation" maxLength={4000} value={situation} disabled={busy} onChange={e => setSituation(e.target.value)} placeholder="In your own words…" /><span className="form-note">{situation.trim().length < 10 ? 'At least 10 characters.' : `${situation.length}/4000`}</span></div>
-  <details><summary className="form-note">Add a private first instinct</summary><fieldset className="field"><legend className="field-legend">My first instinct (optional, private)</legend><div className="choice-row">{instincts.map(i => <button type="button" key={i.value} className="choice-chip" aria-pressed={instinct === i.value} disabled={busy} onClick={() => setInstinct(instinct === i.value ? null : i.value)}>{i.label}</button>)}</div></fieldset></details>
+  <details><summary className="form-note">Add a private first instinct</summary><fieldset className="field"><legend className="field-legend">My first instinct (optional, private)</legend><div className="choice-row">{instincts.map(i => <Button variant="ghost" type="button" key={i.value} className="choice-chip" aria-pressed={instinct === i.value} disabled={busy} onClick={() => setInstinct(instinct === i.value ? null : i.value)}>{i.label}</Button>)}</div></fieldset></details>
   {error && <p role="alert" className="form-note form-error">{error}</p>}
-  <div className="composer-actions"><span /><Button variant="editorial" disabled={!ctx || situation.trim().length < 10 || busy} onClick={go}>{busy ? 'Thinking it through…' : 'Start talking with Wingwoman'}</Button></div>
+  <div className="composer-actions"><span /><Button variant="editorial" disabled={!ctx || situation.trim().length < 10 || busy} onClick={go}>{busy ? 'Thinking it through…' : 'Start conversation'}<ArrowRight /></Button></div>
  </div></section>;
 }
 
@@ -118,9 +118,9 @@ function Thread({ id }: { id: string }) {
    {pending && <><li className="ww-msg ww-user"><p>{pending}</p></li><li className="ww-msg ww-assistant" role="status"><span className="ww-voice">Wingwoman</span><p className="ww-typing">Thinking it over…</p></li></>}
   </ol>
   {showChips && <div className="ww-chips" aria-label="Where to go from here">
-   <button type="button" className="member-link ww-context-link" onClick={() => navigate({ to: '/ripple', search: { from: id } })}>Ask women anonymously</button>
-   {r && r.constellations > 0 && <button type="button" className="member-link ww-context-link" onClick={() => navigate({ to: '/constellations/$topic', params: { topic: r.topic } })}>Explore similar stories</button>}
-   {r?.lettersRippleId && <button type="button" className="member-link ww-context-link" onClick={() => navigate({ to: '/askher/$id', params: { id: r.lettersRippleId ?? '' } })}>Read relevant Letters</button>}
+   <Button variant="link" type="button" className="member-link ww-context-link" onClick={() => navigate({ to: '/ripple', search: { from: id } })}>Ask women anonymously</Button>
+   {r && r.constellations > 0 && <Button variant="link" type="button" className="member-link ww-context-link" onClick={() => navigate({ to: '/constellations/$topic', params: { topic: r.topic } })}>Explore similar stories</Button>}
+   {r?.lettersRippleId && <Button variant="link" type="button" className="member-link ww-context-link" onClick={() => navigate({ to: '/askher/$id', params: { id: r.lettersRippleId ?? '' } })}>Read relevant Letters</Button>}
   </div>}
   {atRisk && <SafetyPanel />}
   <div ref={end} />

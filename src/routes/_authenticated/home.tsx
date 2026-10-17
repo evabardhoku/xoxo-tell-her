@@ -34,9 +34,9 @@ function SkyHub() {
 function Trending({ rows }: { rows: SkyRow[] }) {
  const themes = trendingThemes(rows);
  if (!themes.length) return null;
- return <section aria-labelledby="trending-title"><h2 id="trending-title" className="sky-section-title">Trending in the Sky</h2>
+ return <details className="sky-topics-disclosure"><summary>Explore recent themes</summary><section aria-labelledby="trending-title"><h2 id="trending-title" className="sr-only">Recent themes</h2>
   <ul className="sky-trending">{themes.map(t => <li key={t.category}><Link to="/constellations/$topic" params={{ topic: t.category }} className="sky-theme"><strong>{placeTitle(t.category)}</strong><span className="sky-theme-excerpt">“{t.excerpt}”</span><span className="form-note">{t.recent ? `${t.recent} recent anonymous Ripples` : 'A few recent stories'}</span></Link></li>)}</ul>
- </section>;
+ </section></details>;
 }
 
 const STARTERS = ['Everyday Life', 'Work', 'Dating & Boundaries'];
@@ -55,6 +55,7 @@ function AnonymousRipples() {
  const [limit, setLimit] = useState(6);
  const list = (feed.data ?? []).filter(q => q.author_visibility !== 'named');
  if (feed.isPending) return <p role="status" className="form-note">Gathering anonymous Ripples…</p>;
- if (!list.length) return <section className="empty-panel"><p>No anonymous Ripples have reached you yet.</p><Button asChild variant="editorial" className="mt-6"><Link to="/ripple">Ask anonymously<ArrowRight /></Link></Button></section>;
+ if (feed.isError) return <p role="alert" className="form-note form-error">Anonymous Ripples could not be loaded. <Button variant="ghost" size="sm" onClick={() => void feed.refetch()}>Try again</Button></p>;
+ if (!list.length) return <section className="empty-panel"><p>No anonymous Ripples have reached you yet.</p></section>;
  return <><ul className="question-list">{list.slice(0, limit).map(q => <QuestionCard key={q.id} q={q} counts={maps.data?.[q.id]} />)}</ul>{list.length > limit && <Button variant="ghost" onClick={() => setLimit(n => n + 6)}>Show more</Button>}</>;
 }
