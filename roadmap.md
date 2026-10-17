@@ -1,5 +1,5 @@
 # TellHer foundation
-- [ ] Opening-page motion, distinct account entry links, and fresh security checks
+- [x] Opening-page orbiting circles, stars/wings and coloured sections; distinct sign-in/signup and member feed entry verified at four sizes; 8 focused checks passed. Basic backend and production dependency scans clear after overrides; reviewed SQL/auth/XSS code has no confirmed exploit, independent penetration/deployed testing not performed.
 - [x] Final whole-platform visual audit: distinct rose/sage/blue/gold sections, readable Picks, checked Search avatars, retired search references removed, working discoverability control; 172 tests passed plus focused reruns, 44 signed-in page/size checks, profile save/reload and saved conversation readback verified; publication remains on hold
 - [x] Move owner stars below Wingwoman chat; viewer-checked named profile ripples; 24 checks passed, signed-in star and named-ripple readback plus mobile layouts verified
 - [x] Expressive hubs pass: My Feed motion + comment hearts, Wingwoman chat redesign with side journal and wings, living Sky with comets/legend, star/ripple-grade terminology; 25 checks passed, desktop/mobile browser review clean
