@@ -1,5 +1,7 @@
 import { OpenComments } from '@/components/open-comments';
 import { RippleAuthor } from '@/components/ripple-author';
+import { AnonymousAvatar } from '@/components/avatars';
+import { ReplyLike } from '@/components/reply-like';
 import { rippleDestination } from '@/lib/ripple-identity';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
@@ -21,7 +23,7 @@ import { feedMapQuery, perspectiveLabel, perspectives, questionQuery, tally, typ
 
 export const Route = createFileRoute('/_authenticated/askher_/$id')({
  loader: ({ context, params }) => context.queryClient.ensureQueryData(questionQuery(params.id)),
- head: () => pageHead('Question', 'A question and the range of perspectives it received.'),
+ head: () => pageHead('Trust Ripple', 'A shared question, lived perspectives, and what happened next on TellHer.'),
  errorComponent: () => <Unavailable />,
  component: QuestionPage,
 });
@@ -34,7 +36,6 @@ function QuestionPage() {
  const { id } = Route.useParams();
  const { data } = useSuspenseQuery(questionQuery(id));
  const sky = useQuery(skyQuery);
- const [adding, setAdding] = useState(false);
  const qc = useQueryClient();
  const [note, setNote] = useState<{ text: string; error?: boolean } | null>(null);
  if (!data.question) return <Unavailable />;
@@ -48,29 +49,33 @@ function QuestionPage() {
  };
  return <div className="question-detail">
   <Link to={rippleDestination(q.author_visibility)} className="back-link"><ArrowLeft size={14} />{q.author_visibility === 'named' ? 'My Feed' : 'Sky'}</Link>
-  <article className={`ripple-question ${q.is_mine ? 'ripple-question--mine' : ''}`}>
+   <article className={`ripple-question ripple-question--${q.audience_scope} ${q.is_mine ? 'ripple-question--mine' : ''}`}>
+    <div className="eyebrow">TRUST RIPPLE</div>
    <p className="question-body">{q.body}</p>
    <RippleAuthor identity={q} showAnonymous />
    <div className="question-meta"><span className="question-category">{q.category}</span><span>{reachContext(q.audience_scope)}</span><span>{relativeTime(q.created_at)}</span>{q.is_mine && <span className="mine-label">Your Ripple</span>}</div>
-   <div className="ripple-core-actions">{q.author_visibility !== 'named' && <Echo id={id} isAuthor={q.is_mine} compact />}{q.author_visibility !== 'named' && !q.is_mine && !q.my_reply_id && <Button variant="editorial" onClick={() => { setAdding(true); setTimeout(() => document.getElementById('reply-body')?.focus(), 0); }}>Add perspective</Button>}</div>
   </article>
   {q.author_visibility === 'named' ? <section aria-labelledby="comments-title" className="reply-section"><h2 id="comments-title">Comments</h2><OpenComments id={id} isAuthor={q.is_mine} /></section> : <>
-  <section aria-labelledby="replies-title" className="reply-section">
+   <Echo id={id} isAuthor={q.is_mine} />
+   <section aria-label="Range of perspectives" className="perspective-overview"><PerspectiveMap counts={tally(data.replies)} /></section>
+   {!q.is_mine && !q.my_reply_id && <ReplyForm id={id} onDone={() => { setNote({ text: 'Thank you. Your perspective was added.' }); refresh(); }} />}
+   <section aria-labelledby="replies-title" className="reply-section">
    <h2 id="replies-title">Perspectives</h2>
-   {adding && !q.is_mine && !q.my_reply_id && <ReplyForm id={id} onDone={() => { setAdding(false); setNote({ text: 'Thank you. Your perspective was added.' }); refresh(); }} />}
    {note && <p role={note.error ? 'alert' : 'status'} className={`form-note ${note.error ? 'form-error' : 'form-success'}`}>{note.text}</p>}
    {data.replies.length === 0 ? <p className="form-note">No perspectives yet.</p> : <>
-    <details className="perspective-overview"><summary>See the range of perspectives</summary><PerspectiveMap counts={tally(data.replies)} /></details>
     <ul className="question-list">{data.replies.map(r => <li key={r.id} className={`reply-card ${r.is_mine ? 'reply-card--mine' : ''}`}>
-     <div className="question-meta"><span className="question-category">{perspectiveLabel(r.perspective_tag)}</span><span>{r.is_mine ? 'You' : 'A TellHer woman'}</span><span>{relativeTime(r.created_at)}</span>{r.is_mine && <DropdownMenu><DropdownMenuTrigger asChild><Button size="icon" variant="ghost" aria-label="Perspective options"><MoreHorizontal size={16} /></Button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem onSelect={() => void removeReply(r.id)}><Trash2 />Delete perspective</DropdownMenuItem></DropdownMenuContent></DropdownMenu>}</div>
-     <p className="reply-body">{r.body}</p>
+      <div className="perspective-avatar"><AnonymousAvatar avatar={r.anonymous_avatar} size={44} /></div>
+      <div className="perspective-main"><div className="question-meta"><span className="perspective-name">{r.is_mine ? 'You' : 'A TellHer woman'}</span><span>{relativeTime(r.created_at)}</span>{r.is_mine && <DropdownMenu><DropdownMenuTrigger asChild><Button size="icon" variant="ghost" aria-label="Perspective options"><MoreHorizontal size={16} /></Button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem onSelect={() => void removeReply(r.id)}><Trash2 />Delete perspective</DropdownMenuItem></DropdownMenuContent></DropdownMenu>}</div>
+      <span className="perspective-tag">{perspectiveLabel(r.perspective_tag)}</span><p className="reply-body">{r.body}</p>
+      <ReplyLike reply={r} questionId={id} />
+      </div>
     </li>)}</ul>
    </>}
    <PerspectiveSynthesis key={data.replies.length} id={id} replies={data.replies} />
-  </section>
+   </section>
   {q.is_mine && q.my_instinct && <aside className="first-instinct" aria-label="My first instinct"><p className="private-note"><LockKeyhole size={12} />My first instinct · only you</p><p className="instinct-line">{instincts.find(i => i.value === q.my_instinct)?.label}</p>{q.my_note && <p className="form-note">{q.my_note}</p>}</aside>}
-  <details className="afterwards"><summary>Afterwards</summary><div className="afterwards-content"><OtherSide id={id} isAuthor={q.is_mine} createdAt={q.created_at} /><Letters id={id} /><RippleFieldNotes id={id} /></div></details>
-  <section className="women-here"><Echo id={id} isAuthor={q.is_mine} signalOnly /><EchoRoomEntry id={id} /></section>
+   <section className="trust-letter-section" aria-label="Trust Letter"><OtherSide id={id} isAuthor={q.is_mine} createdAt={q.created_at} /><Letters id={id} /><RippleFieldNotes id={id} /></section>
+   <section className="women-here"><EchoRoomEntry id={id} /></section>
   </>}
   {(sky.data ?? []).some(r => r.category === q.category) && <Link to="/constellations/$topic" params={{ topic: q.category }} className="member-link related-constellation">Explore similar stories in Constellations</Link>}
  </div>;
@@ -85,6 +90,7 @@ function ReplyForm({ id, onDone }: { id: string; onDone: () => void }) {
   setBusy(false); if (error) return setErr(errorText(error)); onDone();
  };
  return <form className="reply-form" onSubmit={submit}>
+   <h2>Share your perspective</h2>
   <fieldset className="field"><legend>How would you see it?</legend>
    <div className="tag-grid">{perspectives.map(p => <label key={p.value} className={`tag-option ${tag === p.value ? 'is-selected' : ''}`}><input type="radio" name="perspective" value={p.value} checked={tag === p.value} onChange={() => setTag(p.value)} />{p.label}</label>)}</div>
   </fieldset>
