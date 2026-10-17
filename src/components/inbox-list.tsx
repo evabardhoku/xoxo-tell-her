@@ -14,7 +14,7 @@ export function InboxList() {
   <p className="private-note mb-6"><LockKeyhole size={13} />Only you and the woman you’re talking with can read these. Available with your Direct Circle only.</p>
   {inbox.isPending ? <p role="status" className="form-note">Opening your conversations…</p>
    : inbox.isError ? <p role="alert" className="form-note form-error">Your conversations couldn’t be loaded. Please try again.</p>
-   : !inbox.data.length ? <section className="empty-panel"><h2>No conversations yet.</h2><p>Open the profile of a woman in your Direct Circle and choose “Message”.</p></section>
+   : !inbox.data.length ? <section className="empty-panel"><h2>No conversations yet.</h2><p className="voice-line">Some things are better between us.</p><p>Open the profile of a woman in your Direct Circle and choose “Message”.</p></section>
    : <ScrollPanel label="Conversations" className="bu-inbox">{inbox.data.map(r => <InboxItem key={r.conversation_id} r={r} />)}</ScrollPanel>}
  </>;
 }

@@ -54,16 +54,18 @@ function QuestionPage() {
     <div className="eyebrow">TRUST RIPPLE</div>
    <p className="question-body">{q.body}</p>
    <RippleAuthor identity={q} showAnonymous />
+   {q.author_visibility !== 'named' && !quiet && <p className="voice-line">No names. Just the part that mattered.</p>}
    <div className="question-meta"><span className="question-category">{q.category}</span><span>{reachContext(q.audience_scope)}</span><span>{relativeTime(q.created_at)}</span>{q.is_mine && <span className="mine-label">Your Ripple</span>}</div>
   </article>
   {q.author_visibility === 'named' ? <section aria-labelledby="comments-title" className="reply-section"><h2 id="comments-title">Comments</h2><OpenComments id={id} isAuthor={q.is_mine} /></section> : <>
-   <Echo id={id} isAuthor={q.is_mine} />
+   <Echo id={id} isAuthor={q.is_mine} quiet={quiet} />
    <section aria-label="Range of perspectives" className="perspective-overview"><PerspectiveMap counts={tally(data.replies)} /></section>
    {!q.is_mine && !q.my_reply_id && <ReplyForm id={id} onDone={() => { setNote({ text: 'Thank you. Your perspective was added.' }); refresh(); }} />}
    <section aria-labelledby="replies-title" className="reply-section">
    <h2 id="replies-title">Perspectives</h2>
+   <p className="voice-line">Not a verdict. Just perspectives.</p>
    {note && <p role={note.error ? 'alert' : 'status'} className={`form-note ${note.error ? 'form-error' : 'form-success'}`}>{note.text}</p>}
-   {data.replies.length === 0 ? <p className="form-note">No perspectives yet.</p> : <>
+   {data.replies.length === 0 ? <p className="form-note">No perspectives yet.{!quiet && ' Same story, different women, different read — be the first.'}</p> : <>
     <ScrollPanel label="Perspectives" className="perspective-scroll">{[...data.replies].sort((a, b) => (likes.data?.[b.id]?.likes ?? 0) - (likes.data?.[a.id]?.likes ?? 0) || a.created_at.localeCompare(b.created_at)).map(r => <li key={r.id} className={`reply-card ${r.is_mine ? 'reply-card--mine' : ''} ${r.perspective_tag === 'been_there' ? 'reply-card--been-there' : ''}`}>
       <div className="perspective-avatar"><AnonymousAvatar avatar={r.anonymous_avatar} size={44} /></div>
       <div className="perspective-main"><div className="question-meta"><span className="perspective-name">{r.is_mine ? 'You' : 'A TellHer woman'}</span><span>{relativeTime(r.created_at)}</span>{r.is_mine && <DropdownMenu><DropdownMenuTrigger asChild><Button size="icon" variant="ghost" aria-label="Perspective options"><MoreHorizontal size={16} /></Button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem onSelect={() => void removeReply(r.id)}><Trash2 />Delete perspective</DropdownMenuItem></DropdownMenuContent></DropdownMenu>}</div>

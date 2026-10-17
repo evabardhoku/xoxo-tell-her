@@ -24,7 +24,7 @@ export function NotificationBell() {
   </DropdownMenuTrigger>
   <DropdownMenuContent align="end" className="bell-panel">
    <p className="bell-title">Notifications</p>
-   {!list.data?.length ? <p className="form-note bell-empty">Nothing new yet.</p>
+   {!list.data?.length ? <p className="form-note bell-empty">Quiet around here. Suspiciously quiet.</p>
     : <ul className="bell-list">{list.data.map(n => <li key={n.id} className={n.read ? '' : 'is-unread'}>
       {notificationTarget(n) ? <Link to={notificationTarget(n)!.to as '/askher'} search={notificationTarget(n)!.search as never} className="bell-item"><strong>{notificationTitle(n.title)}</strong><em>{relativeTime(n.created_at)}</em></Link>
        : <span className="bell-item"><strong>{notificationTitle(n.title)}</strong><em>{relativeTime(n.created_at)}</em></span>}

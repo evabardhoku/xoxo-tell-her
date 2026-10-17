@@ -121,7 +121,7 @@ function Composer() {
 
 function IdentityChoice({ value, onChange }: { value: AuthorVisibility; onChange: (v: AuthorVisibility) => void }) {
  return <fieldset className="field"><legend className="field-legend">How do you want to share this?</legend><div className="choice-stack">
-  <label className="identity-choice"><input type="radio" name="author-visibility" value="anonymous" checked={value === 'anonymous'} onChange={() => onChange('anonymous')} /><span><strong>Anonymous</strong><span className="form-note">Share without your identity. Your Ripple will live in Sky. Recommended for sensitive situations.</span></span></label>
-  <label className="identity-choice"><input type="radio" name="author-visibility" value="named" checked={value === 'named'} onChange={() => onChange('named')} /><span><strong>Openly</strong><span className="form-note">Share with your name and avatar. Your Ripple will appear in My Feed.</span></span></label>
+  <label className="identity-choice"><input type="radio" name="author-visibility" value="anonymous" checked={value === 'anonymous'} onChange={() => onChange('anonymous')} /><span><strong>Anonymous</strong><span className="form-note">Share without your identity. Your Ripple will live in Sky. Recommended for sensitive situations.</span>{value === 'anonymous' && <span className="voice-line">Anonymous, not invisible.</span>}</span></label>
+  <label className="identity-choice"><input type="radio" name="author-visibility" value="named" checked={value === 'named'} onChange={() => onChange('named')} /><span><strong>Openly</strong><span className="form-note">Share with your name and avatar. Your Ripple will appear in My Feed.</span>{value === 'named' && <span className="voice-line">Ready to put your name on it?</span>}</span></label>
  </div></fieldset>;
 }

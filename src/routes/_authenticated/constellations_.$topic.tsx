@@ -37,6 +37,7 @@ function Place() {
    <span className="place-rings" aria-hidden />
    <div className="eyebrow">{topic.toUpperCase()}</div>
    <h1>{placeTitle(topic)}</h1>
+   <p className="voice-line">One story is a moment. Together, they make a pattern.</p>
    <p className="place-count">{women.data ? `${women.data} women in your network have lived this.` : 'A few women in your network have lived this.'}</p>
    <p className="form-note">Women choose whether to name their Ripple. Echoes stay anonymous.</p>
   </header>

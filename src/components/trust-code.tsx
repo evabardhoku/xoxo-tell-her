@@ -86,7 +86,7 @@ export function RedeemTrustCode({ initial, embedded = false }: { initial?: strin
 export function CircleConnection({ initial }: { initial?: string | undefined }) {
  const [mode, setMode] = useState<'share' | 'enter'>(initial ? 'enter' : 'share');
  return <section className="circle-connection" aria-labelledby="circle-connect-title">
-  <div className="eyebrow">ALREADY ON TELLHER</div><h2 id="circle-connect-title">Connect with a member</h2>
+  <div className="eyebrow">ALREADY ON TELLHER</div><h2 id="circle-connect-title">Connect with a member</h2><p className="voice-line">Met someone worth keeping in your circle?</p>
   <div className="circle-code-modes" role="group" aria-label="Connection code options">
    <Button variant={mode === 'share' ? 'editorial' : 'ghost'} size="sm" aria-pressed={mode === 'share'} onClick={() => setMode('share')}>Share my code</Button>
    <Button variant={mode === 'enter' ? 'editorial' : 'ghost'} size="sm" aria-pressed={mode === 'enter'} onClick={() => setMode('enter')}>Enter her code</Button>

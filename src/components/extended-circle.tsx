@@ -35,6 +35,7 @@ export function ExtendedCircle({ direct }: { direct: CircleEntry[] }) {
  const shown = useMemo(() => (list.data ?? []).filter(m => matchesExtended(m, text, field)), [list.data, text, field]);
  return <section className="circle-card extended-discovery" aria-labelledby="ext-h">
   <h2 id="ext-h">Extended Circle</h2>
+  <p className="voice-line">One woman away from someone worth knowing.</p>
   <p className="form-note">Women trusted by your Direct Circle who chose to be discoverable here. Others stay counted only, never named.</p>
   <details><summary className="form-note">Filter women</summary><div className="ext-filters">
    <div className="field"><label htmlFor="ext-q">Search</label><Input id="ext-q" value={text} onChange={e => setText(e.target.value)} placeholder="Name, city, topic…" /></div>
