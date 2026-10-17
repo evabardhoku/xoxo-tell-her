@@ -22,10 +22,10 @@
 - AI synthesis is authenticated and on-demand: checked Ripple identity selects checked replies/comments, and only bodies reach AI. Shared meaningful-response gating avoids filler; summaries are not stored and never replace responses or the map.
 - Read scoped `AGENTS.md` first.
 - Picks are owner-written, read by others only through an accepted Direct Circle check exposing the recommender's first name; no ratings or ranking.
-- Member profiles are read only through the viewer-checked tellher_member_profile function (owner discoverability + viewer trust context); avatars are signed server-side after that check, so raw profiles stay owner-only and storage paths never leave the server.
-- Extended Circle discovery lists only discoverable second-degree members through the checked tellher_extended_circle function; Trust Bridges are ordinary trust requests, so there is a single relationship model.
-- Global search (tellher_search) only composes the viewer-checked profile, shelf and feed functions and matches fields they already return; section filters run client-side over data those same functions return.
-- The Current and Constellations only compose existing checked sources client-side (no feed table), ordered by trust distance, topic, freshness, so they never grant access their sources don't.
+- Profiles use tellher_member_profile viewer checks; avatars are signed afterward server-side. Raw profiles and storage paths stay private.
+- Extended discovery uses tellher_extended_circle; Connect uses ordinary trust requests, not a second relationship model.
+- Search composes checked profile, shelf and feed sources; client-side filters never broaden access.
+- Feed and Constellations compose checked sources client-side, ordered by trust distance, topic and freshness; no new access.
 - Between Us messaging is one-to-one only, readable by participants via RLS, with all writes (open, send, read marker, block, report) through checked database functions that re-check accepted Direct trust and blocks on every send; it is never initiated from anonymous content.
 - One app-shell navigation list includes Wingwoman; named Ripples return to My Feed and anonymous Ripples to Sky via a shared identity helper. Hubs keep all sub-pages reachable and filter the same checked feed.
 - Echo/Echo Rooms/The Other Side/Letters: anonymous Ripple add-ons via checked functions only. One Echo per member; counts and room entry (author + echoers) only at ECHO_THRESHOLD (mirrors DB); room voices are stable numbers; outcomes are author-only, private by default, shared only within Ripple reach; Letters (echoers, or the author after a shared outcome) are read only via tellher_letters with author_id column-revoked; none are searchable.
@@ -36,3 +36,5 @@
 
 - Password reset requires verified recovery or its user-bound session marker, never URL flags; blocked storage must not break it.
 - Tests run serially: hosted auth and abuse limits are shared. Check fixture writes and reads for errors.
+
+- Ripple detail reuses checked reply-likes and outcomes; decorative reply masks never use profiles. Trust Letter reveals the checked outcome, preserving author-only/private defaults.
