@@ -1,4 +1,3 @@
-import { MembershipInvite } from '@/components/membership-invite';
 import { MemberAvatar } from '@/components/avatars';
 import { CircleConnection } from '@/components/trust-code';
 import { createFileRoute, Link } from '@tanstack/react-router';
@@ -49,7 +48,7 @@ function Circle() {
 }
 
 function DirectTab({ direct, extendedCount, code }: { direct: CircleEntry[]; extendedCount: number; code?: string | undefined }) {
- return <div className="circle-direct-layout"><div className="circle-grid"><section className="circle-card circle-hero" aria-label="Your trust network at a glance"><CircleRipple direct={direct.length} extended={extendedCount} /><div className="circle-hero-text"><h2>Your trust network</h2><p className="form-note">{direct.length === 0 ? 'Every connection starts with one woman you trust.' : `${direct.length} ${direct.length === 1 ? 'woman' : 'women'} in your Direct Circle, ${extendedCount} more within reach.`}</p></div></section><DirectCircle direct={direct} /></div><div className="circle-connect-layout"><CircleConnection initial={code} /><MembershipInvite /></div></div>;
+ return <div className="circle-direct-layout"><div className="circle-grid"><section className="circle-card circle-hero" aria-label="Your trust network at a glance"><CircleRipple direct={direct.length} extended={extendedCount} /><div className="circle-hero-text"><h2>Your trust network</h2><p className="form-note">{direct.length === 0 ? 'Every connection starts with one woman you trust.' : `${direct.length} ${direct.length === 1 ? 'woman' : 'women'} in your Direct Circle, ${extendedCount} more within reach.`}</p></div></section><DirectCircle direct={direct} /></div><div className="circle-connect-layout"><CircleConnection initial={code} /></div></div>;
 }
 
 function RequestsTab() {

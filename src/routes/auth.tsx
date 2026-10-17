@@ -20,7 +20,7 @@ function Auth() {
  async function resend() { setBusy(true); setError(''); try { const { error } = await supabase.auth.resend({ type: 'signup', email: sent, options: { emailRedirectTo: `${window.location.origin}/feed` } }); if (error) throw error; setMessage('A new confirmation email is on its way. Use the newest email only.'); } catch (err) { setError(err instanceof Error ? err.message : 'We couldn’t resend the email. Please try again in a minute.'); } finally { setBusy(false); } }
  useEffect(() => { setMode(search.mode ?? 'signin'); setError(''); setMessage(''); }, [search.mode]);
  const { user, ready } = useAccount(); const navigate = useNavigate();
- useEffect(() => { if (ready && user) void navigate(invite ? { to: '/join', search: { invite }, replace: true } : { to: '/feed', replace: true }); }, [user, ready, navigate, invite]);
+ useEffect(() => { if (ready && user) void navigate({ to: '/feed', replace: true }); }, [user, ready, navigate]);
  async function submit(event: FormEvent<HTMLFormElement>) {
   event.preventDefault(); setBusy(true); setError(''); setMessage('');
   const fields = new FormData(event.currentTarget); const password = String(fields.get('password') || '');
