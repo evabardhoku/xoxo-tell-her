@@ -523,7 +523,7 @@ export const testerScenario = {
    ['sofia', null, '“Move fast and break things.” The things were my weekends.'],
    ['noor', null, '“Just a quick favour.” There is no such thing. There is only labour with a bow on it.'],
   ] },
-  { by: 'claire', identity: 'named', scope: 'extended', cat: 'Everyday Life', body: 'What is a friendship green flag nobody talks about? Mine: she tells you when you have spinach in your teeth AND when you are being dramatic.', likes: [8, 5], responses: [
+  { by: 'claire', identity: 'named', scope: 'community', cat: 'Everyday Life', body: 'What is a friendship green flag nobody talks about? Mine: she tells you when you have spinach in your teeth AND when you are being dramatic.', likes: [8, 5], responses: [
    ['blair', null, 'She remembers the names of your enemies. All of them. In order.'],
    ['iris', null, 'She can sit in silence with you. No performing, no filling the air.'],
   ] },
@@ -569,7 +569,7 @@ export const testerScenario = {
    ['ngozi', 'more_context', 'Does he show up in person? Some people are genuinely awful texters and excellent partners. Rare, but real.'],
    ['blair', 'been_there', 'I dated this man. He was not bad at texting. He was bad at priorities. I was not one.'],
   ] },
-  { by: 'sophie', identity: 'anonymous', scope: 'extended', cat: 'Dating & Boundaries', body: 'My boyfriend says his female best friend is basically his sister. She does not act like his sister.', echoes: 12, letter: ['talked', 'I asked for specifics instead of reassurance. The specifics were illuminating.', 'He was more defensive than the situation required. I am watching less, and noticing more.', false], responses: [
+  { by: 'sophie', identity: 'anonymous', scope: 'community', cat: 'Dating & Boundaries', body: 'My boyfriend says his female best friend is basically his sister. She does not act like his sister.', echoes: 12, letter: ['talked', 'I asked for specifics instead of reassurance. The specifics were illuminating.', 'He was more defensive than the situation required. I am watching less, and noticing more.', false], responses: [
    ['emma', 'address', 'Ask for specifics, not reassurance. What do they do together, how does he act afterwards? Facts over vibes.'],
    ['francesca', 'more_context', 'How does she act with you? A real sister-figure makes an effort with the girlfriend.'],
    ['maya', 'been_there', 'I ignored this once. She was not his sister. Trust the data your stomach is collecting.'],
