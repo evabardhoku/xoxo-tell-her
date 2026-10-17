@@ -59,12 +59,12 @@ describe.skipIf(!url || !key || !publishable)('Profile ripples and private Wingw
   expect((await ripples(1)).map(q => q.id).sort()).toEqual(Object.values(named).sort());
  });
  it('Extended Circle sees extended and community, never direct-only', async () => {
-  expect((await ripples(2)).map(q => q.id).sort()).toEqual([named.extended, named.community].sort());
+  expect((await ripples(2)).map(q => q.id).sort()).toEqual([named['extended'], named['community']].sort());
  });
  it('Open community sees community only even when the profile is accessible', async () => {
   const profile = await client(3).rpc('tellher_member_profile', { _id: ids[0] });
   expect(profile.error).toBeNull(); expect(profile.data).toHaveLength(1);
-  expect((await ripples(3)).map(q => q.id)).toEqual([named.community]);
+  expect((await ripples(3)).map(q => q.id)).toEqual([named['community']]);
  });
  it('No profile, including the owner profile, associates anonymous stars or private instincts with the author', async () => {
   for (let i = 0; i < 4; i++) {
