@@ -1,3 +1,4 @@
 - Persisted fictional demo accounts, connections, questions, replies, and picks already exist; keep demo setup in the existing controlled scripts (scripts/seed-demo.ts and scripts/seed-eva-network.ts), never seed on app load or mistake demo content for display-only mocks, so normal member workflows retain their privacy checks.
 - Demo data lives in scripts/demo-community-data.ts (content only), seeded solely by the two existing scripts.
 - Demo note refinements must match the fictional account, title and exact original body before updating, so real or member-edited content is never rewritten.
+- Tester enrichment runs only through seed-demo's explicit --tester mode, with credentials from secrets and checked member actions; this isolates fictional fixtures from real accounts and avoids exposing passwords.
