@@ -71,7 +71,8 @@ export async function seedTester() {
   const visible = await readVisible();
   for (const [actor, tag, body] of post.responses) {
    if (visible.some(r => r.body === body)) continue;
-   await rpc(actor, named ? 'tellher_post_open_comment' : 'tellher_post_reply', named ? { _id: qid, _body: body } : { _id: qid, _tag: tag, _body: body });
+   try { await rpc(actor, named ? 'tellher_post_open_comment' : 'tellher_post_reply', named ? { _id: qid, _body: body } : { _id: qid, _tag: tag, _body: body }); }
+   catch (e) { throw new Error(`Comment by ${actor} on “${post.body.slice(0, 40)}” failed: ${(e as Error).message}`); }
    responseCount++;
   }
   const updated = await readVisible();
