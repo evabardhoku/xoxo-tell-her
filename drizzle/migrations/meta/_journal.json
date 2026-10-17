@@ -344,6 +344,13 @@
       "when": 1792260079584,
       "tag": "0048_enforce_invitation_vouch",
       "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "7",
+      "when": 1792268739912,
+      "tag": "0049_bind_invitation_to_verified_signup",
+      "breakpoints": true
     }
   ]
 }

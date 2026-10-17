@@ -15,7 +15,7 @@ describe('Email account forms', () => {
   expect(validate({ mode: 'signup' })).toEqual({ mode: 'signup' });
   expect(validate({ mode: 'anything-else' })).toEqual({ mode: 'signin' });
  });
- beforeEach(() => { mocks.navigate.mockClear(); mocks.signIn.mockResolvedValue({ error: null }); mocks.signUp.mockResolvedValue({ error: null }); });
+ beforeEach(() => { sessionStorage.clear(); mocks.navigate.mockClear(); mocks.signIn.mockResolvedValue({ error: null }); mocks.signUp.mockResolvedValue({ error: null }); });
  it('does not navigate ahead of the shared account state after password sign-in', async () => {
   render(<Auth />);
   fireEvent.change(screen.getByLabelText('Email address'), { target: { value: 'member@example.com' } });
@@ -32,5 +32,14 @@ describe('Email account forms', () => {
   fireEvent.click(screen.getByRole('checkbox'));
   fireEvent.submit(screen.getByRole('button', { name: 'Create your account' }).closest('form') as HTMLFormElement);
   await waitFor(() => expect(mocks.signUp).toHaveBeenCalledWith(expect.objectContaining({ email: 'new@example.com', options: expect.objectContaining({ data: { first_name: 'Ana', last_name: 'Test', woman_attested: true } }) })));
+ });
+ it('binds the shared invitation to signup before email confirmation without admitting early', async () => {
+  const code='ABCDEF0123456789ABCDEF0123456789'; sessionStorage.setItem('tellher-membership-invite',code);
+  render(<Auth />); fireEvent.click(screen.getByRole('button',{name:'New here? Create an account'}));
+  const fields: [string,string][]=[['First name','Ana'],['Last name','Test'],['Email address','invited@example.com'],['Password','temporary-test-password']];
+  for(const [label,value] of fields) fireEvent.change(screen.getByLabelText(label),{target:{value}});
+  fireEvent.click(screen.getByRole('checkbox')); fireEvent.submit(screen.getByRole('button',{name:'Create your account'}).closest('form') as HTMLFormElement);
+  await waitFor(()=>expect(mocks.signUp).toHaveBeenCalledWith(expect.objectContaining({options:expect.objectContaining({emailRedirectTo:expect.stringContaining('/join'),data:expect.objectContaining({membership_invite:code})})})));
+  expect(mocks.navigate).not.toHaveBeenCalled();
  });
 });

@@ -275,6 +275,39 @@ export type Database = {
           },
         ]
       }
+      membership_invitation_claims: {
+        Row: {
+          claimed_at: string
+          code_id: string
+          member_id: string
+        }
+        Insert: {
+          claimed_at?: string
+          code_id: string
+          member_id: string
+        }
+        Update: {
+          claimed_at?: string
+          code_id?: string
+          member_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "membership_invitation_claims_code_id_fkey"
+            columns: ["code_id"]
+            isOneToOne: true
+            referencedRelation: "trust_codes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "membership_invitation_claims_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           body: string
@@ -1253,6 +1286,11 @@ export type Database = {
           title: string
         }[]
       }
+      tellher_claim_signup_invitation: {
+        Args: { _code: string; _member: string }
+        Returns: undefined
+      }
+      tellher_complete_membership: { Args: never; Returns: boolean }
       tellher_constellation: {
         Args: never
         Returns: {
@@ -1369,6 +1407,7 @@ export type Database = {
           member_id: string
         }[]
       }
+      tellher_finish_invitation: { Args: { _member: string }; Returns: boolean }
       tellher_inbox: {
         Args: never
         Returns: {
