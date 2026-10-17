@@ -50,7 +50,7 @@ export function PrivacyData({ userId, discoverability, onEditDiscoverability }: 
    <Button variant="ghost" disabled={busy} onClick={() => void clearWingwoman()}>Delete Wingwoman history</Button></div>
   <p className="form-note">The download includes your profile, Picks, and Wingwoman conversations.</p>
   <details className="danger-zone"><summary className="form-note">Delete my account</summary>
-   <p className="form-note">This permanently removes your profile, Circle, messages, Wingwoman conversations, replies, letters and archived notes. Anonymous stars you started stay anonymous, with no link back to you.</p>
+   <p className="form-note">This permanently removes your profile, Circle, messages, Wingwoman conversations, and replies. Anonymous stars you started stay anonymous, with no link back to you.</p>
    <label htmlFor="del-confirm" className="form-note">Type DELETE to confirm</label>
    <Input id="del-confirm" value={confirm} onChange={e => setConfirm(e.target.value)} autoComplete="off" />
    <Button variant="destructive" className="mt-2" disabled={busy || confirm !== 'DELETE'} onClick={() => void deleteAccount()}>Permanently delete account</Button>
