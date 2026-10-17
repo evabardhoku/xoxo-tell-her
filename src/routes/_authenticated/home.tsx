@@ -54,8 +54,8 @@ function AnonymousRipples() {
  const feed = useQuery(feedQuery); const maps = useQuery(feedMapQuery);
  const [limit, setLimit] = useState(6);
  const list = (feed.data ?? []).filter(q => q.author_visibility !== 'named');
- if (feed.isPending) return <p role="status" className="form-note">Gathering anonymous Ripples…</p>;
- if (feed.isError) return <p role="alert" className="form-note form-error">Anonymous Ripples could not be loaded. <Button variant="ghost" size="sm" onClick={() => void feed.refetch()}>Try again</Button></p>;
- if (!list.length) return <section className="empty-panel"><p>No anonymous Ripples have reached you yet.</p></section>;
+ if (feed.isPending) return <p role="status" className="form-note">Gathering stars…</p>;
+ if (feed.isError) return <p role="alert" className="form-note form-error">Stars could not be loaded. <Button variant="ghost" size="sm" onClick={() => void feed.refetch()}>Try again</Button></p>;
+ if (!list.length) return <section className="empty-panel"><p>No stars have reached you yet.</p></section>;
  return <><ul className="question-list">{list.slice(0, limit).map(q => <QuestionCard key={q.id} q={q} counts={maps.data?.[q.id]} />)}</ul>{list.length > limit && <Button variant="ghost" onClick={() => setLimit(n => n + 6)}>Show more</Button>}</>;
 }
