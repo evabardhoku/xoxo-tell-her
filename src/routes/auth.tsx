@@ -10,9 +10,11 @@ import { useAccount } from '@/hooks/account';
 import { pageHead } from '@/lib/metadata';
 import { attestationText, emailSchema, profileSchema } from '@/lib/profile';
 
-export const Route = createFileRoute('/auth')({ head: () => ({ meta: [...pageHead('Welcome', 'Sign in or create your TellHer account. A little closer. A little wiser.').meta, { name: 'robots', content: 'noindex, nofollow' }] }), component: Auth });
+export const Route = createFileRoute('/auth')({ validateSearch: (s: Record<string, unknown>): { mode?: 'signin' | 'signup' } => ({ mode: s['mode'] === 'signup' ? 'signup' : 'signin' }), head: () => ({ meta: [...pageHead('Welcome', 'Sign in or create your TellHer account. A little closer. A little wiser.').meta, { name: 'robots', content: 'noindex, nofollow' }] }), component: Auth });
 function Auth() {
- const [mode, setMode] = useState<'signin' | 'signup' | 'forgot'>('signin'); const [error, setError] = useState(''); const [message, setMessage] = useState(''); const [busy, setBusy] = useState(false);
+ const search = Route.useSearch();
+ const [mode, setMode] = useState<'signin' | 'signup' | 'forgot'>(search.mode ?? 'signin'); const [error, setError] = useState(''); const [message, setMessage] = useState(''); const [busy, setBusy] = useState(false);
+ useEffect(() => { setMode(search.mode ?? 'signin'); setError(''); setMessage(''); }, [search.mode]);
  const { user, ready } = useAccount(); const navigate = useNavigate();
  useEffect(() => { if (ready && user) void navigate({ to: '/feed', replace: true }); }, [user, ready, navigate]);
  async function submit(event: FormEvent<HTMLFormElement>) {
