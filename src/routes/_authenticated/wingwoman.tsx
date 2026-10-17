@@ -51,8 +51,8 @@ function Wingwoman() {
 /** Gentle wing beat above the conversation — a quiet reminder someone is in your corner. */
 function Wings() {
  return <div className="ww-wings" aria-hidden><svg viewBox="0 0 140 64" focusable="false">
-  <path className="ww-wing ww-wing--l" d="M66 34 C48 10 22 4 8 16 C24 20 28 28 25 33 C30 35 34 41 34 48 C45 43 58 39 66 34 Z" />
-  <path className="ww-wing ww-wing--r" d="M74 34 C92 10 118 4 132 16 C116 20 112 28 115 33 C110 35 106 41 106 48 C95 43 82 39 74 34 Z" />
+  <path className="ww-wing ww-wing--l" d="M68 38 C52 12 26 4 8 14 C20 17 24 24 21 29 C28 30 31 36 30 42 C38 40 42 44 43 50 C52 45 62 41 68 38 Z" />
+  <path className="ww-wing ww-wing--r" d="M72 38 C88 12 114 4 132 14 C120 17 116 24 119 29 C112 30 109 36 110 42 C102 40 98 44 97 50 C88 45 78 41 72 38 Z" />
  </svg></div>;
 }
 

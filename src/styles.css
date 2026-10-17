@@ -867,6 +867,7 @@ summary:focus-visible { outline:2px solid var(--ring);outline-offset:3px; }
 .ww-composer { display:flex;gap:10px;align-items:end;padding:12px;border-radius:18px;border:1px solid color-mix(in oklab, var(--secondary) 30%, var(--border));background:color-mix(in oklab, var(--secondary) 7%, var(--card)); }
 .ww-composer textarea { border-color:transparent;background:var(--card); }
 @media (max-width: 760px) {
+ .ww-layout { grid-template-columns:1fr; }
  .ww-side { position:static; }
  .ww-sessions { max-height:200px; }
  .ww-msg { max-width:92%; }
