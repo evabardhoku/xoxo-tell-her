@@ -59,4 +59,16 @@ describe.skipIf(!url || !key)('My Feed: open Ripples, audiences, named comments 
   expect(after.data!.find((r: { id: string }) => r.id === friend.id)?.likes).toBe(1);
   const dup = await admin.from('reply_likes').insert({ reply_id: friend.id, member_id: ids[0] }); expect(dup.error).not.toBeNull();
  });
+ it('keeps the checked question readable after the author posts multiple comments', async () => {
+  const author = c[0];
+  if (!author) throw new Error('Missing author fixture');
+  for (const body of ['A second thought about the timing.', 'A third thought about travel plans.']) {
+   const posted = await author.rpc('tellher_post_open_comment', { _id: qs.community, _body: body });
+   if (posted.error) throw posted.error;
+  }
+  const question = await author.rpc('tellher_question', { _id: qs.community });
+  expect(question.error).toBeNull();
+  expect(question.data).toHaveLength(1);
+  expect(question.data?.[0]?.id).toBe(qs.community);
+ });
 });

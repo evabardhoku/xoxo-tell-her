@@ -49,6 +49,9 @@ export const safeAnon = (c: unknown): AnonAvatar => { const o = (c ?? {}) as Rec
 /** Mirrors the database resolver for previews: each trait follows the preference about half the time. */
 export const previewAnon = (s: AnonStyle): AnonAvatar => ({ ...Object.fromEntries(ANON_KEYS.map(k => [k.key, Math.random() < 0.5 ? s[k.key] : pick(k.options.length)])) as AnonStyle, variant: pick(360) });
 
+/** Automatic anonymous appearance, independent of profile preferences. */
+export const randomAnonymous = (): AnonAvatar => ({ ...Object.fromEntries(ANON_KEYS.map(k => [k.key, pick(k.options.length)])) as AnonStyle, variant: pick(360) });
+
 export type OpenAvatar = { member_id: string; kind: string; config: unknown };
 /** Open avatars come only through the viewer-checked function. Batches ids seen on one screen. */
 export const openAvatarQuery = (id: string | null | undefined) => ({
