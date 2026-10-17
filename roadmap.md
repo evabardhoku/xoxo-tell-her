@@ -1,5 +1,5 @@
 # TellHer foundation
-- [ ] Final whole-platform visual audit: strengthen section colour/separation, repair Picks and Search presentation, verify signed-in layouts and regressions
+- [x] Final whole-platform visual audit: distinct rose/sage/blue/gold sections, readable Picks, checked Search avatars, retired search references removed, working discoverability control; 172 tests passed plus focused reruns, 44 signed-in page/size checks, profile save/reload and saved conversation readback verified; publication remains on hold
 - [x] Move owner stars below Wingwoman chat; viewer-checked named profile ripples; 24 checks passed, signed-in star and named-ripple readback plus mobile layouts verified
 - [x] Expressive hubs pass: My Feed motion + comment hearts, Wingwoman chat redesign with side journal and wings, living Sky with comets/legend, star/ripple-grade terminology; 25 checks passed, desktop/mobile browser review clean
 - [x] Expressive anonymous Ripple detail: likes/counters, open map/composer, response avatars, animated Echo and Trust Letter, prominent synthesis; 34 checks passed, signed-in like/reply persistence, real private letter opening, live AI summary and four-size layouts verified
