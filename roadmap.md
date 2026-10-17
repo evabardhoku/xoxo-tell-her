@@ -1,5 +1,5 @@
 # TellHer foundation
-- [ ] Submission cleanup: calmer hubs, contextual Ripple navigation, wording, phone review and central-journey checks
+- [x] Submission cleanup: calmer hubs, contextual Ripple navigation, wording, three-size browser review, private reflection/cancel/publish/readback; failing full-suite files passed on isolated rerun
 - [x] Platform regression pass: member avatars, compact feed comments, phone layouts, account switching, full tests and signed-in journeys
 - [x] Safety hardening: moderation, quick exit, safety panel, Wingwoman deletion, rate limits, PII warning, privacy & data, tests
 - [x] Subtractive UI cleanup: simplify hubs and Ripple, remove gamification/likes/tags, contextual secondary actions, mobile/desktop review and existing tests
