@@ -1,5 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 export type AuthorVisibility = 'anonymous' | 'named';
+/** Match the public identity choice, including historical anonymous Ripples. */
+export const rippleDestination = (visibility?: AuthorVisibility) => visibility === 'named' ? '/feed' as const : '/home' as const;
 export type RippleIdentity = { author_visibility: AuthorVisibility; first_name: string | null; profile_id: string | null; has_avatar: boolean; anonymous_avatar?: unknown };
 /** Composition of checked sources, never a browser ownership lookup. */
 export async function withRippleIdentities<T extends { id: string }>(rows: T[]): Promise<(T & RippleIdentity)[]> {
