@@ -1,4 +1,6 @@
 # TellHer foundation
+- [ ] Profile connection requests with recipient Direct/Extended choice, checked access and tests.
+- [ ] Landing XOXO wordmark, requested narrator aside and accessible shimmer.
 - [x] Invitation handoff: signup-bound one-use claim, confirmed-email admission, automatic Feed navigation, no automatic friendship; 36 focused tests passed including real token verification, cancellation and expiry-after-claim; build OK and phone form checked.
 - [ ] Published invitation/inbox-to-Feed verification: waits on republishing updated pages and a real recipient email; placeholder test addresses are rejected by hosted email settings.
 - [x] Simplify Circle: email lookup removed, code actions combined, membership invitations distinct; member search/profile, code creation/cancel and desktop/phone layouts verified; 31 focused checks passed.
