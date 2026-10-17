@@ -32,7 +32,7 @@ describe.skipIf(!url || !key)('Recipient connection tiers', () => {
   const id = await request(0, 1);
   expect((await client(0).rpc('tellher_respond_trust_tier', { _id: id, _circle: 'direct' })).error).not.toBeNull();
   expect((await client(1).rpc('tellher_respond_trust_tier', { _id: id, _circle: 'extended' })).error).toBeNull();
-  for (const [a,b] of [[0,1],[1,0]]) {
+  for (const [a,b] of [[0,1],[1,0]] as const) {
    const circle = await client(a).rpc('tellher_my_circle'); expect(circle.error).toBeNull();
    expect(circle.data).toEqual(expect.arrayContaining([expect.objectContaining({ member_id: ids[b], kind: 'extended' })]));
    expect((await client(a).rpc('tellher_extended_reach_count')).data).toBe(1);
@@ -50,7 +50,7 @@ describe.skipIf(!url || !key)('Recipient connection tiers', () => {
  it('recipient can accept Direct and both members get Direct connection', async () => {
   const id = await request(0, 2);
   expect((await client(2).rpc('tellher_respond_trust_tier', { _id: id, _circle: 'direct' })).error).toBeNull();
-  for (const [a,b] of [[0,2],[2,0]]) {
+  for (const [a,b] of [[0,2],[2,0]] as const) {
    const circle = await client(a).rpc('tellher_my_circle'); expect(circle.error).toBeNull();
    expect(circle.data).toEqual(expect.arrayContaining([expect.objectContaining({ member_id: ids[b], kind: 'direct' })]));
    expect((await client(a).rpc('tellher_can_message', { _member: ids[b] })).data).toBe(true);
