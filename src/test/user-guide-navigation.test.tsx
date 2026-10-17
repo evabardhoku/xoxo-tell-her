@@ -33,3 +33,15 @@ it('keeps the current chapter and offers retry when navigation fails', async () 
  expect(screen.getByText('Chapter 1 of 10')).toBeInTheDocument();
  expect(screen.getByRole('button', { name: 'Start tour' })).toBeEnabled();
 });
+
+it('lets a member skip without navigating, stays dismissed on return, and remains replayable', async () => {
+ const first = render(<UserGuide userId="member" />);
+ fireEvent.click(await screen.findByRole('button', { name: 'Skip tour' }));
+ await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+ expect(mocks.go).not.toHaveBeenCalled();
+ first.unmount();
+ render(<UserGuide userId="member" />);
+ expect(screen.queryByRole('dialog')).toBeNull();
+ fireEvent.click(screen.getByRole('button', { name: 'Open TellHer guide' }));
+ await screen.findByRole('dialog');
+});
