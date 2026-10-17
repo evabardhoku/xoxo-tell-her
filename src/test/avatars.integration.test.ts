@@ -5,12 +5,12 @@ const pub = process.env['SUPABASE_PUBLISHABLE_KEY'] || key;
 describe.skipIf(!url || !key)('Dual avatars', () => {
  let admin: SupabaseClient; const c: SupabaseClient[] = []; const ids: string[] = []; const qs: string[] = [];
  beforeAll(async () => {
-  admin = createClient(url!, key!, { auth: { persistSession: false } });
+  admin = createClient(url!, key!, { auth: { persistSession: false, storageKey: `test-${crypto.randomUUID()}` } });
   for (const first of ['AvatarOwner', 'AvatarViewer']) {
    const email = `avatar-${crypto.randomUUID()}@example.com`; const password = crypto.randomUUID();
    const r = await admin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { first_name: first, last_name: 'Test', woman_attested: true } });
    if (r.error || !r.data.user) throw r.error; ids.push(r.data.user.id);
-   const cl = createClient(url!, pub!, { auth: { persistSession: false } }); const l = await cl.auth.signInWithPassword({ email, password }); if (l.error) throw l.error; c.push(cl);
+   const cl = createClient(url!, pub!, { auth: { persistSession: false, storageKey: `test-${crypto.randomUUID()}` } }); const l = await cl.auth.signInWithPassword({ email, password }); if (l.error) throw l.error; c.push(cl);
   }
   await admin.from('trust_connections').insert({ requester_id: ids[0], recipient_id: ids[1], status: 'accepted' });
   const u = await c[0]!.from('profiles').update({ open_avatar_type: 'illustrated', open_avatar_config: { skin: 2, hair: 1 }, anonymous_style_config: { silhouette: 1, palette: 2, hair: 0, accessory: 1, motif: 1 } }).eq('id', ids[0]); if (u.error) throw u.error;
