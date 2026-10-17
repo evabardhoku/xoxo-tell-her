@@ -1,5 +1,6 @@
 import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
+import { requireMembership } from '@/lib/membership';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 
 export const wingwomanContexts = ['Dating', 'Work', 'Friendship', 'Family', 'Other'] as const;
@@ -102,6 +103,7 @@ export const sendWingwomanMessage = createServerFn({ method: 'POST' })
  .middleware([requireSupabaseAuth])
  .inputValidator((d: unknown) => msgInput.parse(d))
  .handler(async ({ data, context }) => {
+  await requireMembership(context.supabase);
   const key = process.env['LOVABLE_API_KEY'];
   if (!key) throw new Error('Wingwoman is not configured.');
   // RLS scopes both reads to the caller; another member's session id returns nothing.
@@ -128,6 +130,7 @@ export const createReflection = createServerFn({ method: 'POST' })
  .middleware([requireSupabaseAuth])
  .inputValidator((d: unknown) => input.parse(d))
  .handler(async ({ data, context }) => {
+  await requireMembership(context.supabase);
   const key = process.env['LOVABLE_API_KEY'];
   if (!key) throw new Error('Wingwoman is not configured.');
   const reflection = await reflect(data.context, data.situation, key);
@@ -150,6 +153,7 @@ export const proposeRippleDraft = createServerFn({ method: 'POST' })
  .middleware([requireSupabaseAuth])
  .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
  .handler(async ({ data, context }) => {
+  await requireMembership(context.supabase);
   const key = process.env['LOVABLE_API_KEY'];
   if (!key) throw new Error('Wingwoman is not configured.');
   const { data: s } = await context.supabase.from('wingwoman_sessions').select('id, context, situation').eq('id', data.sessionId).maybeSingle();
@@ -172,6 +176,7 @@ export const wingwomanRelated = createServerFn({ method: 'GET' })
  .middleware([requireSupabaseAuth])
  .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
  .handler(async ({ data, context }) => {
+  await requireMembership(context.supabase);
   const { data: s } = await context.supabase.from('wingwoman_sessions').select('id, context').eq('id', data.sessionId).maybeSingle();
   if (!s) throw new Error('This conversation could not be found.');
   const topic = contextTopic[s.context ?? 'Other'] ?? 'Everyday Life';

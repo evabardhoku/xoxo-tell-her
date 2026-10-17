@@ -1,3 +1,4 @@
+import { admitFixture } from './membership-fixture';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
@@ -14,7 +15,7 @@ describe.skipIf(!url || !key)('Private profile access', () => {
    const email = `tellher-privacy-${crypto.randomUUID()}@example.com`; const password = crypto.randomUUID();
    const { data, error } = await admin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { first_name: `Private ${index}`, last_name: 'Test', woman_attested: true } });
    if (error || !data.user) throw new Error('Could not create privacy test account');
-   ids.push(data.user.id);
+   ids.push(data.user.id); await admitFixture(admin, data.user.id);
    if (index === 0) {
     owner = createClient(url, process.env['SUPABASE_PUBLISHABLE_KEY'] || key, { auth: { persistSession: false } });
     const { error: loginError } = await owner.auth.signInWithPassword({ email, password });

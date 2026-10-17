@@ -1,3 +1,4 @@
+import { admitFixture } from './membership-fixture';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 const url = process.env['SUPABASE_URL']; const key = process.env['SUPABASE_SERVICE_ROLE_KEY'];
@@ -11,7 +12,7 @@ describe.skipIf(!url || !key)('My Feed: open Ripples, audiences, named comments 
   for (const first of names) {
    const email = `openfeed-${crypto.randomUUID()}@example.com`; const password = crypto.randomUUID();
    const r = await admin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { first_name: first, last_name: 'Test', woman_attested: true } });
-   if (r.error || !r.data.user) throw r.error; ids.push(r.data.user.id);
+   if (r.error || !r.data.user) throw r.error; ids.push(r.data.user.id); await admitFixture(admin, r.data.user.id);
    const cl = createClient(url!, pub!, { auth: { persistSession: false } }); const l = await cl.auth.signInWithPassword({ email, password }); if (l.error) throw l.error; c.push(cl);
   }
   const pair = (a: number, b: number) => [{ requester_id: ids[a], recipient_id: ids[b], status: 'accepted' }];

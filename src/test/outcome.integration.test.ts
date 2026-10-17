@@ -1,3 +1,4 @@
+import { admitFixture } from './membership-fixture';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
@@ -10,7 +11,7 @@ describe.skipIf(!url || !key)('The Other Side', () => {
   for (const n of ['Ana', 'Bo', 'Cy']) {
    const email = `tellher-os-${n}-${crypto.randomUUID()}@example.com`; const password = crypto.randomUUID();
    const { data, error } = await admin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { first_name: n, last_name: 'Hidden', woman_attested: true } });
-   if (error || !data.user) throw error; ids.push(data.user.id);
+   if (error || !data.user) throw error; ids.push(data.user.id); await admitFixture(admin, data.user.id);
    const cl = createClient(url!, process.env['SUPABASE_PUBLISHABLE_KEY'] || key!, { auth: { persistSession: false } });
    await cl.auth.signInWithPassword({ email, password }); c.push(cl);
   }

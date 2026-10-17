@@ -1,3 +1,4 @@
+import { admitFixture } from './membership-fixture';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
@@ -26,7 +27,7 @@ describe.skipIf(!url || !key || !publishable)('Profile ripples and private Wingw
    const password = crypto.randomUUID();
    const created = await admin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { first_name, last_name: 'Fixture', woman_attested: true } });
    if (created.error || !created.data.user) throw created.error || new Error('No fixture user');
-   ids.push(created.data.user.id);
+   ids.push(created.data.user.id); await admitFixture(admin, created.data.user.id);
    const c = createClient(url, publishable, { auth: { persistSession: false } });
    const login = await c.auth.signInWithPassword({ email, password });
    if (login.error) throw login.error;
