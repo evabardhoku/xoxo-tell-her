@@ -39,7 +39,7 @@ describe('Email account forms', () => {
   const fields: [string,string][]=[['First name','Ana'],['Last name','Test'],['Email address','invited@example.com'],['Password','temporary-test-password']];
   for(const [label,value] of fields) fireEvent.change(screen.getByLabelText(label),{target:{value}});
   fireEvent.click(screen.getByRole('checkbox')); fireEvent.submit(screen.getByRole('button',{name:'Create your account'}).closest('form') as HTMLFormElement);
-  await waitFor(()=>expect(mocks.signUp).toHaveBeenCalledWith(expect.objectContaining({options:expect.objectContaining({emailRedirectTo:expect.stringContaining('/join'),data:expect.objectContaining({membership_invite:code})})})));
+  await waitFor(()=>expect(mocks.signUp).toHaveBeenCalledWith(expect.objectContaining({options:expect.objectContaining({emailRedirectTo:expect.stringContaining('/feed'),data:expect.objectContaining({membership_invite:code})})})));
   expect(mocks.navigate).not.toHaveBeenCalled();
  });
 });

@@ -11,7 +11,7 @@
 
 - Public routes stay top-level; private routes use client-only `_authenticated`. Landing links select validated auth modes; members get one feed entry.
 - One root auth subscriber clears queries before identity changes and ignores stale lookups; profiles stay owner-scoped.
-- Extend checked systems; never duplicate paths. Signup-bound one-use invite claims complete on verified email, independent of browser storage; receipts gate database/AI access without creating friendships.
+- Extend checked systems; never duplicate paths. tellher_member_ready gates access (now: confirmed email, names, attestation); dormant invite functions allow re-tightening; invite errors never block signup.
 - Trust/content writes use checked functions. Ripple identity uses additive checked publication/representation, immutable visibility, and private ownership. Named first names are Ripple-scoped; anonymous identity and responder privacy never change.
 - Onboarding and Profile share validation/editing; triggers independently enforce attestation and field limits.
 - Open Avatars use private storage, stripped metadata, short-lived links and checked photo/illustration rendering. Anonymous display masks randomize on checked reads independently of profiles; historical storage stays untouched.
