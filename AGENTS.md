@@ -9,13 +9,13 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Public pages use top-level routes; private pages use client-only `_authenticated` to avoid session redirect loops.
-- One root auth subscriber clears queries before identity changes and ignores stale initial lookups; private profiles remain owner-scoped.
-- Extend existing auth, trust relationships, Ripples/private ownership, replies, Perspective Map/synthesis, Wingwoman and persisted demo systems; never duplicate or replace working paths.
+- Public routes stay top-level; private routes use client-only `_authenticated` to avoid redirect loops.
+- One root auth subscriber clears queries before identity changes and ignores stale lookups; profiles stay owner-scoped.
+- Extend existing checked systems and demo data; never duplicate or replace working paths.
 - Trust/content writes use checked functions. Ripple identity uses additive checked publication/representation, immutable visibility, and private ownership. Named first names are Ripple-scoped; anonymous identity and responder privacy never change.
 - Share profile validation and editing between account onboarding and Profile; database triggers enforce attestation and field limits independently of the UI.
 - Avatars use private owner storage, stripped metadata and short-lived links; shared viewer-checked Open Avatar rendering honors photo/illustration choices.
-- Use semantic tokens/shared editorial controls and genuine empty states; native disclosures demote secondary tools without removing data or checked access.
+- Use semantic tokens, shared editorial controls and genuine empty states; disclosures demote tools without removing access.
 - Replies and Perspective Map data flow only through visibility-checked database functions (one reply per member, never by the question author); the map lists perspectives in a fixed order so no answer reads as winning.
 - Wingwoman AI turns run only in authenticated server functions sharing one gateway helper and safety prompt, saved under the caller's rows; drafts reload by owner-scoped session id, never URL text, so situations stay private.
 - Keep Wingwoman source context separate from editable Ripple state in the existing four-step composer, and publish through the explicit ripplePublication field allowlist only at final confirmation; this prevents private source/session data from leaking into shared questions.
@@ -33,3 +33,6 @@
 - Field Notes reuse trust_notes; writes and optional Ripple linkage go through tellher_save_field_note, with append-only consent receipts for own anonymous links and viewer-checked context/read functions, so links never broaden Ripple or profile access.
 - Moderation roles live only in user_roles; queue/actions use checked mod functions returning content without identities, logged, removal in place. Abuse limits are insert triggers on the rate_limits table; notification copy is neutralised by trigger.
 - Account deletion deletes the auth user (rows cascade); safety resources are config in src/lib/safety.ts. Trust Codes: hashed, row-locked checked functions that create ordinary accepted trust_connections.
+
+- Password reset requires verified recovery or its user-bound session marker, never URL flags; blocked storage must not break it.
+- Tests run serially: hosted auth and abuse limits are shared. Check fixture writes and reads for errors.
