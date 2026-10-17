@@ -23,8 +23,8 @@ export function useDiscovery() {
   ripplesWithReplies: mine.filter(q => q.reply_count > 0).length,
   direct: (circle.data?.entries ?? []).filter(e => e.kind === 'direct').length,
   extended: circle.data?.extendedCount ?? 0,
-  notes: shelf.data?.notes.length ?? 0,
-  picks: shelf.data?.picks.length ?? 0,
+  notes: 0,
+  picks: shelf.data?.length ?? 0,
   conversations: inbox.data?.length ?? 0,
   profileFilled: Boolean(profile.data && (profile.data.known_for.length || profile.data.bio)),
  };
