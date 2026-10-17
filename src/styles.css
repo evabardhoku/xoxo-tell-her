@@ -804,3 +804,100 @@ summary:focus-visible { outline:2px solid var(--ring);outline-offset:3px; }
  .trust-letter { padding:24px 18px; }
  .trust-letter-paper { padding:24px 20px; }
 }
+
+/* ===== Expressive hubs: My Feed life, Wingwoman chat, living Sky ===== */
+
+/* --- My Feed: warmth, motion, separation --- */
+.open-feed-mind { transition:border-color .3s var(--ease-calm, ease), box-shadow .3s var(--ease-calm, ease), transform .3s var(--ease-calm, ease); }
+.open-feed-mind:hover { box-shadow:0 10px 30px -14px color-mix(in oklab, var(--primary) 45%, transparent);transform:translateY(-1px); }
+.open-ripple { transition:transform .35s var(--ease-calm, ease), box-shadow .35s var(--ease-calm, ease), border-color .35s var(--ease-calm, ease);box-shadow:0 1px 0 color-mix(in oklab, var(--primary) 6%, transparent); }
+.open-ripple:hover { transform:translateY(-2px);box-shadow:0 16px 36px -20px color-mix(in oklab, var(--trust) 60%, transparent);border-color:color-mix(in oklab, var(--trust) 45%, var(--border)); }
+.open-ripple::after { content:"";position:absolute;inset:0 0 auto auto;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle, color-mix(in oklab, var(--trust) 14%, transparent), transparent 70%);pointer-events:none; }
+.trust-tag { padding:3px 10px;border-radius:999px;background:color-mix(in oklab, var(--trust) 12%, var(--card)); }
+.open-comment { grid-template-columns:32px minmax(0,1fr) auto; }
+.comment-like { display:inline-flex;flex-direction:column;align-items:center;gap:2px;min-width:44px;min-height:44px;padding:6px 8px;border-radius:12px;font-size:12px;color:var(--muted-foreground);transition:color .25s ease, background .25s ease, transform .25s ease; }
+.comment-like:hover { color:var(--accent);background:color-mix(in oklab, var(--accent) 10%, transparent); }
+.comment-like[aria-pressed="true"] { color:var(--accent); }
+.comment-like[aria-pressed="true"] svg { fill:currentColor;animation:like-pop .4s var(--ease-calm, ease); }
+@media (prefers-reduced-motion: no-preference) {
+ .open-feed-list > li { animation:th-rise .5s var(--ease-calm, ease) both; }
+ .open-feed-list > li:nth-child(2) { animation-delay:.06s; } .open-feed-list > li:nth-child(3) { animation-delay:.12s; }
+ .open-feed-list > li:nth-child(4) { animation-delay:.18s; } .open-feed-list > li:nth-child(5) { animation-delay:.24s; }
+ .open-feed-list > li:nth-child(n+6) { animation-delay:.3s; }
+ .open-feed-mind { animation:th-rise .45s var(--ease-calm, ease) both; }
+}
+
+/* --- Wingwoman: side journal + real chat + wings --- */
+.ww-layout { grid-template-columns:290px minmax(0,1fr);gap:32px; }
+.ww-side { position:sticky;top:100px;display:grid;gap:12px;padding:20px 18px;border-radius:20px;border:1px solid color-mix(in oklab, var(--secondary) 30%, var(--border));background:linear-gradient(165deg, color-mix(in oklab, var(--secondary) 10%, var(--card)), color-mix(in oklab, var(--accent) 7%, var(--card)) 55%, var(--card));box-shadow:0 14px 34px -22px color-mix(in oklab, var(--secondary) 55%, transparent); }
+.ww-side-title { font-family:var(--font-editorial, serif);font-size:20px;font-weight:500;color:var(--primary);line-height:1.25; }
+.ww-sessions { list-style:none;padding:0;margin:0;display:grid;gap:6px;max-height:52vh;overflow:auto;position:static; }
+.ww-session { display:grid;gap:2px;padding:10px 12px;border-radius:12px;text-decoration:none;color:var(--foreground);border:1px solid transparent;transition:background .25s ease, border-color .25s ease, transform .25s ease; }
+.ww-session:hover { background:color-mix(in oklab, var(--secondary) 10%, transparent);transform:translateX(2px); }
+.ww-session[aria-current="page"] { background:color-mix(in oklab, var(--secondary) 16%, transparent);border-color:color-mix(in oklab, var(--secondary) 40%, transparent); }
+.ww-main { display:grid;gap:18px;min-width:0; }
+.ww-wings { display:grid;place-items:center;padding:6px 0 2px; }
+.ww-wings svg { width:120px;height:56px;overflow:visible; }
+.ww-wing { fill:color-mix(in oklab, var(--secondary) 55%, var(--accent));opacity:.85;transform-box:fill-box; }
+.ww-wing--l { transform-origin:100% 60%; } .ww-wing--r { transform-origin:0% 60%; }
+@media (prefers-reduced-motion: no-preference) {
+ .ww-wing--l { animation:ww-flap-l 3.6s ease-in-out infinite; }
+ .ww-wing--r { animation:ww-flap-r 3.6s ease-in-out infinite; }
+ .ww-wings svg { animation:ww-breathe 3.6s ease-in-out infinite; }
+}
+@keyframes ww-flap-l { 0%,100% { transform:rotate(0deg) scale(1); } 50% { transform:rotate(-9deg) scale(1.07); } }
+@keyframes ww-flap-r { 0%,100% { transform:rotate(0deg) scale(1); } 50% { transform:rotate(9deg) scale(1.07); } }
+@keyframes ww-breathe { 0%,100% { transform:scale(1); } 50% { transform:scale(1.06); } }
+.ww-messages { gap:14px; }
+.ww-msg { position:relative;padding:14px 18px;border-radius:20px;max-width:78%;box-shadow:0 8px 22px -16px color-mix(in oklab, var(--primary) 45%, transparent); }
+.ww-user { justify-self:end;background:linear-gradient(150deg, color-mix(in oklab, var(--accent) 26%, var(--card)), color-mix(in oklab, var(--accent) 14%, var(--card)));border:1px solid color-mix(in oklab, var(--accent) 35%, var(--border));border-bottom-right-radius:6px; }
+.ww-assistant { justify-self:start;background:linear-gradient(150deg, color-mix(in oklab, var(--secondary) 16%, var(--card)), var(--card));border:1px solid color-mix(in oklab, var(--secondary) 32%, var(--border));border-bottom-left-radius:6px; }
+.ww-voice { display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--secondary);margin-bottom:4px; }
+.ww-voice::before { content:"";width:14px;height:8px;border-radius:50% 50% 0 0;background:currentColor;opacity:.5;clip-path:polygon(0 100%, 50% 0, 100% 100%); }
+.ww-msg p { margin:0; }
+@media (prefers-reduced-motion: no-preference) {
+ .ww-msg { animation:ww-msg-in .4s var(--ease-calm, ease) both; }
+ .ww-user { animation-name:ww-msg-in-r; }
+}
+@keyframes ww-msg-in { from { opacity:0;transform:translateY(10px) scale(.98); } to { opacity:1;transform:none; } }
+@keyframes ww-msg-in-r { from { opacity:0;transform:translateY(10px) translateX(8px) scale(.98); } to { opacity:1;transform:none; } }
+.ww-typing { display:inline-flex;gap:5px;align-items:center; }
+.ww-typing::after { content:"";width:5px;height:5px;border-radius:50%;background:var(--secondary);box-shadow:9px 0 0 var(--secondary), 18px 0 0 var(--secondary);animation:ww-dots 1.2s ease-in-out infinite; }
+@keyframes ww-dots { 0%,100% { opacity:.35; } 50% { opacity:1; } }
+.ww-composer { display:flex;gap:10px;align-items:end;padding:12px;border-radius:18px;border:1px solid color-mix(in oklab, var(--secondary) 30%, var(--border));background:color-mix(in oklab, var(--secondary) 7%, var(--card)); }
+.ww-composer textarea { border-color:transparent;background:var(--card); }
+@media (max-width: 760px) {
+ .ww-side { position:static; }
+ .ww-sessions { max-height:200px; }
+ .ww-msg { max-width:92%; }
+ .ww-wings svg { width:96px;height:44px; }
+}
+
+/* --- Sky: living stars, comets, legend --- */
+.sky-with-legend { display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:22px;align-items:start; }
+.sky-legend-panel { position:sticky;top:100px;display:grid;gap:12px;padding:18px;border-radius:18px;border:1px solid color-mix(in oklab, var(--primary) 25%, var(--border));background:linear-gradient(170deg, color-mix(in oklab, var(--primary) 8%, var(--card)), var(--card));font-size:13px;color:var(--muted-foreground); }
+.sky-legend-panel ul { list-style:none;padding:0;margin:0;display:grid;gap:12px; }
+.sky-legend-panel li { display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:start;line-height:1.45; }
+.sky-legend-panel strong { color:var(--foreground);font-weight:600; }
+.legend-star { position:relative;width:10px;height:10px;margin:4px auto 0;border-radius:50%;background:var(--primary);display:block; }
+.legend-star--echo { background:var(--accent);box-shadow:0 0 8px 2px color-mix(in oklab, var(--accent) 55%, transparent); }
+.legend-star--ring::after { content:"";position:absolute;inset:-5px;border-radius:50%;border:1px solid color-mix(in oklab, var(--primary) 60%, transparent); }
+.legend-star--letters::after { content:"";position:absolute;inset:-5px;border-radius:50%;border:1px dashed var(--accent); }
+.legend-star--comet { background:var(--accent);box-shadow:0 0 8px 2px color-mix(in oklab, var(--accent) 60%, transparent); }
+.legend-star--comet::before { content:"";position:absolute;right:6px;top:4px;width:16px;height:2px;border-radius:2px;background:linear-gradient(to left, color-mix(in oklab, var(--accent) 70%, transparent), transparent); }
+@media (prefers-reduced-motion: no-preference) {
+ .sky .star { animation:twinkle 5s ease-in-out infinite, star-drift 9s ease-in-out infinite; }
+ .sky .star:nth-child(2n) { animation-duration:6.5s, 11s;animation-delay:-1.5s, -3s; }
+ .sky .star:nth-child(3n) { animation-duration:7.5s, 13s;animation-delay:-3s, -6s; }
+ .sky-lines line { animation:line-breathe 8s ease-in-out infinite; }
+}
+@keyframes star-drift { 0%,100% { translate:0 0; } 33% { translate:2px -2px; } 66% { translate:-2px 1px; } }
+@keyframes line-breathe { 0%,100% { stroke-opacity:.12; } 50% { stroke-opacity:.3; } }
+.comet { position:absolute;left:0;width:0;height:0;padding:0;border:0;background:none;cursor:pointer;z-index:3;animation:comet-cross 30s linear infinite; }
+.comet-head { position:absolute;width:11px;height:11px;margin:-5.5px;border-radius:50%;background:radial-gradient(circle, var(--primary-foreground), color-mix(in oklab, var(--accent) 70%, var(--primary-foreground)));box-shadow:0 0 14px 4px color-mix(in oklab, var(--accent) 65%, transparent); }
+.comet-tail { position:absolute;right:4px;top:-1.5px;width:64px;height:3px;border-radius:3px;background:linear-gradient(to left, color-mix(in oklab, var(--accent) 75%, var(--primary-foreground)), transparent);transform:translateY(0); }
+.comet::before { content:"";position:absolute;inset:-16px; }
+.comet:hover .comet-head, .comet:focus-visible .comet-head, .comet[data-active="true"] .comet-head { transform:scale(1.4); }
+@keyframes comet-cross { from { left:-8%;transform:translateY(0); } to { left:108%;transform:translateY(var(--comet-drift, 0px)); } }
+@media (prefers-reduced-motion: reduce) { .comet { animation:none;left:50%; } }
+@media (max-width: 900px) { .sky-with-legend { grid-template-columns:1fr; } .sky-legend-panel { position:static;order:-1; } }
