@@ -31,7 +31,7 @@ export async function seedEvaExtras(EVA: string, PASSWORD: string) {
     const s = await cl.auth.signInWithPassword({ email: `${k}.demo@example.com`, password: PASSWORD });
     if (s.error) { console.warn(k, s.error.message); continue; }
     const mine = await cl.from('replies').select('id').eq('question_id', ripple).eq('author_id', s.data.user.id);
-    if (!mine.data?.length) { const r = await cl.rpc('tellher_post_reply', { _id: ripple, _body: body, _tag: tag }); if (r.error) console.warn(k, r.error.message); else replyIds.push(r.data); }
+    if (!mine.data?.length) { const r = await cl.rpc('tellher_post_open_comment', { _id: ripple, _body: body } as never); if (r.error) console.warn(k, r.error.message); else replyIds.push(r.data); }
     for (const id of replyIds.slice(0, -1)) await cl.rpc('tellher_like_reply', { _reply: id });
     const c = await cl.rpc('tellher_open_conversation', { _member: EVA });
     if (c.error) { console.warn(k, c.error.message); continue; }
