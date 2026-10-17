@@ -669,6 +669,9 @@ summary:focus-visible { outline:2px solid var(--ring);outline-offset:3px; }
 @media (max-width:380px) {
  .app-header { padding-inline:12px; }
  .app-header-actions { gap:6px; }
+ .app-header:has(.quick-exit) .brand { font-size:22px;gap:6px; }
+ .app-header:has(.quick-exit) .brand .ripple-mark { display:none; }
+ .app-header-actions .quick-exit { width:44px;padding:0;justify-content:center;flex-shrink:0; }
  .app-main { padding-inline:16px; }
  .open-feed-mind { padding-inline:12px;font-size:15px; }
  .open-feed-filter { width:100%; }
