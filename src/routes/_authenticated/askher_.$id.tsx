@@ -76,7 +76,7 @@ function QuestionPage() {
    <PerspectiveSynthesis key={data.replies.length} id={id} replies={data.replies} />
    </section>
   {q.is_mine && q.my_instinct && <aside className="first-instinct" aria-label="My first instinct"><p className="private-note"><LockKeyhole size={12} />My first instinct · only you</p><p className="instinct-line">{instincts.find(i => i.value === q.my_instinct)?.label}</p>{q.my_note && <p className="form-note">{q.my_note}</p>}</aside>}
-   <section className="trust-letter-section" aria-label="Star Letter"><OtherSide id={id} isAuthor={q.is_mine} createdAt={q.created_at} /><RippleFieldNotes id={id} /></section>
+   <section className="trust-letter-section" aria-label="Star Letter"><OtherSide id={id} isAuthor={q.is_mine} createdAt={q.created_at} /></section>
   </>}
   {(sky.data ?? []).some(r => r.category === q.category) && <Link to="/constellations/$topic" params={{ topic: q.category }} className="member-link related-constellation">Explore similar stories in Constellations</Link>}
  </div>;
