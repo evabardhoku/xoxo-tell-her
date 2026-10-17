@@ -309,6 +309,13 @@
       "when": 1792251251062,
       "tag": "0043_profile_ripples_private_stars",
       "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "7",
+      "when": 1792253356982,
+      "tag": "0044_revoke_anon_definer_functions",
+      "breakpoints": true
     }
   ]
 }
