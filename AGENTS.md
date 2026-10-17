@@ -20,7 +20,7 @@
 - Wingwoman AI turns run only in authenticated server functions sharing one gateway helper and safety prompt, saved under the caller's rows; drafts reload by owner-scoped session id, never URL text, so situations stay private.
 - Keep Wingwoman source context separate from editable Ripple state in the existing four-step composer, and publish through the explicit ripplePublication field allowlist only at final confirmation; this prevents private source/session data from leaking into shared questions.
 - AI synthesis is authenticated and on-demand: checked Ripple identity selects checked replies/comments, and only bodies reach AI. Shared meaningful-response gating avoids filler; summaries are not stored and never replace responses or the map.
-- Read scoped guidance first.
+- Read scoped guidance.
 - Picks are owner-written; checked accepted Direct Circle reads expose only recommender first name. No ratings or ranking.
 - Profiles use tellher_member_profile viewer checks; avatars are signed afterward server-side. Raw profiles and storage paths stay private.
 - Extended discovery uses tellher_extended_circle; Connect uses ordinary trust requests, not a second relationship model.
