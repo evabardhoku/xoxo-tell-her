@@ -8,11 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { errorText, relativeTime } from '@/lib/askher';
 import { outcomeLabel, outcomeStatuses, type Outcome } from '@/lib/outcome';
 
-/** Days after which the author is gently asked how things turned out. */
-export const OUTCOME_PROMPT_DAYS = 7;
-
 /** "The Other Side": the author's own update on what happened next. Others see it only when she shares it. */
-export function OtherSide({ id, isAuthor, createdAt }: { id: string; isAuthor: boolean; createdAt?: string }) {
+export function OtherSide({ id, isAuthor }: { id: string; isAuthor: boolean }) {
  const qc = useQueryClient();
  const q = useQuery({ queryKey: ['outcome', id], queryFn: async () => { const { data, error } = await supabase.rpc('tellher_outcome', { _q: id }); if (error) throw error; return ((data ?? [])[0] ?? null) as Outcome | null; } });
  const [editing, setEditing] = useState(false);
@@ -20,9 +17,6 @@ export function OtherSide({ id, isAuthor, createdAt }: { id: string; isAuthor: b
  if (q.isPending) return null;
  const o = q.data ?? null;
  if (!o && !isAuthor) return null;
- // The gentle prompt appears only once the Ripple has had some time to breathe.
- const due = !createdAt || Date.now() - Date.parse(createdAt) >= OUTCOME_PROMPT_DAYS * 86400000;
- if (!o && !due && !editing) return null;
  const done = () => { setEditing(false); qc.invalidateQueries({ queryKey: ['outcome', id] }); };
  return <section className="other-side trust-letter" aria-labelledby={`trust-letter-title-${id}`}>
   <div className="trust-letter-heading"><div><div className="eyebrow">WHAT HAPPENED NEXT</div><h2 id={`trust-letter-title-${id}`}>Star Letter</h2></div><span className="trust-letter-mark" aria-hidden><Heart size={20} /></span></div>
