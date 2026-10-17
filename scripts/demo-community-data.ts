@@ -472,26 +472,220 @@ export const letterSeeds: { start: string; letters: [number, string, string | nu
 ];
 
 // Original fictional tester scenarios; not real events, reviews, or quotes from a television script.
+// Every author, commenter and situation below is invented for the demo. Buildathon jokes are fictional, never about a real event.
+export type TesterDiscussion = {
+ by: string; identity: 'named' | 'anonymous'; scope: 'circle' | 'extended' | 'community'; cat: string; body: string;
+ // responses: [author, perspective tag (anonymous only), body]
+ responses: readonly (readonly [string, string | null, string])[];
+ likes?: readonly number[]; // likes per response index
+ echoes?: number; // anonymous only
+ letter?: readonly [string, string, string | null, boolean]; // Star Letter: status, summary, private note, shared
+};
 export const testerScenario = {
  email: 'blair.demo@example.com',
  direct: ['sophie', 'emma', 'francesca', 'ngozi'],
  extended: 'claire', incoming: 'camille', outgoing: 'beatriz',
+ helpers: ['sophie', 'emma', 'francesca', 'ngozi', 'claire', 'camille', 'beatriz', 'maya', 'lina', 'sofia', 'noor', 'iris', 'june', 'sara', 'marta', 'priya', 'zeynep', 'giulia', 'amira', 'elena'],
  discussions: [
-  { by: 'blair', identity: 'named', scope: 'community', cat: 'Work', body: 'Fictional tester diary: preparing TellHer for SheBuild means choosing between another animation and finally writing the report. My inner perfectionist has requested a committee meeting. What would you polish first: the first visit, the story, or the demo?', responses: ['The first visit. If I can find my way without you narrating every click, the demo has already made a strong impression.', 'The story, then one clean example. A glittering button cannot explain why someone would trust the space.', 'I have submitted projects before. Freeze the features, rehearse the journey, and leave yourself time to sleep.', 'Pick three things to demonstrate well. The committee in your head does not get another sprint.'] },
-  { by: 'blair', identity: 'named', scope: 'circle', cat: 'Everyday Life', body: 'Fictional demo book club, except we are rewatching Gossip Girl: is a dramatic entrance a personality trait or just excellent timing? I vote for excellent timing, provided nobody has to clean up the emotional confetti. What is your most harmless TV-inspired habit?', responses: ['Dressing nicely for a coffee that absolutely could have been an email. No regrets.', 'Pausing the episode to discuss a coat while the plot is having a crisis.', 'I used to narrate my commute like a season finale. It made delayed trains considerably more bearable.', 'A dramatic entrance is fine. A kind exit is the more impressive skill.'] },
-  { by: 'blair', identity: 'named', scope: 'extended', cat: 'Work', body: 'Fictional TellHer feedback party: everyone gets one honest suggestion and one imaginary pastry. What makes a trust-based platform feel welcoming without turning it into another popularity contest?', responses: ['Clear audience choices. I want to know who can see something before I share it, not after.', 'Show disagreement without crowning a winner. Different circumstances deserve different answers.', 'I have left communities that rewarded the loudest voices. Quiet participation should count as belonging too.', 'A friendly first visit and no pressure to share immediately. Also, I am claiming the imaginary croissant.'] },
-  { by: 'blair', identity: 'named', scope: 'community', cat: 'Travel', body: 'Fictional post-submission trip: one weekend in Paris, one small bag, and apparently six dinner outfits. How do you plan a solo celebration that feels special without turning the itinerary into unpaid project management?', responses: ['Book the essentials and leave one afternoon completely blank. You are travelling, not delivering a quarterly roadmap.', 'Choose one lovely meal rather than making every hour an event. Leave room for a bakery you discover by accident.', 'I did a solo celebration after graduation. My favourite part was sitting in a park with no plan at all.', 'Keep a little budget for spontaneity. The sixth outfit can attend the celebration from home.'] },
-  { by: 'blair', identity: 'anonymous', scope: 'community', cat: 'Dating & Boundaries', body: 'Fictional demo story: a charming date called our third meeting a collaboration and asked me to help polish his pitch deck. The chemistry is excellent; the unpaid internship is less convincing. How would you separate flirting from free consulting?', responses: ['Say you are happy to go on a date, but project work is separate. His response will tell you more than the charming opening line.', 'I would ask whether he was joking before assuming this is a pattern. One awkward request is different from repeated expectations.', 'This happened to me. I made the boundary clear and suggested a normal dinner; we discovered whether the interest survived without free work.', 'You can enjoy the chemistry and decline the task. No need to turn the reply into a performance review.'] },
-  { by: 'blair', identity: 'anonymous', scope: 'extended', cat: 'Everyday Life', body: 'Fictional demo story: a friend posted a vague message immediately after our disagreement, and now I am conducting an imaginary courtroom trial using three emojis as evidence. Would you ask directly or close the app and wait?', responses: ['Ask privately and without accusing: was that about our conversation? You might save yourself a whole evening of interpretation.', 'I would give myself a night offline first. Strong feelings make a vague post look much more specific than it is.', 'I have been the person reading too much into a post. Mine turned out to be about a broken washing machine, not our friendship.', 'What happened in the disagreement itself? Addressing that may matter more than decoding the caption.'] },
-  { by: 'blair', identity: 'anonymous', scope: 'circle', cat: 'Work', body: 'Fictional demo story: my presentation partner offered to introduce our project, then sent a script where I appear mainly as the person who chose the colours. I built half the product. How do I reclaim my part without making the rehearsal a courtroom drama?', responses: ['Send a revised split with the sections you built clearly assigned to you. Make the contribution visible before the rehearsal.', 'I would ask how she decided the split. It may be a rushed script rather than a settled view of your contribution.', 'Something similar happened in my project team. A short shared list of who built what made the presentation much fairer.', 'Keep it practical: I will present these two parts because I built them. You do not need a dramatic accusation to make a clear request.'] },
-  { by: 'blair', identity: 'anonymous', scope: 'community', cat: 'Everyday Life', body: 'Fictional demo story: I said yes to hosting a launch brunch, a rewatch night, and a report-reading session in the same weekend. My calendar looks fabulous; my energy does not. Which promise would you renegotiate first?', responses: [] },
-  { by: 'sophie', identity: 'named', scope: 'community', cat: 'Work', body: 'Fictional tester lounge: we are practising the TellHer demo. Which journey would you try first: a named Ripple, an anonymous Star, or finding a trusted recommendation? Honest answers only; the imaginary snacks are not performance-related.', responses: ['I would open a Star first and see whether different perspectives feel safe and useful.', 'Start with the named Ripple so the difference between public identity and anonymous discussion is clear.', 'I have judged student demos before. One complete journey is stronger than fifteen unfinished clicks.', 'A Pick, then the profile behind it. Trust becomes easier to understand when I can see how a recommendation reaches me.'] },
-  { by: 'emma', identity: 'anonymous', scope: 'community', cat: 'Dating & Boundaries', body: 'Fictional demo story: someone I am dating is wonderfully attentive in person and spectacularly vague about making plans. I am interested, but not available to be a recurring maybe. How would you ask for clarity without pretending not to care?', responses: ['Ask for a specific plan and say what works for you. Clear interest is not the same as chasing.', 'I would notice whether the vagueness is occasional or the whole pattern before deciding.', 'I have been there. A simple request for a day and time helped me stop doing all the planning myself.', 'What kind of consistency would actually feel good to you? Start there rather than guessing their motive.'] },
- ],
+  // ── Open / named Ripples: social, funny, safe to sign ──
+  { by: 'blair', identity: 'named', scope: 'community', cat: 'Work', body: 'Three coffees, two panic attacks, one working demo. Buildathon weekend nearly took me out. What is your strangest deadline ritual? Asking for a friend. The friend is me.', likes: [9, 4, 12, 2], responses: [
+   ['sophie', null, 'I rename the file FINAL, FINAL2, FINAL_real, and then present FINAL2 by mistake. Every single time.'],
+   ['emma', null, 'I iron something. I hate ironing. It tricks my brain into thinking the deadline is the lesser evil.'],
+   ['maya', null, 'I once deployed from an airport bathroom. I am not proud. The demo worked.'],
+   ['priya', null, 'Complete silence, one playlist on loop, and a banana at 3 a.m. The banana is load-bearing.'],
+  ] },
+  { by: 'sophie', identity: 'named', scope: 'community', cat: 'Work', body: 'What is the most unhinged thing you have ever done to meet a deadline? Confession hour. No judgment, only solidarity.', likes: [7, 3, 11, 5, 6], responses: [
+   ['blair', null, 'Rewrote the entire homepage at 1 a.m. because the old one “had no soul”. It had a soul. I had no sleep.'],
+   ['emma', null, 'Paid for premium wifi on a train to fix a build. The train ride was 40 minutes.'],
+   ['zeynep', null, 'I debugged on my phone in a wedding queue. I was in the wedding.'],
+   ['lina', null, 'Submitted with a typo in the title slide and simply presented with total confidence. Nobody mentioned it. I think about it weekly.'],
+   ['june', null, 'Cried for exactly four minutes, set a timer, then kept going. Recommend the timer.'],
+  ] },
+  { by: 'emma', identity: 'named', scope: 'community', cat: 'Dating & Boundaries', body: 'What is the most suspiciously specific excuse a man has ever given you? Mine said he could not text because his phone was “updating”. For a week.', likes: [10, 8, 6, 13], responses: [
+   ['blair', null, '“I am bad with phones” — sent from his phone, with perfect grammar, at 2 a.m.'],
+   ['francesca', null, 'He said he was “off grid”. He has a smartwatch.'],
+   ['camille', null, 'Mine claimed his flat had “a no-phone rule after ten”. Sir, you live alone.'],
+   ['sofia', null, 'The bar is in the basement and somehow they still trip over it.'],
+  ] },
+  { by: 'francesca', identity: 'named', scope: 'community', cat: 'Dating & Boundaries', body: 'Green flag or bare minimum? He texts when he says he will, he actually listens, and he remembered my coffee order. My friends are acting like he discovered fire.', likes: [9, 5, 4], responses: [
+   ['ngozi', null, 'Bare minimum with good PR. Keep him, but everybody calm down.'],
+   ['blair', null, 'Remembering a coffee order is not a personality. It is a receipt.'],
+   ['amira', null, 'The sad part is this genuinely is rare. Celebrate quietly, recalibrate loudly.'],
+  ] },
+  { by: 'ngozi', identity: 'named', scope: 'community', cat: 'Work', body: 'Office survival rule: never trust the phrase “quick call”. What is yours?', likes: [14, 3, 8, 6], responses: [
+   ['blair', null, '“Quick call” is corporate for cancel your evening.'],
+   ['marta', null, 'Never eat lunch at your desk on a Friday. It signals availability you do not have.'],
+   ['claire', null, 'If the meeting invite has no agenda, the agenda is you.'],
+   ['june', null, 'Any sentence starting “as per my last email” means war.'],
+  ] },
+  { by: 'maya', identity: 'named', scope: 'community', cat: 'Work', body: 'What corporate phrase instantly ruins your day? Mine is “let’s circle back”, which means your idea dies alone in a field somewhere.', likes: [11, 7, 4], responses: [
+   ['blair', null, '“We’re a family here.” Families do not hold quarterly performance reviews.'],
+   ['sofia', null, '“Move fast and break things.” The things were my weekends.'],
+   ['noor', null, '“Just a quick favour.” There is no such thing. There is only labour with a bow on it.'],
+  ] },
+  { by: 'claire', identity: 'named', scope: 'community', cat: 'Everyday Life', body: 'What is a friendship green flag nobody talks about? Mine: she tells you when you have spinach in your teeth AND when you are being dramatic.', likes: [8, 5], responses: [
+   ['blair', null, 'She remembers the names of your enemies. All of them. In order.'],
+   ['iris', null, 'She can sit in silence with you. No performing, no filling the air.'],
+  ] },
+  { by: 'giulia', identity: 'named', scope: 'community', cat: 'Travel', body: 'What is the most chaotic thing that has ever happened on a girls’ trip? Ours ended with a borrowed moped, a locked rental flat, and a woman named Stefania we still talk about.', likes: [9, 4, 6, 7], responses: [
+   ['amira', null, 'One of us booked the flights for the wrong month. We found out at the airport. She is no longer in charge of flights.'],
+   ['elena', null, 'We adopted a hostel cat for three days and argued about its name more than the itinerary.'],
+   ['blair', null, 'Two of the group stopped speaking on day one. The rest of us became Switzerland with luggage.'],
+   ['sara', null, 'We missed the last train and a stranger’s grandmother fed us and lectured us in equal measure. 10/10.'],
+  ] },
+  { by: 'sara', identity: 'named', scope: 'community', cat: 'Housing & Moving', body: 'Moving abroad starter pack: one suitcase, three documents you did not know existed, and a personality crisis. What was in yours?', likes: [5, 6, 3], responses: [
+   ['blair', null, 'A folder of printed paperwork, because every office demanded the one copy I had not printed.'],
+   ['priya', null, 'Four adapters, none of them the right one. A ritual sacrifice to the electronics gods.'],
+   ['lina', null, 'A photo of my old room. Cried at it twice, then got on with it.'],
+  ] },
+  { by: 'priya', identity: 'named', scope: 'community', cat: 'Work', body: 'Tell me your “I almost didn’t apply and then got it” story. I need the motivation and I know you all have them.', likes: [10, 6], responses: [
+   ['zeynep', null, 'Applied at midnight, convinced it was pointless. It became the job that changed my career. Apply tired, apply anyway.'],
+   ['blair', null, 'I almost withdrew because the panel looked intimidating. The panel was lovely. My imagination was the only hostile interviewer.'],
+  ] },
+  { by: 'zeynep', identity: 'named', scope: 'community', cat: 'Everyday Life', body: 'If women came with warning labels, what would yours say? Mine: “Will solve it in a spreadsheet. Do not try to stop her.”', likes: [12, 5, 9, 4, 7], responses: [
+   ['blair', null, '“Caution: remembers everything you said in March.”'],
+   ['sophie', null, '“May redesign your life if left unsupervised.”'],
+   ['emma', null, '“Flammable under the phrase calm down.”'],
+   ['marta', null, '“Will say yes. Please check with her again in a week.”'],
+   ['ngozi', null, '“Runs on tea and spite. Mostly tea.”'],
+  ] },
+
+  // ── Anonymous Stars: personal, honest, with real disagreement ──
+  { by: 'blair', identity: 'anonymous', scope: 'community', cat: 'Work', body: 'My teammate keeps saying “one tiny change” and then redesigning half the app. Is this collaboration or a cry for help?', echoes: 8, letter: ['boundary', 'We agreed nothing changes after 6 p.m. without a quick vote. The tiny changes got tinier.', 'She admitted she redesigns when she is nervous. Deadline week now has rules, and I have evenings.', true], responses: [
+   ['sophie', 'address', 'Name it kindly once: “Tiny changes are welcome, redesigns need a conversation.” Then hold the line.'],
+   ['emma', 'been_there', 'I had this teammate. We agreed nothing changes late at night without a vote. Peace was restored.'],
+   ['maya', 'more_context', 'Is she redesigning because the work is weak, or because she is anxious? Those need very different answers.'],
+   ['zeynep', 'watch_wait', 'If the deadline is in two days, I would let it go and talk after. Deadline week is not the week for truth.'],
+  ] },
+  { by: 'blair', identity: 'anonymous', scope: 'community', cat: 'Dating & Boundaries', body: 'I think I have a crush on someone I met during a hackathon and I genuinely cannot tell whether it is chemistry or sleep deprivation.', echoes: 5, letter: ['moved_forward', 'Update: it was 30% chemistry and 70% sleep deprivation. We got coffee anyway.', 'The coffee was nice. He is less mysterious when rested. So am I.', true], responses: [
+   ['emma', 'more_context', 'Have you spoken outside the context of caffeine and panic? That is the actual test.'],
+   ['sophie', 'watch_wait', 'Wait one full week of normal sleep. If the crush survives, it is real.'],
+   ['francesca', 'been_there', 'Mine was 90% sleep deprivation. The 10% was nice though.'],
+   ['ngozi', 'address', 'Get one coffee. Worst case, you have had a coffee.'],
+  ] },
+  { by: 'emma', identity: 'anonymous', scope: 'community', cat: 'Dating & Boundaries', body: 'He says he is “bad at texting” but somehow watches every story within three minutes.', echoes: 17, responses: [
+   ['sophie', 'address', 'The technology works when he wants it to. I would believe the pattern, not the excuse.'],
+   ['maya', 'watch_wait', 'I would stop performing availability and see what he does with the silence.'],
+   ['ngozi', 'more_context', 'Does he show up in person? Some people are genuinely awful texters and excellent partners. Rare, but real.'],
+   ['blair', 'been_there', 'I dated this man. He was not bad at texting. He was bad at priorities. I was not one.'],
+  ] },
+  { by: 'sophie', identity: 'anonymous', scope: 'community', cat: 'Dating & Boundaries', body: 'My boyfriend says his female best friend is basically his sister. She does not act like his sister.', echoes: 12, letter: ['talked', 'I asked for specifics instead of reassurance. The specifics were illuminating.', 'He was more defensive than the situation required. I am watching less, and noticing more.', false], responses: [
+   ['emma', 'address', 'Ask for specifics, not reassurance. What do they do together, how does he act afterwards? Facts over vibes.'],
+   ['francesca', 'more_context', 'How does she act with you? A real sister-figure makes an effort with the girlfriend.'],
+   ['maya', 'been_there', 'I ignored this once. She was not his sister. Trust the data your stomach is collecting.'],
+   ['ngozi', 'watch_wait', 'Watch how he handles you saying it makes you uncomfortable. His reaction is the answer.'],
+  ] },
+  { by: 'francesca', identity: 'anonymous', scope: 'community', cat: 'Dating & Boundaries', body: 'He has a girl best friend, a work wife and a gym wife. At what point am I part of the shareholders?', echoes: 8, responses: [
+   ['emma', 'address', 'Respectfully, that man has too many departments. I would ask why every role in his life is gendered.'],
+   ['sophie', 'more_context', 'Are these his jokes or theirs? If he jokes about it, he knows exactly what he is doing.'],
+   ['blair', 'been_there', 'I support women’s rights and women’s wrongs, but maybe not this one. I left. The portfolio rebalanced itself.'],
+  ] },
+  { by: 'ngozi', identity: 'anonymous', scope: 'community', cat: 'Dating & Boundaries', body: 'The guy I’m dating follows 3,000 women and 11 men. I would like the jury’s opinion.', echoes: 12, responses: [
+   ['emma', 'watch_wait', 'The follow list is not a crime, but I understand the ick. Watch whether his behaviour matches.'],
+   ['sophie', 'address', 'I would joke about it once and watch his face. Defensive tells you more than the number.'],
+   ['maya', 'been_there', 'The jury has deliberated: we also checked. Twice. You are normal.'],
+   ['claire', 'more_context', 'Is it possibly work — photographer, recruiter, something? Context before sentencing.'],
+  ] },
+  { by: 'maya', identity: 'anonymous', scope: 'community', cat: 'Work', body: 'My coworker told me she hates office gossip and then gave me a 40-minute presentation of office gossip.', echoes: 3, responses: [
+   ['sophie', 'watch_wait', 'People who announce they hate gossip are usually the broadcast tower. Enjoy, contribute nothing.'],
+   ['emma', 'more_context', 'Does she gossip kindly or cruelly? One is small talk, the other is a warning.'],
+   ['blair', 'been_there', 'Mine did this and then quoted me out of context a month later. I now nod and discuss weather.'],
+  ] },
+  { by: 'blair', identity: 'anonymous', scope: 'extended', cat: 'Work', body: 'My manager keeps calling me “young lady” in meetings and never speaks that way to the men.', echoes: 5, letter: ['boundary', 'I corrected him once, warmly, in front of everyone: “It’s Blair.” He has used my name ever since.', 'Funny how one calm sentence can do what six months of wincing could not.', true], responses: [
+   ['claire', 'address', 'Correct it once, publicly and lightly: “It’s Blair.” Said warmly, it lands as a boundary, not a scene.'],
+   ['sophie', 'been_there', 'I started answering only to my surname. He adjusted within a week.'],
+   ['emma', 'more_context', 'Is he like this with younger men in any form? If yes it is habit; if no it is hierarchy.'],
+  ] },
+  { by: 'sara', identity: 'anonymous', scope: 'community', cat: 'Work', body: 'A coworker keeps presenting my ideas as if they appeared to him in a dream. Would you address it publicly or privately?', echoes: 8, letter: ['boundary', 'I started documenting everything before meetings. Funny how quickly “our idea” became “your idea” again.', 'I also claim my ideas out loud now, cheerfully, the moment they appear. He has stopped dreaming.', true], responses: [
+   ['zeynep', 'address', 'Publicly but sweetly: “Glad that landed — I have the doc if anyone wants the detail.” Instant citizenship of your own idea.'],
+   ['blair', 'been_there', 'Document, document, document. Then a private word. Then public credit-claiming if it continues.'],
+   ['maya', 'more_context', 'Does he do it to others? A pattern changes how safe a private conversation is.'],
+   ['ngozi', 'watch_wait', 'First time, let it go and start a paper trail. Second time, it is a strategy meeting.'],
+  ] },
+  { by: 'amira', identity: 'anonymous', scope: 'community', cat: 'Work', body: 'I found out everyone from work has a group chat except me. Do I care? Unfortunately, yes.', echoes: 12, responses: [
+   ['sophie', 'been_there', 'This happened to me and it genuinely stung. I asked one person I trusted; it turned out to be a leftover chat from an old project.'],
+   ['emma', 'more_context', 'Is it a work chat or a social one? Being out of the social one hurts more but means less.'],
+   ['blair', 'address', 'Ask the person you like most: “Heard there is a chat, add me?” Casual. No trial.'],
+   ['maya', 'watch_wait', 'Sometimes exclusion is inertia, not intent. I would build one friendship properly before diagnosing the whole group.'],
+  ] },
+  { by: 'elena', identity: 'anonymous', scope: 'community', cat: 'Everyday Life', body: 'My friend only calls when her relationship is collapsing, then disappears the moment they get back together.', echoes: 8, letter: ['boundary', 'I stopped being her emergency hotline. We are still friends, just with better boundaries.', 'She called last week to complain about him. I let it ring twice, then texted her a therapist’s name and a heart. Growth.', true], responses: [
+   ['sophie', 'address', 'Name the pattern once, kindly: “I love you, and I notice I only hear from you in crisis.”'],
+   ['maya', 'been_there', 'I was this friend once. Someone told me gently and I was mortified. It fixed things.'],
+   ['emma', 'watch_wait', 'I would lower my investment to match hers and see whether she notices.'],
+   ['blair', 'more_context', 'Is she okay otherwise? Sometimes the crisis calls are the only time she feels allowed to need people.'],
+  ] },
+  { by: 'camille', identity: 'anonymous', scope: 'community', cat: 'Dating & Boundaries', body: 'My best friend hates every guy I date. Either she has incredible intuition or she is the problem.', echoes: 5, responses: [
+   ['emma', 'more_context', 'Has she ever been wrong about one? Track record matters here.'],
+   ['sophie', 'address', 'Ask her what exactly she dislikes, in detail. Vague dislike is control; specific dislike is data.'],
+   ['francesca', 'been_there', 'Mine was right four times out of four. I have stopped arguing with the oracle.'],
+   ['maya', 'watch_wait', 'Notice whether she is happy when you are happy. That answers it.'],
+  ] },
+  { by: 'beatriz', identity: 'anonymous', scope: 'community', cat: 'Everyday Life', body: 'One girl in the group tells everybody everyone else’s secrets. Somehow we all keep telling her things.', echoes: 3, responses: [
+   ['sophie', 'watch_wait', 'Every group has a radio station. The trick is knowing what not to broadcast.'],
+   ['blair', 'address', 'We had a group intervention once. It worked for a month. Now we classify information by need-to-know.'],
+   ['emma', 'more_context', 'Do people secretly enjoy the updates? Sometimes the group quietly votes to keep the station on air.'],
+  ] },
+  { by: 'giulia', identity: 'anonymous', scope: 'community', cat: 'Travel', body: 'I booked a girls’ trip and now two of them are not speaking. We leave Friday.', echoes: 2, letter: ['moved_forward', 'We survived. Two friendships did not. The hotel breakfast was excellent.', 'I stayed neutral, ate the pastries, and mediated nothing. Would neutral again.', true], responses: [
+   ['amira', 'watch_wait', 'Do not mediate before Friday. Travel has a way of forcing a truce over breakfast.'],
+   ['elena', 'address', 'Message both separately, neutrally, logistics only. Do not become the embassy.'],
+   ['blair', 'been_there', 'I was Switzerland on this exact trip. Neutral, well-fed, exhausted. It worked.'],
+  ] },
+  { by: 'lina', identity: 'anonymous', scope: 'community', cat: 'Housing & Moving', body: 'My roommate’s boyfriend has slowly moved into our apartment without paying rent.', echoes: 12, letter: ['boundary', 'I finally mentioned rent and utilities. He suddenly remembered he has his own apartment.', 'The utilities spreadsheet was polite, itemised, and devastating. He now visits like a guest, not a tenant.', true], responses: [
+   ['sophie', 'address', 'Address it with her, not him: “He is here five nights a week — we need to talk about bills.” Facts, not feelings about him.'],
+   ['maya', 'been_there', 'I counted his showers out of spite. Then I sent a utilities breakdown. He started paying.'],
+   ['emma', 'more_context', 'Is she on the lease with you? That changes how firm you can be.'],
+   ['blair', 'watch_wait', 'Give it one conversation before the spreadsheet. If nothing changes, spreadsheet.'],
+  ] },
+  { by: 'iris', identity: 'anonymous', scope: 'community', cat: 'Everyday Life', body: 'I moved abroad and everyone thinks I’m living my dream. I’m actually lonely and too embarrassed to admit it.', echoes: 17, letter: ['talked', 'I told my sister the truth instead of posting another sunset. She called me crying, then we laughed for an hour.', 'The city is still quiet, but I have one recurring Tuesday thing now. It is small and it is mine.', true], responses: [
+   ['sophie', 'been_there', 'Month two abroad was the loneliest of my life. It passed. Join one recurring thing — same people, same time, every week.'],
+   ['emma', 'more_context', 'Is it missing people, or missing being known? For me it was the second, and it takes longer to fix.'],
+   ['maya', 'address', 'Tell one person back home the truth. Saying it out loud shrank it for me.'],
+   ['blair', 'watch_wait', 'I gave myself a rule: no verdicts before six months. The city changed around month four.'],
+  ] },
+  { by: 'june', identity: 'anonymous', scope: 'community', cat: 'Work', body: 'I got the job I wanted, but the interview vibe was weird enough that I’m considering saying no.', echoes: 8, letter: ['left', 'I declined it. Two weeks later I heard from someone who worked there. My instinct was doing overtime.', 'Apparently three people left that team in a year. The vibe had a résumé.', true], responses: [
+   ['sophie', 'more_context', 'What exactly was weird? Specific moments are worth listing before you decide.'],
+   ['emma', 'been_there', 'I ignored a weird vibe once. The vibe turned out to be the job description. Trust it.'],
+   ['maya', 'address', 'Ask for a follow-up call with your future team. Weird either confirms or dissolves.'],
+   ['ngozi', 'watch_wait', 'A weird feeling plus a good offer is still data. Sleep on it twice.'],
+  ] },
+  { by: 'noor', identity: 'anonymous', scope: 'community', cat: 'Work', body: 'My friend and I applied for the same opportunity. I got it. She hasn’t spoken to me since.', echoes: 5, responses: [
+   ['sophie', 'watch_wait', 'Give her a few weeks. Grief about a rejection is real even when she loves you.'],
+   ['emma', 'address', 'I would send one warm message with no apology in it. You are allowed to have won.'],
+   ['maya', 'been_there', 'I was the one who lost, once. I needed a month. We are fine now, but I needed that month.'],
+   ['blair', 'more_context', 'Did she know you had applied? Surprises make this so much worse.'],
+  ] },
+  { by: 'blair', identity: 'anonymous', scope: 'community', cat: 'Dating & Boundaries', body: 'I checked his LinkedIn because I refused to check his Instagram. Somehow this feels worse.', echoes: 3, letter: ['other', 'I discovered nothing useful except that he has endorsed 47 people for Leadership.', 'Forty-seven. I closed the app and went outside.', true], responses: [
+   ['sophie', 'been_there', 'LinkedIn stalking is unhinged behaviour and I have also done it. Solidarity.'],
+   ['emma', 'watch_wait', 'The research phase is normal. Just do not let it replace actual information from actual dates.'],
+  ] },
+  { by: 'blair', identity: 'anonymous', scope: 'circle', cat: 'Everyday Life', body: 'Spotted: me, ignoring my own advice again. I told three women this month to rest, then answered emails at midnight. What is one piece of your own advice you are currently failing to take?', echoes: 1, responses: [
+   ['sophie', 'been_there', '“Not my circus” — I say it daily. I am always in the circus.'],
+   ['emma', 'address', 'I tell everyone to just ask for clarification. I personally prefer to suffer in ambiguity.'],
+  ] },
+  { by: 'marta', identity: 'anonymous', scope: 'community', cat: 'Dating & Boundaries', body: 'He said “let’s not label it” and then introduced me as his girlfriend to his roommate.', echoes: 2, responses: [
+   ['sophie', 'more_context', 'Men who avoid labels but use them when convenient want the benefits without the conversation.'],
+   ['maya', 'address', 'I would ask, cheerfully: “So which is it?” His discomfort will be informative.'],
+  ] },
+ ] as TesterDiscussion[],
+ threads: [
+  ['sophie', ['Are we still pretending we understand the presentation requirements?', 'Completely. I nodded in the meeting and everything.', 'Coffee after the deadline? Assuming we survive.', 'If we do not survive, I have left instructions for the demo.']],
+  ['emma', ['Please tell me I am not the only person who changed the homepage six times.', 'Seven. I changed it seven times. The sixth was a mistake.']],
+  ['francesca', ['I saw your post about moving — sending you the landlord checklist.', 'You are a hero. The deposit clause alone saved me.']],
+  ['ngozi', ['Spotted: someone eating an entire croissant during the rehearsal. It was me. No regrets.', 'The croissant understood the assignment.']],
+ ] as [string, string[]][],
  picks: [
-  ['Food & Drink', 'The imaginary deadline bakery', 'Fictional demo Pick: excellent imaginary pastries, ample sockets, and absolutely no questions about whether the report is finished.', 'Demo city'],
-  ['Everyday Life', 'A fictional rewatch-and-reflect club', 'Fictional demo Pick: discuss TV drama, practise real boundaries, and disagree about outfits without ranking each other.', 'Demo city'],
-  ['Services', 'The pretend pitch practice circle', 'Fictional demo Pick: kind, specific feedback from imaginary founders. Bring a short story, not seventy slides.', 'Online · fictional'],
-  ['Travel', 'The imaginary solo celebration walking tour', 'Fictional demo Pick: one museum, one bakery, and permission to cancel the rest of the itinerary.', 'Paris · fictional'],
+  ['Food & Drink', 'The café that saved my thesis', 'Fictional spot with bottomless filter coffee, forgiving staff, and a corner table that has seen three deadlines and one small breakdown.', 'Demo city'],
+  ['Travel', 'Actually good airport coffee', 'Fictional kiosk by gate B. The espresso is honest and the barista has never once rushed me.', 'Demo airport'],
+  ['Services', 'A coworking place where nobody takes calls on speaker', 'Fictional space with actual silence, strong wifi, and a no-speakerphone rule that is genuinely enforced.', 'Demo city'],
+  ['Health & Care', 'The dentist who did not financially traumatize me', 'Fictional clinic. She showed me every X-ray, quoted before touching anything, and did not invent six fillings.', 'Demo city'],
+  ['Housing & Moving', 'My emergency moving-abroad checklist', 'Fictional template: documents, deposits, and the one adapter you will definitely forget. Shared with love.', 'Online · fictional'],
+  ['Everyday Life', 'Best place to sit alone with a laptop and reconsider your career', 'Fictional reading room, third floor. Good light, no small talk, excellent for dramatic life planning.', 'Demo library'],
  ],
+ wingwoman: [
+  { title: 'Crush or sleep deprivation?', context: 'Dating', instinct: 'unsure', situation: 'I met someone at a buildathon and cannot tell if the spark is real or just three nights of no sleep and shared panic.', reflection: { what_stands_out: ['You met under unusual, high-pressure circumstances.', 'You are already questioning the feeling, which shows good instinct.', 'There is no urgency to decide anything.'], questions: ['Have you talked about anything other than the project?', 'What would a normal, rested first coffee look like?'], next_step: 'You might wait for one ordinary week of sleep, then suggest a low-stakes coffee and see what is left of the spark.' }, turns: [
+   ['user', 'But what if the spark expires before I catch up on sleep?'], ['assistant', 'A spark that only survives on sleep deprivation was probably the sleep deprivation. The real thing tends to keep. What is the smallest, easiest way to find out?'],
+   ['user', 'Coffee, I guess. One coffee.'], ['assistant', 'One coffee sounds exactly right. Low stakes, good data, and if nothing else you will have had a coffee.'],
+  ] },
+  { title: 'The “quick call” that ate my evening', context: 'Work', instinct: 'feels_off', situation: 'A colleague keeps scheduling “quick calls” at 6 p.m. that run ninety minutes. I have plans I keep cancelling.', reflection: { what_stands_out: ['The calls are repeatedly longer than promised.', 'They land at the end of your day.', 'You keep cancelling your own plans.'], questions: ['What would you want the default to be instead?', 'Is there a sentence you could send before the next one?'], next_step: 'You might try: “Happy to talk — I have a hard stop at 6:30.” Said once, calmly, it usually resets the pattern.' }, turns: [] },
+ ] as { title: string; context: string; instinct: string; situation: string; reflection: { what_stands_out: string[]; questions: string[]; next_step: string }; turns: [string, string][] }[],
 } as const;
