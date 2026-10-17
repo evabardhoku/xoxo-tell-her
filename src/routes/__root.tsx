@@ -13,6 +13,7 @@ import type { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { AccountContext } from '@/hooks/account';
 import { accountLifecycle } from '@/lib/account-lifecycle';
+import { rememberRecovery } from '@/lib/password-recovery';
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -128,6 +129,8 @@ function RootComponent() {
   useEffect(() => {
     const account = accountLifecycle({ setUser, setReady: () => setReady(true), clearCache: () => { void queryClient.cancelQueries(); queryClient.clear(); }, refresh: signedIn => { void router.invalidate(); if (signedIn) void queryClient.invalidateQueries(); } });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') rememberRecovery(session?.user.id ?? null);
+      if (event === 'SIGNED_OUT') rememberRecovery(null);
       account.change(event, session?.user ?? null);
     });
     void supabase.auth.getUser().then(({ data }) => account.initial(data.user));

@@ -21,7 +21,8 @@ export function PrivacyData({ userId, discoverability, onEditDiscoverability }: 
   qc.removeQueries({ queryKey: ['ww-sessions'] });
  };
  const exportData = async () => {
-  setBusy(true);
+  setBusy(true); setNote('');
+  try {
   const [profile, sessions, messages, notes, picks] = await Promise.all([
    supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
    supabase.from('wingwoman_sessions').select('*').eq('owner_id', userId),
@@ -29,9 +30,13 @@ export function PrivacyData({ userId, discoverability, onEditDiscoverability }: 
    supabase.from('trust_notes').select('*').eq('author_id', userId),
    supabase.from('trusted_picks').select('*').eq('owner_id', userId),
   ]);
-  setBusy(false);
+  const failed = [profile, sessions, messages, notes, picks].find(result => result.error);
+  if (failed?.error) throw failed.error;
   const blob = new Blob([JSON.stringify({ exported_at: new Date().toISOString(), profile: profile.data, field_notes: notes.data, picks: picks.data, wingwoman_sessions: sessions.data, wingwoman_messages: messages.data }, null, 2)], { type: 'application/json' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'tellher-my-data.json'; a.click(); URL.revokeObjectURL(a.href);
+  setNote('Your data download is ready.');
+  } catch { setNote('Your data could not be downloaded. Please try again.'); }
+  finally { setBusy(false); }
  };
  const deleteAccount = async () => {
   setBusy(true);
