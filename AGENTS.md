@@ -24,7 +24,7 @@
 - Picks are owner-written; checked accepted Direct Circle reads expose only recommender first name. No ratings or ranking.
 - Profiles use tellher_member_profile viewer checks; avatars are signed afterward server-side. Raw profiles and storage paths stay private.
 - Profile discussion lists use tellher_member_ripples (named-only, profile-checked and tellher_can_view); Wingwoman stars use targetless tellher_my_stars, so anonymous ownership is never associated with a public profile.
-- Extended discovery uses tellher_extended_circle; Connect uses ordinary trust requests, not a second relationship model.
+- Circle groups code exchanges apart from membership invites; discovery and requests reuse checked sources.
 - Search composes checked profile, shelf and feed sources; client-side filters never broaden access.
 - Feed and Constellations compose checked sources client-side, ordered by trust distance, topic and freshness; no new access.
 - Between Us messaging is one-to-one only, readable by participants via RLS, with all writes (open, send, read marker, block, report) through checked database functions that re-check accepted Direct trust and blocks on every send; it is never initiated from anonymous content.

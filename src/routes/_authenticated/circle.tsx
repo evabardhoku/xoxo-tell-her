@@ -1,18 +1,17 @@
 import { MembershipInvite } from '@/components/membership-invite';
 import { MemberAvatar } from '@/components/avatars';
-import { ConnectInPerson, RedeemTrustCode } from '@/components/trust-code';
+import { CircleConnection } from '@/components/trust-code';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { zodValidator, fallback } from '@tanstack/zod-adapter';
 import { z } from 'zod';
-import { useMemo, useState, type FormEvent } from 'react';
+import { useMemo, useState } from 'react';
 import { Check, Search, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { pageHead } from '@/lib/metadata';
 import { circleQuery, memberName, type CircleEntry } from '@/lib/circle';
-import { emailSchema } from '@/lib/profile';
 import { ExtendedCircle } from '@/components/extended-circle';
 import { InboxList } from '@/components/inbox-list';
 import { ScrollPanel } from '@/components/scroll-panel';
@@ -41,7 +40,7 @@ function Circle() {
  return <>
   <div className="page-heading"><div><h1>My Circle</h1><p>Women you chose to trust directly.</p></div></div>
   <div className="ripple-tabs" role="tablist" aria-label="Circle views">{tab('direct', 'My Circle')}{tab('extended', 'Extended')}{tab('requests', 'Requests', pending > 0 ? String(pending) : undefined)}{tab('messages', 'Messages')}</div>
-  {view === 'direct' && <><DirectTab direct={direct} extendedCount={data.extendedCount} easing={easing} code={code} /><MembershipInvite /></>}
+  {view === 'direct' && <DirectTab direct={direct} extendedCount={data.extendedCount} code={code} />}
   {view === 'extended' && easing && <p className="form-note discovery-hint">Your Direct Circle introduces new paths as it grows. <Link to="/circle" search={{ view: 'direct' }} className="member-link">Add your first trusted woman</Link></p>}
   {view === 'extended' && <ExtendedCircle direct={direct} />}
   {view === 'messages' && <InboxList />}
@@ -49,9 +48,8 @@ function Circle() {
  </>;
 }
 
-function DirectTab({ direct, extendedCount, code }: { direct: CircleEntry[]; extendedCount: number; easing: boolean; code?: string | undefined }) {
- const qc = useQueryClient();
- return <div className="circle-grid">{code && <RedeemTrustCode initial={code} />}<section className="circle-card circle-hero" aria-label="Your trust network at a glance"><CircleRipple direct={direct.length} extended={extendedCount} /><div className="circle-hero-text"><h2>Your trust network</h2><p className="form-note">{direct.length === 0 ? 'Every connection starts with one woman you trust.' : `${direct.length} ${direct.length === 1 ? 'woman' : 'women'} in your Direct Circle, ${extendedCount} more within reach.`}</p></div></section><DirectCircle direct={direct} /><ConnectInPerson /><details className="add-trust-disclosure" open={direct.length === 0}><summary>Add someone by email</summary><AddMember onSent={() => qc.invalidateQueries({ queryKey: circleQuery.queryKey })} /></details>{!code && <RedeemTrustCode />}</div>;
+function DirectTab({ direct, extendedCount, code }: { direct: CircleEntry[]; extendedCount: number; code?: string | undefined }) {
+ return <div className="circle-direct-layout"><div className="circle-grid"><section className="circle-card circle-hero" aria-label="Your trust network at a glance"><CircleRipple direct={direct.length} extended={extendedCount} /><div className="circle-hero-text"><h2>Your trust network</h2><p className="form-note">{direct.length === 0 ? 'Every connection starts with one woman you trust.' : `${direct.length} ${direct.length === 1 ? 'woman' : 'women'} in your Direct Circle, ${extendedCount} more within reach.`}</p></div></section><DirectCircle direct={direct} /></div><div className="circle-connect-layout"><CircleConnection initial={code} /><MembershipInvite /></div></div>;
 }
 
 function RequestsTab() {
@@ -69,31 +67,6 @@ function RequestsTab() {
 
 function Member({ m, children, known }: { m: CircleEntry; children?: React.ReactNode; known?: string[] | undefined }) {
  return <li className="member-row"><MemberAvatar id={m.member_id} name={m.first_name} hasPhoto size={36} /><div className="member-meta"><Link to="/profile/$memberId" params={{ memberId: m.member_id }} className="member-link"><strong>{memberName(m)}</strong></Link>{m.city && <span>{m.city}</span>}{known && known.length > 0 && <span className="member-known">{known.slice(0, 3).join(' · ')}</span>}</div>{children && <div className="member-actions">{children}</div>}</li>;
-}
-
-function AddMember({ onSent }: { onSent: () => void }) {
- const [email, setEmail] = useState('');
- const [found, setFound] = useState<{ member_id: string; first_name: string; last_initial: string; city: string | null } | null>(null);
- const [note, setNote] = useState<{ text: string; error?: boolean } | null>(null);
- const [busy, setBusy] = useState(false);
- const search = async (e: FormEvent) => {
-  e.preventDefault(); setFound(null); setNote(null);
-  const parsed = emailSchema.safeParse(email); if (!parsed.success) return setNote({ text: parsed.error.issues[0]?.message ?? "Enter a valid email address.", error: true });
-  setBusy(true); const { data, error } = await supabase.rpc('tellher_find_member', { _email: parsed.data }); setBusy(false);
-  if (error) return setNote({ text: message(error), error: true });
-  if (!data?.length) return setNote({ text: 'No TellHer member matches that exact address.' });
-  setFound(data[0] ?? null);
- };
- const send = async () => {
-  if (!found) return; setBusy(true); const { error } = await supabase.rpc('tellher_send_trust', { _recipient: found.member_id }); setBusy(false);
-  if (error) return setNote({ text: message(error), error: true });
-  setNote({ text: `Connection request sent to ${memberName(found)}.` }); setFound(null); setEmail(''); onSent();
- };
- return <section className="circle-card"><h2>Add a woman you trust</h2><p className="form-note">Enter her exact email. It is only used to find her and is never shown to anyone.</p>
-  <form className="add-member" onSubmit={search}><div className="field"><label htmlFor="trust-email">Her email address</label><Input id="trust-email" type="email" autoComplete="off" value={email} onChange={e => setEmail(e.target.value)} /></div><Button type="submit" variant="outline" disabled={busy}><Search />Find</Button></form>
-  {found && <div className="member-row found-member"><span className="member-initial" aria-hidden>{found.first_name.slice(0, 1).toUpperCase()}</span><div className="member-meta"><strong>{memberName(found)}</strong>{found.city && <span>{found.city}</span>}</div><Button size="sm" variant="editorial" disabled={busy} onClick={send}>Connect</Button></div>}
-  {note && <p role={note.error ? 'alert' : 'status'} className={`form-note ${note.error ? 'form-error' : 'form-success'}`}>{note.text}</p>}
- </section>;
 }
 
 /** Animated trust ripple: you at the center, Direct Circle dots orbiting the inner ring, Extended Circle dots drifting on the outer ring, connections sweeping along. */
@@ -120,7 +93,7 @@ function DirectCircle({ direct }: { direct: CircleEntry[] }) {
    const f: Record<Exclude<Field, 'all'>, string[]> = { name: [d.first_name, p?.last_name ?? d.last_initial], location: [d.city ?? '', p?.country ?? ''], known: p?.known_for ?? [], ask: p?.ask_me_about ?? [] };
    return (field === 'all' ? Object.values(f).flat() : f[field]).some(v => v.toLowerCase().includes(q)); });
  }, [direct, details.data, text, field]);
- return <section className="circle-card"><h2>Direct Circle</h2>
+ return <section className="circle-card"><div className="circle-members-heading"><h2>Direct Circle</h2><Button asChild variant="outline" size="sm"><Link to="/search" search={{ q: '' }}><Search size={14} />Find members</Link></Button></div>
   {direct.length > 1 && <div className="field circle-search" role="search"><label htmlFor="dc-q" className="sr-only">Search My Circle</label><Input id="dc-q" value={text} onChange={e => setText(e.target.value)} placeholder="Search by name, city or topic" /></div>}
-  {direct.length ? shown.length ? <ScrollPanel label="Direct Circle members" className="member-list">{shown.map(m => <Member key={m.connection_id} m={m} known={details.data?.[m.member_id]?.known_for} />)}</ScrollPanel> : <p className="form-note">No one in your Direct Circle matches.</p> : <p className="form-note">No one yet. Connect in person or add her by email below.</p>}</section>;
+  {direct.length ? shown.length ? <ScrollPanel label="Direct Circle members" className="member-list">{shown.map(m => <Member key={m.connection_id} m={m} known={details.data?.[m.member_id]?.known_for} />)}</ScrollPanel> : <p className="form-note">No one in your Direct Circle matches.</p> : <p className="form-note">No one yet. Find a member or exchange a connection code.</p>}</section>;
 }
