@@ -1188,3 +1188,9 @@ summary:focus-visible { outline:2px solid var(--ring);outline-offset:3px; }
  .circle-connect-layout { grid-template-columns:minmax(0,1fr); }
  .circle-connection,.circle-invitation { padding:24px 18px; }
 }
+
+/* TellHer narrator voice: one quiet serif aside per region. */
+.voice-line { display: block; margin-top: .35rem; font-family: var(--font-editorial); font-style: italic; font-size: .95rem; line-height: 1.45; color: var(--muted-foreground); }
+.hero .voice-line { font-size: 1.05rem; margin-top: .5rem; }
+.voice-signature, .letter-signature--tellher { font-family: var(--font-handwritten); font-size: 1.15rem; color: var(--primary); }
+.letter-signature--tellher { margin-top: .75rem; }

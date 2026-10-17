@@ -13,6 +13,7 @@ import { Echo } from '@/components/echo';
 import { ScrollPanel } from '@/components/scroll-panel';
 import { replyLikesQuery } from '@/lib/notifications';
 import { OtherSide } from '@/components/other-side';
+import { isSensitive } from '@/lib/voice';
 import { PerspectiveMap } from '@/components/perspective-map';
 import { PerspectiveSynthesis } from '@/components/perspective-synthesis';
 import { pageHead } from '@/lib/metadata';
@@ -41,6 +42,7 @@ function QuestionPage() {
  const [note, setNote] = useState<{ text: string; error?: boolean } | null>(null);
  if (!data.question) return <Unavailable />;
  const q = data.question;
+ const quiet = isSensitive(q.body, q.category);
  const refresh = () => Promise.all([qc.invalidateQueries({ queryKey: questionQuery(id).queryKey }), qc.invalidateQueries({ queryKey: feedQuery.queryKey }), qc.invalidateQueries({ queryKey: feedMapQuery.queryKey })]);
  const removeReply = async (rid: string) => {
   if (!window.confirm('Delete your perspective?')) return;
@@ -54,16 +56,18 @@ function QuestionPage() {
     <div className="eyebrow">TRUST RIPPLE</div>
    <p className="question-body">{q.body}</p>
    <RippleAuthor identity={q} showAnonymous />
+   {q.author_visibility !== 'named' && !quiet && <p className="voice-line">No names. Just the part that mattered.</p>}
    <div className="question-meta"><span className="question-category">{q.category}</span><span>{reachContext(q.audience_scope)}</span><span>{relativeTime(q.created_at)}</span>{q.is_mine && <span className="mine-label">Your Ripple</span>}</div>
   </article>
   {q.author_visibility === 'named' ? <section aria-labelledby="comments-title" className="reply-section"><h2 id="comments-title">Comments</h2><OpenComments id={id} isAuthor={q.is_mine} /></section> : <>
-   <Echo id={id} isAuthor={q.is_mine} />
+   <Echo id={id} isAuthor={q.is_mine} quiet={quiet} />
    <section aria-label="Range of perspectives" className="perspective-overview"><PerspectiveMap counts={tally(data.replies)} /></section>
    {!q.is_mine && !q.my_reply_id && <ReplyForm id={id} onDone={() => { setNote({ text: 'Thank you. Your perspective was added.' }); refresh(); }} />}
    <section aria-labelledby="replies-title" className="reply-section">
    <h2 id="replies-title">Perspectives</h2>
+   <p className="voice-line">Not a verdict. Just perspectives.</p>
    {note && <p role={note.error ? 'alert' : 'status'} className={`form-note ${note.error ? 'form-error' : 'form-success'}`}>{note.text}</p>}
-   {data.replies.length === 0 ? <p className="form-note">No perspectives yet.</p> : <>
+   {data.replies.length === 0 ? <p className="form-note">No perspectives yet.{!quiet && ' Same story, different women, different read — be the first.'}</p> : <>
     <ScrollPanel label="Perspectives" className="perspective-scroll">{[...data.replies].sort((a, b) => (likes.data?.[b.id]?.likes ?? 0) - (likes.data?.[a.id]?.likes ?? 0) || a.created_at.localeCompare(b.created_at)).map(r => <li key={r.id} className={`reply-card ${r.is_mine ? 'reply-card--mine' : ''} ${r.perspective_tag === 'been_there' ? 'reply-card--been-there' : ''}`}>
       <div className="perspective-avatar"><AnonymousAvatar avatar={r.anonymous_avatar} size={44} /></div>
       <div className="perspective-main"><div className="question-meta"><span className="perspective-name">{r.is_mine ? 'You' : 'A TellHer woman'}</span><span>{relativeTime(r.created_at)}</span>{r.is_mine && <DropdownMenu><DropdownMenuTrigger asChild><Button size="icon" variant="ghost" aria-label="Perspective options"><MoreHorizontal size={16} /></Button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem onSelect={() => void removeReply(r.id)}><Trash2 />Delete perspective</DropdownMenuItem></DropdownMenuContent></DropdownMenu>}</div>
@@ -75,7 +79,7 @@ function QuestionPage() {
    <PerspectiveSynthesis key={data.replies.length} id={id} replies={data.replies} />
    </section>
   {q.is_mine && q.my_instinct && <aside className="first-instinct" aria-label="My first instinct"><p className="private-note"><LockKeyhole size={12} />My first instinct · only you</p><p className="instinct-line">{instincts.find(i => i.value === q.my_instinct)?.label}</p>{q.my_note && <p className="form-note">{q.my_note}</p>}</aside>}
-    <section className="trust-letter-section" aria-label="Star Letter"><OtherSide id={id} isAuthor={q.is_mine} /></section>
+    <section className="trust-letter-section" aria-label="Star Letter"><OtherSide id={id} isAuthor={q.is_mine} quiet={quiet} /></section>
   </>}
   {(sky.data ?? []).some(r => r.category === q.category) && <Link to="/constellations/$topic" params={{ topic: q.category }} className="member-link related-constellation">Explore similar stories in Constellations</Link>}
  </div>;

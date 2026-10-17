@@ -9,7 +9,7 @@ import { errorText, relativeTime } from '@/lib/askher';
 import { outcomeLabel, outcomeStatuses, type Outcome } from '@/lib/outcome';
 
 /** "The Other Side": the author's own update on what happened next. Others see it only when she shares it. */
-export function OtherSide({ id, isAuthor }: { id: string; isAuthor: boolean }) {
+export function OtherSide({ id, isAuthor, quiet = false }: { id: string; isAuthor: boolean; quiet?: boolean }) {
  const qc = useQueryClient();
  const q = useQuery({ queryKey: ['outcome', id], queryFn: async () => { const { data, error } = await supabase.rpc('tellher_outcome', { _q: id }); if (error) throw error; return ((data ?? [])[0] ?? null) as Outcome | null; } });
  const [editing, setEditing] = useState(false);
@@ -31,12 +31,13 @@ export function OtherSide({ id, isAuthor }: { id: string; isAuthor: boolean }) {
     <p className="other-side-summary">{o.summary}</p>
     {o.note && <p className="other-side-note">{o.note}</p>}
     <p className="letter-signature">With trust,<br />The woman who asked</p>
+     <p className="letter-signature letter-signature--tellher">{quiet ? <>With care,<br />TellHer</> : <>Until the next chapter,<br />XOXO, TellHer</>}</p>
     </article>}
     <p className="form-note">{isAuthor ? (o.shared ? 'Shared anonymously with the women who could see this Ripple' : <span className="private-note"><LockKeyhole size={12} />Private — only you can see this</span>) : 'An update from the woman who asked'} · {relativeTime(o.updated_at)}</p>
     <div className="trust-letter-actions">{isAuthor && <Button size="sm" variant="ghost" onClick={() => setEditing(true)}>Edit letter</Button>}{opened && <Button size="sm" variant="ghost" onClick={() => setOpened(false)}><ChevronUp size={14} />Close letter</Button>}</div>
    </>
    : <>
-    <p className="other-side-summary">What happened in the end?</p>
+    <p className="other-side-summary">So… what happened next?</p><p className="voice-line">Every story deserves an after.</p>
 
     <Button variant="soft" onClick={() => setEditing(true)}>Write your Star Letter</Button>
    </>}

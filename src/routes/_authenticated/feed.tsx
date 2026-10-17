@@ -29,13 +29,14 @@ function MyFeed() {
  const circleCount = open.filter(q => ['circle', 'mine'].includes(ctx.data?.[q.id]?.relation ?? '')).length;
  const first = profile.data?.first_name;
  return <div className="open-feed">
+  <p className="voice-line open-feed-voice">From women you know, not strangers with five stars.</p>
   <Link to="/ripple" className="mind-entry open-feed-mind"><span className="member-initial" aria-hidden>{first?.slice(0, 1) ?? 'T'}</span><span>What do you want to share today?</span></Link>
   <div className="segmented open-feed-filter" role="group" aria-label="Filter My Feed">{filters.map(f => <Button variant="ghost" key={f.value} type="button" className="segmented-option" aria-pressed={mode === f.value} onClick={() => { setMode(f.value); setLimit(6); }}>{f.label}</Button>)}</div>
   {feed.isPending ? <p role="status" className="form-note">Gathering your feed…</p>
    : feed.isError ? <p role="alert" className="form-note form-error">Your feed could not be loaded. <Button variant="ghost" size="sm" onClick={() => void feed.refetch()}>Try again</Button></p>
    : <>
     {mode !== 'community' && ctx.isSuccess && circleCount < 3 && open.length > circleCount && <p className="form-note open-feed-quiet">Your Circle is still quiet. Here are a few open conversations from TellHer.</p>}
-    {!list.length ? <section className="empty-panel"><p>{mode === 'circle' ? 'No open Ripples from your Circle yet.' : 'No open Ripples yet. When women post with their name, they’ll appear here.'}</p></section>
+    {!list.length ? <section className="empty-panel"><p>{mode === 'circle' ? 'No open Ripples from your Circle yet.' : 'No tea yet. Give it time. When women post with their name, their Ripples appear here.'}</p></section>
      : <ol className="open-feed-list">{list.slice(0, limit).map(q => { const c = ctx.data?.[q.id]; const rel = c?.relation ?? 'community'; return <li key={q.id}>
       <article className={`open-ripple open-ripple--${rel === 'mine' ? 'circle' : rel}${q.is_mine ? ' open-ripple--mine' : ''}`} aria-label={`Open Ripple by ${q.first_name ?? 'a member'}`}>
        <header className="open-ripple-head"><RippleAuthor identity={q} /><p className="open-ripple-context"><span className="trust-tag">{relationLabel(c)}</span><span>{relativeTime(q.created_at)}</span></p></header>

@@ -23,7 +23,7 @@ function SkyHub() {
  const { newcomer } = useDiscovery();
  const { view } = Route.useSearch();
  return <div className="sky-hub">
-  <header className="sky-head"><div><h1>Sky</h1><p className="form-note">Stories connect even when identities don’t.</p></div><Button asChild variant="soft" size="sm"><Link to="/ripple">Ask anonymously</Link></Button></header>
+  <header className="sky-head"><div><h1>Sky</h1><p className="voice-line">Look up. Someone has been here before.</p></div><Button asChild variant="soft" size="sm"><Link to="/ripple">Ask anonymously</Link></Button></header>
   {sky.isError ? <p role="alert" className="form-note form-error">The sky could not be loaded. Please refresh.</p> : newcomer && !sky.data?.length ? <StarterConstellations /> : sky.data ? <ConstellationSky rows={sky.data} /> : <p role="status" className="form-note">Drawing the sky…</p>}
   <section id="anonymous-ripples" aria-labelledby="anon-title" ref={el => { if (el && view === 'ripples') el.scrollIntoView(); }}><AnonymousRipples /></section>
  </div>;
@@ -50,7 +50,7 @@ function AnonymousRipples() {
   <div className="star-filter" role="radiogroup" aria-labelledby="anon-title">
    <h2 id="anon-title" className="sky-section-title">Stars to visit</h2>
    <div className="star-filter-options">{starModes.map(m => <button key={m.value} type="button" role="radio" aria-checked={mode === m.value} className="star-filter-chip" onClick={() => { setMode(m.value); setLimit(6); }}>{m.label}</button>)}</div>
-   <p className="form-note">{current.hint}</p>
+   <p className="form-note">{current.hint}</p>{mode === 'trending' && <p className="voice-line">Apparently, some things are happening to more of us than we think.</p>}
   </div>
   {feed.isPending ? <p role="status" className="form-note">Gathering stars…</p>
   : feed.isError ? <p role="alert" className="form-note form-error">Stars could not be loaded. <Button variant="ghost" size="sm" onClick={() => void feed.refetch()}>Try again</Button></p>

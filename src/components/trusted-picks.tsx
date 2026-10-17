@@ -53,7 +53,7 @@ export function TrustedPicks({ ownerOnly = false }: { ownerOnly?: boolean }) {
   add.mutate({ title, note, location });
  };
  return <section className={ownerOnly ? "picks-card owner-picks" : "circle-card picks-card"} aria-labelledby="picks-title">
-  <div className="picks-head"><div><h2 id="picks-title">Picks</h2>{!ownerOnly && <p className="form-note">Recommendations from your Direct Circle.</p>}</div>{!open && <Button size="sm" variant="outline" onClick={() => setOpen(true)}><Plus />Share a pick</Button>}</div>
+  <div className="picks-head"><div><h2 id="picks-title">Picks</h2><p className="voice-line">No stars. Just women willing to put their name behind it.</p>{!ownerOnly && <p className="form-note">Recommendations from your Direct Circle.</p>}</div>{!open && <Button size="sm" variant="outline" onClick={() => setOpen(true)}><Plus />Share a pick</Button>}</div>
   {open && <form className="pick-form" onSubmit={submit}>
    <fieldset className="field"><legend className="field-legend">Category</legend><div className="choice-row">{pickCategories.map(c => <Button variant="ghost" type="button" key={c} className="choice-chip" aria-pressed={category === c} onClick={() => setCategory(c)}>{c}</Button>)}</div></fieldset>
    <div className="field"><label htmlFor="pick-title">Title</label><Input id="pick-title" name="title" maxLength={120} placeholder="e.g. A plumber who explains everything" /></div>

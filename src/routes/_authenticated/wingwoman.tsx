@@ -36,7 +36,7 @@ function Wingwoman() {
  const { s } = Route.useSearch();
  const sessions = useQuery(sessionsQuery);
  return <>
-  <div className="page-heading"><div><h1>Wingwoman</h1><p className="private-note"><LockKeyhole size={12} />A private conversation, at your own pace.</p><p className="form-note">A reflection tool, not a therapist, lawyer or emergency service.</p></div></div>
+  <div className="page-heading"><div><h1>Wingwoman</h1><p className="private-note"><LockKeyhole size={12} />A private conversation, at your own pace.</p><p className="form-note">A reflection tool, not a therapist, lawyer or emergency service.</p>{!s && <p className="voice-line">Before you ask everyone else… what do you think?</p>}</div></div>
   <div className="ww-layout">
    <aside className="ww-side" aria-label="What you have been through">
     <h2 className="ww-side-title">What you have been through</h2>

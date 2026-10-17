@@ -37,7 +37,7 @@ function Circle() {
  const easing = isNew && direct.length === 0;
  const tab = (v: View, label: string, hint?: string) => <Link to="/circle" search={{ view: v }} className="ripple-tab" role="tab" aria-selected={view === v} data-active={view === v}>{label}{hint && <span className="tab-hint"> · {hint}</span>}</Link>;
  return <>
-  <div className="page-heading"><div><h1>My Circle</h1><p>Women you chose to trust directly.</p></div></div>
+  <div className="page-heading"><div><h1>My Circle</h1><p>Women you chose to trust directly.</p><p className="voice-line">Not followers. Women you actually trust.</p></div></div>
   <div className="ripple-tabs" role="tablist" aria-label="Circle views">{tab('direct', 'My Circle')}{tab('extended', 'Extended')}{tab('requests', 'Requests', pending > 0 ? String(pending) : undefined)}{tab('messages', 'Messages')}</div>
   {view === 'direct' && <DirectTab direct={direct} extendedCount={data.extendedCount} code={code} />}
   {view === 'extended' && easing && <p className="form-note discovery-hint">Your Direct Circle introduces new paths as it grows. <Link to="/circle" search={{ view: 'direct' }} className="member-link">Add your first trusted woman</Link></p>}

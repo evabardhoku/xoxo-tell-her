@@ -45,7 +45,7 @@ function Profile() {
  const m = view.data;
  const place = [m?.city, m?.country].filter(Boolean).join(', ');
  return <>
-  <div className="page-heading"><div><h1>Your profile</h1><p>This is exactly how other women see you.</p></div><Button variant="editorial" size="sm" onClick={() => setEditing(true)}><Pencil />Edit profile</Button></div>
+  <div className="page-heading"><div><h1>Your profile</h1><p>This is exactly how other women see you.</p><p className="voice-line">Your name, your story, your rules.</p></div><Button variant="editorial" size="sm" onClick={() => setEditing(true)}><Pencil />Edit profile</Button></div>
 
   <section className="circle-card me-header me-public" aria-labelledby="me-title">
    <span className="me-halo" aria-hidden />
