@@ -24,7 +24,7 @@ export const picksQuery = {
 };
 
 export function PickItem({ p, provenance, children }: { p: Pick; provenance: string; children?: React.ReactNode }) {
- return <li className="pick-item">
+ return <li className="pick-item pick-square">
   <div className="question-meta"><span className="question-category">{p.category}</span>{p.location && <span className="inline-flex items-center gap-1"><MapPin size={12} />{p.location}</span>}</div>
   <strong className="pick-title">{p.title}</strong>
   <p className="pick-note">{p.note}</p>
@@ -64,8 +64,8 @@ export function TrustedPicks({ ownerOnly = false }: { ownerOnly?: boolean }) {
    <p className="form-note">Shared with women who have you in their Direct Circle, shown with your first name.</p>
   </form>}
   {picks.isPending ? <p role="status" className="form-note">Loading picks…</p> : picks.isError ? <p role="alert" className="form-note form-error">Picks couldn’t be loaded.</p> : <>
-{!ownerOnly && (picks.data.circle.length ? <ScrollPanel label="Picks from your circle" className="pick-list">{picks.data.circle.map(p => <PickItem key={p.id} p={p} provenance={`Recommended by ${p.recommender} · in your Direct Circle`} />)}</ScrollPanel> : <p className="form-note">No picks from your circle yet.</p>)}
-   {picks.data.mine.length > 0 && <><h3 className="picks-sub">Your picks</h3><ScrollPanel label="Your picks" className="pick-list">{picks.data.mine.map(p => <PickItem key={p.id} p={p} provenance="Shared by you"><Button size="sm" variant="ghost" aria-label={`Delete pick ${p.title}`} disabled={remove.isPending} onClick={() => remove.mutate(p.id)}><Trash2 /></Button></PickItem>)}</ScrollPanel></>}
+{!ownerOnly && (picks.data.circle.length ? <ScrollPanel label="Picks from your circle" className="picks-grid">{picks.data.circle.map(p => <PickItem key={p.id} p={p} provenance={`Recommended by ${p.recommender} · in your Direct Circle`} />)}</ScrollPanel> : <p className="form-note">No picks from your circle yet.</p>)}
+    {picks.data.mine.length > 0 && <><h3 className="picks-sub">Your picks</h3><ScrollPanel label="Your picks" className="picks-grid">{picks.data.mine.map(p => <PickItem key={p.id} p={p} provenance="Shared by you"><Button size="sm" variant="ghost" aria-label={`Delete pick ${p.title}`} disabled={remove.isPending} onClick={() => remove.mutate(p.id)}><Trash2 /></Button></PickItem>)}</ScrollPanel></>}
   </>}
  </section>;
 }

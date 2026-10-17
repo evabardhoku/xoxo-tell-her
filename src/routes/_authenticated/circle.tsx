@@ -48,9 +48,9 @@ function Circle() {
  </>;
 }
 
-function DirectTab({ direct, code }: { direct: CircleEntry[]; extendedCount: number; easing: boolean; code?: string | undefined }) {
+function DirectTab({ direct, extendedCount, code }: { direct: CircleEntry[]; extendedCount: number; easing: boolean; code?: string | undefined }) {
  const qc = useQueryClient();
- return <div className="circle-grid">{code && <RedeemTrustCode initial={code} />}<DirectCircle direct={direct} /><ConnectInPerson /><details className="add-trust-disclosure" open={direct.length === 0}><summary>Add someone by email</summary><AddMember onSent={() => qc.invalidateQueries({ queryKey: circleQuery.queryKey })} /></details>{!code && <RedeemTrustCode />}</div>;
+ return <div className="circle-grid">{code && <RedeemTrustCode initial={code} />}<section className="circle-card circle-hero" aria-label="Your trust network at a glance"><CircleRipple direct={direct.length} extended={extendedCount} /><div className="circle-hero-text"><h2>Your trust network</h2><p className="form-note">{direct.length === 0 ? 'Every connection starts with one woman you trust.' : `${direct.length} ${direct.length === 1 ? 'woman' : 'women'} in your Direct Circle, ${extendedCount} more within reach.`}</p></div></section><DirectCircle direct={direct} /><ConnectInPerson /><details className="add-trust-disclosure" open={direct.length === 0}><summary>Add someone by email</summary><AddMember onSent={() => qc.invalidateQueries({ queryKey: circleQuery.queryKey })} /></details>{!code && <RedeemTrustCode />}</div>;
 }
 
 function RequestsTab() {
@@ -95,10 +95,16 @@ function AddMember({ onSent }: { onSent: () => void }) {
  </section>;
 }
 
-function ReachRings({ direct, extended }: { direct: number; extended: number }) {
- return <svg className="reach-rings" viewBox="0 0 240 240" role="img" aria-label={`You, ${direct} in your Direct Circle, ${extended} more in your Extended Circle`}>
-  <circle cx="120" cy="120" r="100" className="ring-extended" /><circle cx="120" cy="120" r="68" className="ring-direct" /><circle cx="120" cy="120" r="9" className="ring-you" />
-  <text x="120" y="146" className="ring-label">You</text><text x="120" y="47" className="ring-label">Direct · {direct}</text><text x="120" y="236" className="ring-label">Extended · {extended}</text>
+/** Animated trust ripple: you at the center, Direct Circle dots orbiting the inner ring, Extended Circle dots drifting on the outer ring, connections sweeping along. */
+function CircleRipple({ direct, extended }: { direct: number; extended: number }) {
+ const inner = Math.max(direct, 3); const outer = Math.max(Math.min(extended, 14), 5);
+ const dot = (i: number, n: number, r: number, cls: string) => { const a = (i / n) * Math.PI * 2; return <circle key={i} cx={160 + Math.cos(a) * r} cy={160 + Math.sin(a) * r} className={cls} style={{ animationDelay: `${i * 0.4}s` }} />; };
+ const link = (i: number, n: number, r: number) => { const a = (i / n) * Math.PI * 2; return <line key={i} x1="160" y1="160" x2={160 + Math.cos(a) * r} y2={160 + Math.sin(a) * r} className="cr-link" style={{ animationDelay: `${i * 0.7}s` }} />; };
+ return <svg className="circle-ripple" viewBox="0 0 320 320" role="img" aria-label={`You at the center, ${direct} in your Direct Circle, ${extended} more in your Extended Circle`}>
+  <circle cx="160" cy="160" r="148" className="cr-ring cr-ring-1" /><circle cx="160" cy="160" r="104" className="cr-ring cr-ring-2" /><circle cx="160" cy="160" r="62" className="cr-ring cr-ring-3" />
+  <g className="cr-orbit cr-orbit-outer">{Array.from({ length: outer }, (_, i) => dot(i, outer, 148, 'cr-dot cr-dot-ext'))}</g>
+  <g className="cr-orbit cr-orbit-inner">{Array.from({ length: inner }, (_, i) => link(i, inner, 104))}{Array.from({ length: inner }, (_, i) => dot(i, inner, 104, 'cr-dot cr-dot-direct'))}</g>
+  <circle cx="160" cy="160" r="16" className="cr-you" /><text x="160" y="165" className="cr-you-label">You</text>
  </svg>;
 }
 
