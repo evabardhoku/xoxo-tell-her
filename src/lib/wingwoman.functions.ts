@@ -162,12 +162,12 @@ export const proposeRippleDraft = createServerFn({ method: 'POST' })
   return { draft };
  });
 
-/** Wingwoman context -> Ripple topic, so suggestion chips can point at related constellations and letters. */
+/** Wingwoman context -> Ripple topic, so suggestion chips can point at related constellations. */
 const contextTopic: Record<string, string> = {
  Dating: 'Dating & Boundaries', Work: 'Work', Friendship: 'Everyday Life', Family: 'Everyday Life', Other: 'Everyday Life',
 };
 
-/** Related Constellations and Letters for a session's topic, so empty suggestions are never shown. Owner-scoped by RLS. */
+/** Related Constellations for a session's topic, so empty suggestions are never shown. Owner-scoped by RLS. */
 export const wingwomanRelated = createServerFn({ method: 'GET' })
  .middleware([requireSupabaseAuth])
  .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
@@ -178,6 +178,5 @@ export const wingwomanRelated = createServerFn({ method: 'GET' })
   const { data: sky, error } = await context.supabase.rpc('tellher_constellation');
   if (error) { console.error(error); throw new Error('Related stories could not be loaded.'); }
   const stars = (sky ?? []).filter((r: { category: string }) => r.category === topic);
-  const withLetters = stars.find((r: { has_letters?: boolean }) => r.has_letters);
-  return { topic, constellations: stars.length, lettersRippleId: (withLetters as { id?: string } | undefined)?.id ?? null };
+  return { topic, constellations: stars.length };
  });

@@ -288,6 +288,13 @@
       "when": 1792247107300,
       "tag": "0040_constellation_reply_count",
       "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "7",
+      "when": 1792249014698,
+      "tag": "0041_retire_letters_and_echo_rooms",
+      "breakpoints": true
     }
   ]
 }

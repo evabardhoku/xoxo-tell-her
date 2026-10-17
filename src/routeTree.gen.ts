@@ -30,7 +30,6 @@ import { Route as AuthenticatedAskherIdRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedBetweenUsConversationIdRouteImport } from './routes/_authenticated/between-us_.$conversationId'
 import { Route as AuthenticatedConstellationsTopicRouteImport } from './routes/_authenticated/constellations_.$topic'
 import { Route as AuthenticatedProfileMemberIdRouteImport } from './routes/_authenticated/profile_.$memberId'
-import { Route as AuthenticatedAskherIdRoomRouteImport } from './routes/_authenticated/askher_.$id_.room'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -141,12 +140,6 @@ const AuthenticatedProfileMemberIdRoute =
     path: '/profile/$memberId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedAskherIdRoomRoute =
-  AuthenticatedAskherIdRoomRouteImport.update({
-    id: '/askher_/$id_/room',
-    path: '/askher/$id/room',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -169,7 +162,6 @@ export interface FileRoutesByFullPath {
   '/between-us/$conversationId': typeof AuthenticatedBetweenUsConversationIdRoute
   '/constellations/$topic': typeof AuthenticatedConstellationsTopicRoute
   '/profile/$memberId': typeof AuthenticatedProfileMemberIdRoute
-  '/askher/$id/room': typeof AuthenticatedAskherIdRoomRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -192,7 +184,6 @@ export interface FileRoutesByTo {
   '/between-us/$conversationId': typeof AuthenticatedBetweenUsConversationIdRoute
   '/constellations/$topic': typeof AuthenticatedConstellationsTopicRoute
   '/profile/$memberId': typeof AuthenticatedProfileMemberIdRoute
-  '/askher/$id/room': typeof AuthenticatedAskherIdRoomRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -217,7 +208,6 @@ export interface FileRoutesById {
   '/_authenticated/between-us_/$conversationId': typeof AuthenticatedBetweenUsConversationIdRoute
   '/_authenticated/constellations_/$topic': typeof AuthenticatedConstellationsTopicRoute
   '/_authenticated/profile_/$memberId': typeof AuthenticatedProfileMemberIdRoute
-  '/_authenticated/askher_/$id_/room': typeof AuthenticatedAskherIdRoomRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -242,7 +232,6 @@ export interface FileRouteTypes {
     | '/between-us/$conversationId'
     | '/constellations/$topic'
     | '/profile/$memberId'
-    | '/askher/$id/room'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -265,7 +254,6 @@ export interface FileRouteTypes {
     | '/between-us/$conversationId'
     | '/constellations/$topic'
     | '/profile/$memberId'
-    | '/askher/$id/room'
   id:
     | '__root__'
     | '/'
@@ -289,7 +277,6 @@ export interface FileRouteTypes {
     | '/_authenticated/between-us_/$conversationId'
     | '/_authenticated/constellations_/$topic'
     | '/_authenticated/profile_/$memberId'
-    | '/_authenticated/askher_/$id_/room'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -449,13 +436,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileMemberIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/askher_/$id_/room': {
-      id: '/_authenticated/askher_/$id_/room'
-      path: '/askher/$id/room'
-      fullPath: '/askher/$id/room'
-      preLoaderRoute: typeof AuthenticatedAskherIdRoomRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
   }
 }
 
@@ -476,7 +456,6 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBetweenUsConversationIdRoute: typeof AuthenticatedBetweenUsConversationIdRoute
   AuthenticatedConstellationsTopicRoute: typeof AuthenticatedConstellationsTopicRoute
   AuthenticatedProfileMemberIdRoute: typeof AuthenticatedProfileMemberIdRoute
-  AuthenticatedAskherIdRoomRoute: typeof AuthenticatedAskherIdRoomRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -497,7 +476,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedBetweenUsConversationIdRoute,
   AuthenticatedConstellationsTopicRoute: AuthenticatedConstellationsTopicRoute,
   AuthenticatedProfileMemberIdRoute: AuthenticatedProfileMemberIdRoute,
-  AuthenticatedAskherIdRoomRoute: AuthenticatedAskherIdRoomRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

@@ -1,0 +1,17 @@
+DROP FUNCTION IF EXISTS public.tellher_help_letter(uuid);
+DROP FUNCTION IF EXISTS public.tellher_unhelp_letter(uuid);
+DROP FUNCTION IF EXISTS public.tellher_report_letter(uuid,text);
+DROP FUNCTION IF EXISTS public.tellher_topic_letters(text);
+DROP FUNCTION IF EXISTS public.tellher_can_write_letter(uuid);
+DROP FUNCTION IF EXISTS public.tellher_letters(uuid);
+DROP FUNCTION IF EXISTS public.tellher_write_letter(uuid,text,text);
+DROP FUNCTION IF EXISTS public.tellher_delete_letter(uuid);
+DROP FUNCTION IF EXISTS public.tellher_echo_room_status(uuid);
+DROP FUNCTION IF EXISTS public.tellher_echo_room(uuid);
+DROP FUNCTION IF EXISTS public.tellher_echo_room_post(uuid,text);
+DROP FUNCTION IF EXISTS public.tellher_report_room_message(uuid,text);
+REVOKE ALL ON public.ripple_letters, public.letter_helps, public.echo_room_messages, public.echo_room_voices FROM anon, authenticated;
+COMMENT ON TABLE public.ripple_letters IS 'DEPRECATED: Letters from the Other Side removed from the product';
+COMMENT ON TABLE public.letter_helps IS 'DEPRECATED: Letters from the Other Side removed from the product';
+COMMENT ON TABLE public.echo_room_messages IS 'DEPRECATED: Echo Rooms removed from the product';
+COMMENT ON TABLE public.echo_room_voices IS 'DEPRECATED: Echo Rooms removed from the product';

@@ -1200,7 +1200,6 @@ export type Database = {
       tellher_block: { Args: { _member: string }; Returns: undefined }
       tellher_can_message: { Args: { _member: string }; Returns: boolean }
       tellher_can_view: { Args: { _q: string }; Returns: boolean }
-      tellher_can_write_letter: { Args: { _q: string }; Returns: boolean }
       tellher_cancel_trust: { Args: { _id: string }; Returns: undefined }
       tellher_cancel_trust_code: { Args: { _id: string }; Returns: undefined }
       tellher_circle_picks: {
@@ -1242,33 +1241,11 @@ export type Database = {
           max_uses: number
         }[]
       }
-      tellher_delete_letter: { Args: { _id: string }; Returns: undefined }
       tellher_delete_outcome: { Args: { _q: string }; Returns: undefined }
       tellher_delete_question: { Args: { _id: string }; Returns: undefined }
       tellher_delete_reply: { Args: { _id: string }; Returns: undefined }
       tellher_echo: { Args: { _id: string }; Returns: undefined }
-      tellher_echo_room: {
-        Args: { _q: string }
-        Returns: {
-          body: string
-          created_at: string
-          id: string
-          mine: boolean
-          voice: number
-        }[]
-      }
       tellher_echo_room_can_enter: { Args: { _q: string }; Returns: boolean }
-      tellher_echo_room_post: {
-        Args: { _body: string; _q: string }
-        Returns: string
-      }
-      tellher_echo_room_status: {
-        Args: { _q: string }
-        Returns: {
-          can_enter: boolean
-          unlocked: boolean
-        }[]
-      }
       tellher_echo_signal: {
         Args: { _id: string }
         Returns: {
@@ -1335,7 +1312,6 @@ export type Database = {
           member_id: string
         }[]
       }
-      tellher_help_letter: { Args: { _id: string }; Returns: undefined }
       tellher_inbox: {
         Args: never
         Returns: {
@@ -1357,18 +1333,6 @@ export type Database = {
       tellher_is_moderator: { Args: never; Returns: boolean }
       tellher_is_participant: { Args: { _c: string }; Returns: boolean }
       tellher_is_question_author: { Args: { _q: string }; Returns: boolean }
-      tellher_letters: {
-        Args: { _q: string }
-        Returns: {
-          body: string
-          created_at: string
-          help_count: number
-          helped: boolean
-          id: string
-          mine: boolean
-          where_now: string
-        }[]
-      }
       tellher_like_reply: { Args: { _reply: string }; Returns: undefined }
       tellher_mark_notifications_read: { Args: never; Returns: undefined }
       tellher_mark_read: { Args: { _c: string }; Returns: undefined }
@@ -1574,19 +1538,11 @@ export type Database = {
           reply_id: string
         }[]
       }
-      tellher_report_letter: {
-        Args: { _id: string; _reason: string }
-        Returns: undefined
-      }
       tellher_report_message: {
         Args: { _id: string; _reason: string }
         Returns: undefined
       }
       tellher_report_question: {
-        Args: { _id: string; _reason: string }
-        Returns: undefined
-      }
-      tellher_report_room_message: {
         Args: { _id: string; _reason: string }
         Returns: undefined
       }
@@ -1687,28 +1643,12 @@ export type Database = {
           member_id: string
         }[]
       }
-      tellher_topic_letters: {
-        Args: { _category: string }
-        Returns: {
-          body: string
-          created_at: string
-          id: string
-          mine: boolean
-          question_id: string
-          where_now: string
-        }[]
-      }
       tellher_trust_code_allowed: { Args: never; Returns: boolean }
       tellher_trust_code_hash: { Args: { _code: string }; Returns: string }
       tellher_unblock: { Args: { _member: string }; Returns: undefined }
       tellher_unecho: { Args: { _id: string }; Returns: undefined }
-      tellher_unhelp_letter: { Args: { _id: string }; Returns: undefined }
       tellher_unlike_reply: { Args: { _reply: string }; Returns: undefined }
       tellher_unread_notifications: { Args: never; Returns: number }
-      tellher_write_letter: {
-        Args: { _body: string; _q: string; _where_now: string }
-        Returns: string
-      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

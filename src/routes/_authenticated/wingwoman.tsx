@@ -129,7 +129,6 @@ function Thread({ id }: { id: string }) {
   {showChips && <div className="ww-chips" aria-label="Where to go from here">
    <Button variant="link" type="button" className="member-link ww-context-link" onClick={() => navigate({ to: '/ripple', search: { from: id } })}>Ask women anonymously</Button>
    {r && r.constellations > 0 && <Button variant="link" type="button" className="member-link ww-context-link" onClick={() => navigate({ to: '/constellations/$topic', params: { topic: r.topic } })}>Explore similar stories</Button>}
-   {r?.lettersRippleId && <Button variant="link" type="button" className="member-link ww-context-link" onClick={() => navigate({ to: '/askher/$id', params: { id: r.lettersRippleId ?? '' } })}>Read relevant Letters</Button>}
   </div>}
   {atRisk && <SafetyPanel />}
   <div ref={end} />
