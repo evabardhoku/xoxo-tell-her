@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Route } from '@/routes/auth';
 
 const mocks = vi.hoisted(() => ({ navigate: vi.fn(), signIn: vi.fn(), signUp: vi.fn(), account: { user: null, ready: true } }));
-vi.mock('@tanstack/react-router', () => ({ createFileRoute: () => (options: unknown) => ({ options }), useNavigate: () => mocks.navigate, Link: ({ children }: { children: React.ReactNode }) => <a>{children}</a> }));
+vi.mock('@tanstack/react-router', () => ({ createFileRoute: () => (options: unknown) => ({ options, useSearch: () => ({ mode: 'signin' }) }), useNavigate: () => mocks.navigate, Link: ({ children }: { children: React.ReactNode }) => <a>{children}</a> }));
 vi.mock('@/hooks/account', () => ({ useAccount: () => mocks.account }));
 vi.mock('@/integrations/supabase/client', () => ({ supabase: { auth: { signInWithPassword: mocks.signIn, signUp: mocks.signUp } } }));
 vi.mock('@/integrations/lovable', () => ({ lovable: { auth: {} } }));

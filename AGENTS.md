@@ -9,7 +9,7 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Public routes stay top-level; private routes use client-only `_authenticated` to avoid redirect loops.
+- Public routes stay top-level; private routes use client-only `_authenticated`. Landing links select validated auth modes; members get one feed entry.
 - One root auth subscriber clears queries before identity changes and ignores stale lookups; profiles stay owner-scoped.
 - Extend checked systems; never duplicate paths.
 - Trust/content writes use checked functions. Ripple identity uses additive checked publication/representation, immutable visibility, and private ownership. Named first names are Ripple-scoped; anonymous identity and responder privacy never change.
