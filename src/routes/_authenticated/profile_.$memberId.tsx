@@ -10,6 +10,7 @@ import { pageHead } from '@/lib/metadata';
 import { MemberAvatar } from '@/components/avatars';
 import { TrustShelf } from '@/components/trust-shelf';
 import { MemberRipples } from '@/components/profile-discussions';
+import { ProfileConnection } from '@/components/profile-connection';
 
 const memberQuery = (id: string) => ({
  queryKey: ['member-profile', id],
@@ -51,7 +52,7 @@ function MemberProfile() {
      <span className="trust-context" data-relation={m.relation}>{context(m.relation, m.via)}</span>
      {m.bio && <p className="member-bio">{m.bio}</p>}
      {m.known_for.length > 0 && <div className="member-section"><h2>Known for</h2><ul className="tag-list">{m.known_for.map(t => <li key={t}>{t}</li>)}</ul></div>}
-     <MessageHer memberId={memberId} />{m.relation === 'extended' && <Button asChild variant="editorial" size="sm" className="mt-3"><Link to="/circle">Connect</Link></Button>}</div>
+     {m.relation !== 'self' && <ProfileConnection memberId={memberId} />}<MessageHer memberId={memberId} /></div>
    </header>
    {lists.slice(1).map(([label, items]) => items.length > 0 && <section key={label} className="member-section"><h2>{label}</h2><ul className="tag-list">{items.map(t => <li key={t}>{t}</li>)}</ul></section>)}
    {!m.bio && lists.every(([, i]) => !i.length) && <p className="form-note member-section">She hasn’t added more about herself yet.</p>}

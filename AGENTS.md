@@ -24,14 +24,14 @@
 - Picks are owner-written; checked accepted Direct Circle reads expose only recommender first name. No ratings or ranking.
 - Profiles use tellher_member_profile viewer checks; avatars are signed afterward server-side. Raw profiles and storage paths stay private.
 - Profile discussion lists use tellher_member_ripples (named-only, profile-checked and tellher_can_view); Wingwoman stars use targetless tellher_my_stars, so anonymous ownership is never associated with a public profile.
-- Circle groups code exchanges apart from membership invites; discovery and requests reuse checked sources.
+- Profile requests reuse checked trust writes; tier acceptance creates reciprocal edges. Direct-only helpers exclude Extended edges; Ripple audiences remain publication snapshots. Circle keeps codes apart from membership invites.
 - Search composes checked profile, shelf and feed sources; client-side filters never broaden access.
 - Feed and Constellations compose checked sources client-side, ordered by trust distance, topic and freshness; no new access.
 - Between Us messaging is one-to-one only, readable by participants via RLS, with all writes (open, send, read marker, block, report) through checked database functions that re-check accepted Direct trust and blocks on every send; it is never initiated from anonymous content.
 - One shell navigation includes Wingwoman. Shared identity navigation returns named Ripples to Feed and anonymous to Sky. Hubs preserve sub-page access and checked feeds.
 - Echo/Echo Rooms/The Other Side/Letters: anonymous Ripple add-ons via checked functions only. One Echo per member; counts and room entry (author + echoers) only at ECHO_THRESHOLD (mirrors DB); room voices are stable numbers; outcomes are author-only, private by default, shared only within Ripple reach; Letters (echoers, or the author after a shared outcome) are read only via tellher_letters with author_id column-revoked; none are searchable.
 - Disclosure uses owner activity/account cutoff only for emphasis; never scores, hides routes or blocks navigation.
-- Field Notes reuse trust_notes; writes and optional Ripple linkage go through tellher_save_field_note, with append-only consent receipts for own anonymous links and viewer-checked context/read functions, so links never broaden Ripple or profile access.
+- Retired Field Notes remain unexposed; never restore their reads or writes.
 - Moderation roles live only in user_roles; queue/actions use checked mod functions returning content without identities, logged, removal in place. Abuse limits are insert triggers on the rate_limits table; notification copy is neutralised by trigger.
 - Account deletion removes auth with cascading rows. Safety uses src/lib/safety.ts. Trust Codes are hashed, row-locked and create ordinary accepted connections.
 

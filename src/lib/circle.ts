@@ -1,6 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 
-export type CircleEntry = { connection_id: string; kind: 'direct' | 'outgoing' | 'incoming'; first_name: string; last_initial: string; city: string | null; created_at: string; member_id: string };
+export type CircleEntry = { connection_id: string; kind: 'direct' | 'extended' | 'outgoing' | 'incoming'; first_name: string; last_initial: string; city: string | null; created_at: string; member_id: string };
 
 export const circleQuery = {
  queryKey: ['my-circle'],
