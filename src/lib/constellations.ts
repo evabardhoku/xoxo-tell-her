@@ -2,7 +2,14 @@ import { withRippleIdentities, type RippleIdentity } from '@/lib/ripple-identity
 import { categories } from '@/lib/askher';
 import { supabase } from '@/integrations/supabase/client';
 
-export type SkyRow = { id: string; category: string; excerpt: string; created_at: string; echo_level: number; has_outcome: boolean; has_letters?: boolean } & Partial<RippleIdentity>;
+export type SkyRow = { id: string; category: string; excerpt: string; created_at: string; echo_level: number; has_outcome: boolean; has_letters?: boolean; reply_count?: number } & Partial<RippleIdentity>;
+
+/** A comet is a brand-new anonymous star still waiting for its first perspective; it travels the sky until someone answers. */
+export const isComet = (r: SkyRow) => r.reply_count === 0;
+/** Deterministic comet path from its id, so each comet keeps its own orbit between visits. */
+export function cometPath(id: string) {
+ return { top: 8 + hash(id, 7) * 70, duration: 26 + hash(id, 8) * 22, delay: -hash(id, 9) * 40, drift: hash(id, 10) * 8 - 4 };
+}
 export type Star = SkyRow & { x: number; y: number };
 export type Cluster = { category: string; x: number; y: number; stars: Star[] };
 
@@ -17,7 +24,7 @@ export function buildSky(rows: SkyRow[]): Cluster[] {
  const order = [...categories as readonly string[], ...new Set(rows.map(r => r.category).filter(c => !(categories as readonly string[]).includes(c)))];
  return order.map((category, i) => {
   const [ax, ay] = anchors[i % anchors.length]!;
-  const mine = rows.filter(r => r.category === category).sort((a, b) => a.created_at.localeCompare(b.created_at));
+  const mine = rows.filter(r => r.category === category && !isComet(r)).sort((a, b) => a.created_at.localeCompare(b.created_at));
   const stars = mine.map((r, k) => { const a = hash(r.id, 1) * Math.PI * 2 + k * 2.4; const d = 5 + (k % 4) * 3.2 + hash(r.id, 2) * 2; return { ...r, x: clamp(ax + Math.cos(a) * d * 1.3), y: clamp(ay + Math.sin(a) * d) }; });
   return { category, x: ax, y: ay, stars };
  }).filter(c => c.stars.length);
