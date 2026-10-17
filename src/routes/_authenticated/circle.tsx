@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tansta
 import { zodValidator, fallback } from '@tanstack/zod-adapter';
 import { z } from 'zod';
 import { useMemo, useState } from 'react';
-import { Check, Search, X } from 'lucide-react';
+import { Check, Search, UserPlus, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,7 @@ import { ExtendedCircle } from '@/components/extended-circle';
 import { InboxList } from '@/components/inbox-list';
 import { ScrollPanel } from '@/components/scroll-panel';
 import { useDiscovery } from '@/hooks/discovery';
+import { searchQuery } from '@/lib/search';
 
 export const Route = createFileRoute('/_authenticated/circle')({
  validateSearch: zodValidator(z.object({ view: fallback(z.string(), 'direct').default('direct'), code: fallback(z.string().max(20).optional(), undefined) })),
@@ -48,7 +49,26 @@ function Circle() {
 }
 
 function DirectTab({ direct, extendedCount, code }: { direct: CircleEntry[]; extendedCount: number; code?: string | undefined }) {
- return <div className="circle-direct-layout"><div className="circle-grid"><section className="circle-card circle-hero" aria-label="Your trust network at a glance"><CircleRipple direct={direct.length} extended={extendedCount} /><div className="circle-hero-text"><h2>Your trust network</h2><p className="form-note">{direct.length === 0 ? 'Every connection starts with one woman you trust.' : `${direct.length} ${direct.length === 1 ? 'woman' : 'women'} in your Direct Circle, ${extendedCount} more within reach.`}</p></div></section><DirectCircle direct={direct} /></div><div className="circle-connect-layout"><CircleConnection initial={code} /></div></div>;
+ return <div className="circle-direct-layout"><div className="circle-grid"><section className="circle-card circle-hero" aria-label="Your trust network at a glance"><CircleRipple direct={direct.length} extended={extendedCount} /><div className="circle-hero-text"><h2>Your trust network</h2><p className="form-note">{direct.length === 0 ? 'Every connection starts with one woman you trust.' : `${direct.length} ${direct.length === 1 ? 'woman' : 'women'} in your Direct Circle, ${extendedCount} more within reach.`}</p></div></section><DirectCircle direct={direct} /><FindMembers /></div><div className="circle-connect-layout"><CircleConnection initial={code} /></div></div>;
+}
+
+/** Search the open community by name and send a connection request straight from the results. */
+function FindMembers() {
+ const [q, setQ] = useState('');
+ const qc = useQueryClient();
+ const search = useQuery(searchQuery(q));
+ const circle = useSuspenseQuery(circleQuery);
+ const byMember = new Map(circle.data.entries.map(e => [e.member_id, e.kind]));
+ const people = (search.data ?? []).filter(r => r.kind === 'person' && r.member_id && r.relation !== 'self');
+ const send = useMutation({ mutationFn: async (memberId: string) => { const { error } = await supabase.rpc('tellher_send_trust', { _recipient: memberId }); if (error) throw error; }, onSuccess: () => { for (const key of ['my-circle', 'member-profile', 'extended-circle', 'can-message']) void qc.invalidateQueries({ queryKey: [key] }); } });
+ return <section className="circle-card"><h2>Find women in the community</h2><p className="form-note">Search by name and send a connection request — she chooses Direct or Extended.</p>
+  <div className="field circle-search" role="search"><label htmlFor="fm-q" className="sr-only">Search community members</label><Input id="fm-q" value={q} onChange={e => setQ(e.target.value)} placeholder="Type a name, at least 2 letters" /></div>
+  {q.trim().length >= 2 && (search.isPending ? <p role="status" className="form-note">Searching…</p>
+   : search.isError ? <p role="alert" className="form-note form-error">Search could not be loaded. <Button variant="ghost" size="sm" onClick={() => void search.refetch()}>Try again</Button></p>
+   : people.length ? <ul className="member-list">{people.slice(0, 8).map(p => { const kind = byMember.get(p.member_id!); return <li key={p.member_id} className="member-row"><MemberAvatar id={p.member_id!} name={p.member_name ?? 'Member'} hasPhoto={Boolean(p.has_avatar)} size={36} /><div className="member-meta"><Link to="/profile/$memberId" params={{ memberId: p.member_id! }} className="member-link"><strong>{p.member_name}</strong></Link>{p.location && <span>{p.location}</span>}{p.known_for && p.known_for.length > 0 && <span className="member-known">{p.known_for.slice(0, 3).join(' · ')}</span>}</div><div className="member-actions">{kind === 'direct' || kind === 'extended' ? <span className="status-label"><Check size={14} />{kind === 'direct' ? 'Direct Circle' : 'Extended Circle'}</span> : kind === 'outgoing' ? <span className="status-label">Request sent</span> : kind === 'incoming' ? <Button asChild size="sm" variant="outline"><Link to="/circle" search={{ view: 'requests' }}>Answer request</Link></Button> : <Button size="sm" variant="editorial" disabled={send.isPending} onClick={() => send.mutate(p.member_id!)}><UserPlus />Send request</Button>}</div></li>; })}</ul>
+   : <p className="form-note">No one matches that name yet.</p>)}
+  {send.isError && <p role="alert" className="form-note form-error">{message(send.error)}</p>}
+ </section>;
 }
 
 function RequestsTab() {
