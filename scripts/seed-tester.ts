@@ -26,11 +26,16 @@ export async function seedTester() {
  for (const k of helpers) {
   const account = listed.data.users.find(u => u.email === `${k}.demo@example.com`);
   if (!account) throw new Error(`Fictional helper ${k} is unavailable.`);
-  const link = await admin.auth.admin.generateLink({ type: 'magiclink', email: `${k}.demo@example.com` });
-  if (link.error || !link.data.properties?.hashed_token) throw new Error('Could not authenticate fictional helper.');
   const cl = client(pub);
-  const verify = await cl.auth.verifyOtp({ token_hash: link.data.properties.hashed_token, type: 'magiclink' });
-  if (verify.error) throw new Error('Fictional helper sign-in failed.');
+  let ok = false;
+  for (let attempt = 0; attempt < 3 && !ok; attempt++) {
+   const link = await admin.auth.admin.generateLink({ type: 'magiclink', email: `${k}.demo@example.com` });
+   if (link.error || !link.data.properties?.hashed_token) { await new Promise(r => setTimeout(r, 5000)); continue; }
+   const verify = await cl.auth.verifyOtp({ token_hash: link.data.properties.hashed_token, type: 'magiclink' });
+   ok = !verify.error;
+   if (!ok) await new Promise(r => setTimeout(r, 5000));
+  }
+  if (!ok) throw new Error(`Fictional helper sign-in failed for ${k}.`);
   ids[k] = account.id; clients[k] = cl;
  }
  const get = (k: string) => { const cl = clients[k]; if (!cl) throw new Error(`Unknown demo actor ${k}.`); return cl; };
