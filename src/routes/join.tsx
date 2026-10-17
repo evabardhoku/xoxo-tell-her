@@ -12,7 +12,7 @@ import { profileQuery } from '@/lib/profile';
 import { pageHead } from '@/lib/metadata';
 import { invitationCode, pendingInvitation, rememberInvitation } from '@/lib/invitation';
 export const Route = createFileRoute('/join')({ ssr: false,
- validateSearch: (s: Record<string, unknown>): { invite?: string } => invitationCode(s['invite']) ? { invite: invitationCode(s['invite']) } : {},
+ validateSearch: (s: Record<string, unknown>): { invite?: string | undefined } => invitationCode(s['invite']) ? { invite: invitationCode(s['invite']) } : {},
  head: () => ({ meta: [...pageHead('Your invitation', 'Confirm your personal invitation to join the TellHer community.').meta, { name: 'robots', content: 'noindex, nofollow' }, { name: 'referrer', content: 'no-referrer' }] }), component: Join });
 function Join() {
  const { invite } = Route.useSearch(); const { user, ready } = useAccount(); const go = useNavigate(); const qc = useQueryClient();

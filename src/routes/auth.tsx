@@ -11,7 +11,7 @@ import { pageHead } from '@/lib/metadata';
 import { attestationText, emailSchema, profileSchema } from '@/lib/profile';
 import { invitationCode, pendingInvitation, rememberInvitation } from '@/lib/invitation';
 
-export const Route = createFileRoute('/auth')({ validateSearch: (s: Record<string, unknown>): { mode?: 'signin' | 'signup'; invite?: string } => ({ mode: s['mode'] === 'signup' ? 'signup' : 'signin', ...(invitationCode(s['invite']) ? { invite: invitationCode(s['invite']) } : {}) }), head: () => ({ meta: [...pageHead('Welcome', 'Sign in or create your TellHer account. A little closer. A little wiser.').meta, { name: 'robots', content: 'noindex, nofollow' }, { name: 'referrer', content: 'no-referrer' }] }), component: Auth });
+export const Route = createFileRoute('/auth')({ validateSearch: (s: Record<string, unknown>): { mode?: 'signin' | 'signup'; invite?: string | undefined } => ({ mode: s['mode'] === 'signup' ? 'signup' : 'signin', ...(invitationCode(s['invite']) ? { invite: invitationCode(s['invite']) } : {}) }), head: () => ({ meta: [...pageHead('Welcome', 'Sign in or create your TellHer account. A little closer. A little wiser.').meta, { name: 'robots', content: 'noindex, nofollow' }, { name: 'referrer', content: 'no-referrer' }] }), component: Auth });
 function Auth() {
  const search = Route.useSearch();
  const [invite, setInvite] = useState<string | undefined>(search.invite);
