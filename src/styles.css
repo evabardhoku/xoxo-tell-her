@@ -646,6 +646,13 @@ details[open] > summary::before { content:'−'; }
 .ww-sessions ul { max-height:240px; }
 .ww-sessions > a { width:auto; }
 .ww-chips .ww-context-link { white-space:normal;height:auto;padding:8px 0; }
+@media (min-width:761px) and (max-width:1000px) {
+ .desktop-nav { display:none; }
+ .mobile-nav { position:fixed;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:12px 10px calc(12px + env(safe-area-inset-bottom));background:var(--background);border-top:1px solid var(--border);z-index:20; }
+ .mobile-nav .nav-link { flex-direction:column;gap:6px;font-size:12px;min-height:48px;justify-content:center; }
+ .mobile-nav .nav-link svg { width:20px;height:20px; }
+ .app-main { padding-bottom:112px; }
+}
 .afterwards > summary { color:var(--primary);font-family:var(--font-editorial);font-size:20px; }
 @media (max-width:760px) {
  .sky--large { height:360px;min-height:320px; }
