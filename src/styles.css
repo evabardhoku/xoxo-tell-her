@@ -917,6 +917,5 @@ summary:focus-visible { outline:2px solid var(--ring);outline-offset:3px; }
 /* Perspectives: scrollable panel, lived experience highlighted */
 .scroll-panel.perspective-scroll { display:flex; }
 .perspective-scroll .scroll-track { max-height:min(70vh,640px);gap:12px;padding-right:8px; }
-.perspective-scroll .scroll-arrows { display:flex;flex-direction:column;justify-content:space-between;position:sticky;top:12px; }
 .reply-card.reply-card--been-there { border:1px solid color-mix(in oklab, var(--accent) 55%, var(--border));border-left:4px solid var(--accent);border-radius:14px;padding:16px;background:linear-gradient(135deg, color-mix(in oklab, var(--accent) 16%, var(--card)), color-mix(in oklab, var(--secondary) 8%, var(--card))); }
 .reply-form--been-there { border-color:color-mix(in oklab, var(--accent) 60%, var(--border));background:linear-gradient(135deg, color-mix(in oklab, var(--accent) 14%, var(--card)), var(--card));box-shadow:0 8px 28px color-mix(in oklab, var(--accent) 22%, transparent);transition:background .3s,box-shadow .3s; }
