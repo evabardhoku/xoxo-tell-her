@@ -1,6 +1,7 @@
 import { OpenComments } from '@/components/open-comments';
 import { RippleAuthor } from '@/components/ripple-author';
 import { AnonymousAvatar } from '@/components/avatars';
+import { ReplyLike } from '@/components/reply-like';
 import { rippleDestination } from '@/lib/ripple-identity';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
@@ -22,7 +23,7 @@ import { feedMapQuery, perspectiveLabel, perspectives, questionQuery, tally, typ
 
 export const Route = createFileRoute('/_authenticated/askher_/$id')({
  loader: ({ context, params }) => context.queryClient.ensureQueryData(questionQuery(params.id)),
- head: () => pageHead('Question', 'A question and the range of perspectives it received.'),
+ head: () => pageHead('Trust Ripple', 'A shared question, lived perspectives, and what happened next on TellHer.'),
  errorComponent: () => <Unavailable />,
  component: QuestionPage,
 });

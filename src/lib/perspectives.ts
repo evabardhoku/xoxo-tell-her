@@ -1,6 +1,6 @@
 import { withRippleIdentities, type RippleIdentity } from '@/lib/ripple-identity';
 import { supabase } from '@/integrations/supabase/client';
-import { randomAnonymous, type AnonymousAvatarConfig } from '@/lib/avatar';
+import { randomAnonymous, type AnonAvatar } from '@/lib/avatar';
 
 export const perspectives = [
  { value: 'address', label: 'I’d address it' },
@@ -22,7 +22,7 @@ export function tally(rows: { perspective_tag: string | null; n?: number }[]): C
 }
 
 export type QuestionDetail = { id: string; category: string; body: string; audience_scope: string; created_at: string; is_mine: boolean; my_instinct: string | null; my_note: string | null; my_reply_id: string | null } & Partial<RippleIdentity>;
-export type Reply = { id: string; perspective_tag: string; body: string; created_at: string; is_mine: boolean; anonymous_avatar?: AnonymousAvatarConfig };
+export type Reply = { id: string; perspective_tag: string; body: string; created_at: string; is_mine: boolean; anonymous_avatar?: AnonAvatar };
 
 export const questionQuery = (id: string) => ({
  queryKey: ['askher-question', id],
