@@ -2,7 +2,7 @@ import { withRippleIdentities, type RippleIdentity } from '@/lib/ripple-identity
 import { categories } from '@/lib/askher';
 import { supabase } from '@/integrations/supabase/client';
 
-export type SkyRow = { id: string; category: string; excerpt: string; created_at: string; echo_level: number; has_outcome: boolean; has_letters?: boolean; reply_count?: number } & Partial<RippleIdentity>;
+export type SkyRow = { id: string; category: string; excerpt: string; created_at: string; echo_level: number; has_outcome: boolean; reply_count?: number } & Partial<RippleIdentity>;
 
 /** A comet is a brand-new anonymous star still waiting for its first perspective; it travels the sky until someone answers. */
 export const isComet = (r: SkyRow) => r.reply_count === 0;
@@ -56,4 +56,29 @@ export function trendingThemes(rows: SkyRow[], now = Date.now(), days = 30, max 
  for (const r of skyOnly(rows)) if (Date.parse(r.created_at) >= since) by.set(r.category, [...(by.get(r.category) ?? []), r]);
  return [...by.entries()].map(([category, rs]) => { const sorted = [...rs].sort((a, b) => b.created_at.localeCompare(a.created_at)); return { category, excerpt: sorted[0]!.excerpt, recent: rs.length >= SKY_COUNT_THRESHOLD ? rs.length : null, latest: sorted[0]!.created_at }; })
   .sort((a, b) => b.latest.localeCompare(a.latest)).slice(0, max);
+}
+
+export type StarMode = 'random' | 'trending' | 'new' | 'forgotten';
+export const starModes: { value: StarMode; label: string; hint: string }[] = [
+ { value: 'random', label: 'Wandering', hint: 'A random handful of stars' },
+ { value: 'trending', label: 'Trending stars', hint: 'From the topics most active this month' },
+ { value: 'new', label: 'New stars', hint: 'Written recently, with few or no perspectives yet' },
+ { value: 'forgotten', label: 'Forgotten stars', hint: 'Written long ago, still waiting for perspectives' },
+];
+/** "Few perspectives" for New and Forgotten stars. */
+export const FEW_PERSPECTIVES = 2;
+const DAY = 86400000;
+type Filterable = { id: string; category: string; created_at: string; replies: number };
+/** Picks which stars to show under the sky. Random uses a per-visit seed so the order stays put while browsing. */
+export function filterStars<T extends Filterable>(rows: T[], mode: StarMode, now = Date.now(), seed = 1): T[] {
+ const age = (r: T) => now - Date.parse(r.created_at);
+ if (mode === 'new') return rows.filter(r => age(r) <= 14 * DAY && r.replies <= FEW_PERSPECTIVES).sort((a, b) => b.created_at.localeCompare(a.created_at));
+ if (mode === 'forgotten') return rows.filter(r => age(r) > 30 * DAY && r.replies <= FEW_PERSPECTIVES).sort((a, b) => a.created_at.localeCompare(b.created_at));
+ if (mode === 'trending') {
+  const recent = rows.filter(r => age(r) <= 30 * DAY); const by = new Map<string, number>();
+  for (const r of recent) by.set(r.category, (by.get(r.category) ?? 0) + 1 + r.replies);
+  const top = [...by.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([c]) => c);
+  return recent.filter(r => top.includes(r.category)).sort((a, b) => top.indexOf(a.category) - top.indexOf(b.category) || b.replies - a.replies);
+ }
+ return [...rows].sort((a, b) => hash(a.id, seed) - hash(b.id, seed));
 }
