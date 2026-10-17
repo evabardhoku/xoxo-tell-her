@@ -1354,6 +1354,17 @@ export type Database = {
         }[]
       }
       tellher_member_ready: { Args: never; Returns: boolean }
+      tellher_member_ripples: {
+        Args: { _member: string }
+        Returns: {
+          audience_scope: string
+          body: string
+          category: string
+          created_at: string
+          id: string
+          reply_count: number
+        }[]
+      }
       tellher_member_shelf: {
         Args: { _id: string }
         Returns: {
@@ -1395,6 +1406,17 @@ export type Database = {
         }[]
       }
       tellher_my_impact: { Args: never; Returns: Json }
+      tellher_my_stars: {
+        Args: never
+        Returns: {
+          audience_scope: string
+          body: string
+          category: string
+          created_at: string
+          id: string
+          reply_count: number
+        }[]
+      }
       tellher_notifications: {
         Args: never
         Returns: {
