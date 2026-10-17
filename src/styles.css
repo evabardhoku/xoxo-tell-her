@@ -1170,3 +1170,21 @@ summary:focus-visible { outline:2px solid var(--ring);outline-offset:3px; }
  .picks-grid .scroll-track { grid-template-columns:minmax(0,1fr); }
  .pick-item.pick-square,.owner-picks .pick-item { aspect-ratio:1;height:auto;min-height:230px; }
 }
+
+/* Circle: discovery above, connection and membership actions below. */
+.circle-direct-layout { display:grid;gap:32px; }
+.circle-members-heading { display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px; }
+.circle-members-heading h2 { margin:0; }
+.circle-connect-layout { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-block:1px solid var(--section-rule); }
+.circle-connection,.circle-invitation { min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:16px;padding:28px; }
+.circle-connection { background:var(--surface-blue);border-left:3px solid var(--information); }
+.circle-invitation { background:var(--surface-rose);border-left:3px solid var(--secondary); }
+.circle-connect-layout h2 { font-size:23px;color:var(--primary);line-height:1.4; }
+.circle-code-modes { display:flex;gap:4px;flex-wrap:wrap; }
+.circle-connection > div:has(.add-trust-disclosure) { width:100%; }
+.circle-connection .add-trust-disclosure { display:grid;gap:16px; }
+.circle-connection .trust-code,.circle-invitation .trust-code { width:100%; }
+@media (max-width:760px) {
+ .circle-connect-layout { grid-template-columns:minmax(0,1fr); }
+ .circle-connection,.circle-invitation { padding:24px 18px; }
+}
