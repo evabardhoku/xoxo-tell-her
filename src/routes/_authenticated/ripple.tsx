@@ -1,6 +1,7 @@
 import { profileQuery } from '@/lib/profile';
 import { RippleAuthor } from '@/components/ripple-author';
 import type { AuthorVisibility } from '@/lib/ripple-identity';
+import { rippleDestination } from '@/lib/ripple-identity';
 import { markRippleSent } from '@/lib/motion';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -79,7 +80,7 @@ function Composer() {
   setBusy(true); setError('');
   const { error } = await supabase.rpc('tellher_publish_question_identity', rippleIdentityPublication({ category, body, scope, instinct, note, author_visibility: visibility }));
   setBusy(false); if (error) return setError(errorText(error));
-  await qc.invalidateQueries({ queryKey: feedQuery.queryKey }); markRippleSent(); navigate({ to: visibility === 'named' ? '/feed' : '/home' });
+  await qc.invalidateQueries({ queryKey: feedQuery.queryKey }); markRippleSent(); navigate({ to: rippleDestination(visibility) });
  };
  return <>
   <div className="page-heading"><div><div className="eyebrow">TRUST RIPPLE</div><h1>Some things are worth asking.</h1><p>Choose who sees your question and how you appear. Only you see your instinct.</p></div></div>
@@ -112,7 +113,7 @@ function Composer() {
     {detectPii(body).length > 0 && <p role="alert" className="safety-panel">This looks like it may include information that could identify someone ({detectPii(body).join(', ')}). Review it before sharing. This check can’t catch every name or address.</p>}<p className="form-note">How you share is locked after sending. Replies, Echoes and Letters stay anonymous; your instinct stays private. Your profile’s discoverability does not change.</p>
    </div>}
    {error && <p role="alert" className="form-note form-error">{error}</p>}
-   {step === 4 && source !== null && <p className="private-note ripple-sharing-note"><LockKeyhole size={13} />Only the Ripple below will be shared. Your Wingwoman conversation stays private.</p>}
+   {step === 4 && source !== null && <p className="private-note ripple-sharing-note"><LockKeyhole size={13} />Only this Ripple will be shared. Your Wingwoman conversation stays private.</p>}
    <div className="composer-actions ripple-actions"><div className="ripple-back-actions">{step > 0 && <Button variant="ghost" disabled={busy} onClick={() => setStep(step - 1)}><ArrowLeft />Back</Button>}{from && <Button variant="ghost" disabled={busy} onClick={() => navigate({ to: '/wingwoman' })}>Cancel</Button>}</div>{step < 4 ? <Button variant="editorial" disabled={!valid || sourceLoading || drafting || Boolean(sourceError)} onClick={() => setStep(step + 1)}>Continue<ArrowRight /></Button> : <Button variant="editorial" disabled={busy || (visibility === 'named' && !profile.data?.first_name)} onClick={send}>{busy ? 'Sending…' : 'Send Trust Ripple'}</Button>}</div>
   </section>
  </>;

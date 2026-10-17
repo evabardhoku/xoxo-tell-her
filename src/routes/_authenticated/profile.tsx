@@ -32,7 +32,7 @@ function Profile() {
  const discovery = discoverabilityOptions.find(o => o.value === data.discoverability);
  const isMod = useQuery({ queryKey: ['is-moderator'], queryFn: async () => (await supabase.rpc('tellher_is_moderator')).data === true });
  return <>
-  <div className="page-heading"><div><div className="eyebrow">PROFILE</div><h1>A space that’s yours.</h1><p>Your name, your account, your own pace.</p></div></div>
+  <div className="page-heading"><div><h1>Your profile</h1><p>Your name, your account, your own pace.</p></div></div>
 
   <section className="circle-card me-header" aria-labelledby="me-title">
    <div className="me-identity">
@@ -54,13 +54,13 @@ function Profile() {
 
   </section>
 
-  {editing && <ProfileEditor profile={data} onSaved={async () => { await refetch(); setEditing(false); }} />}
+  {editing && <div id="profile-editor-region"><ProfileEditor profile={data} onSaved={async () => { await refetch(); setEditing(false); }} /></div>}
 
   <TrustShelf memberId={data.id} firstName={data.first_name} editable />
 
-  <AvatarStudio profile={data} photoUrl={avatarUrl} />
+  <details className="profile-disclosure"><summary>Avatar Studio</summary><AvatarStudio profile={data} photoUrl={avatarUrl} /></details>
 
-  <PrivacyData userId={data.id} discoverability={discovery?.label} onEditDiscoverability={() => setEditing(true)} />
+  <details className="profile-disclosure"><summary>Privacy &amp; data</summary><PrivacyData userId={data.id} discoverability={discovery?.label} onEditDiscoverability={() => { setEditing(true); requestAnimationFrame(() => document.getElementById('profile-editor-region')?.scrollIntoView({ block: 'start' })); }} /></details>
   {isMod.data && <p className="form-note"><Link to="/admin/reports" className="member-link">Moderation reports</Link></p>}
   <section className="account-settings"><SignOut /></section>
  </>;
