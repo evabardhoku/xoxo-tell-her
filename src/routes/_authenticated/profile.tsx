@@ -4,7 +4,7 @@ import { safeOpen } from '@/lib/avatar';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { MapPin, Pencil, Star, Waves } from 'lucide-react';
+import { MapPin, Pencil } from 'lucide-react';
 import { ProfileEditor } from '@/components/profile-editor';
 import { discoverabilityOptions, profileQuery } from '@/lib/profile';
 import { SignOut } from '@/components/app-shell';
@@ -12,9 +12,8 @@ import { TrustedPicks } from '@/components/trusted-picks';
 import { pageHead } from '@/lib/metadata';
 import { supabase } from '@/integrations/supabase/client';
 import { PrivacyData } from '@/components/privacy-data';
-import { feedQuery, relativeTime, type FeedQuestion } from '@/lib/askher';
+import { MemberRipples } from '@/components/profile-discussions';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { ScrollPanel } from '@/components/scroll-panel';
 import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute('/_authenticated/profile')({ loader: ({ context }) => context.queryClient.ensureQueryData(profileQuery), head: () => pageHead('Profile', 'Your TellHer profile, exactly as other women see it.'), component: Profile });
@@ -33,7 +32,6 @@ function Profile() {
  const { data, refetch } = useSuspenseQuery(profileQuery);
  const [editing, setEditing] = useState(false);
  const view = useQuery(asOthersQuery(data.id));
- const feed = useQuery(feedQuery);
  const { data: avatarUrl } = useQuery({
   queryKey: ['private-avatar', data.avatar_path],
   enabled: Boolean(data.avatar_path),
@@ -46,9 +44,6 @@ function Profile() {
  const isMod = useQuery({ queryKey: ['is-moderator'], queryFn: async () => (await supabase.rpc('tellher_is_moderator')).data === true });
  const m = view.data;
  const place = [m?.city, m?.country].filter(Boolean).join(', ');
- const mine = (feed.data ?? []).filter(q => q.is_mine);
- const ripples = mine.filter(q => q.author_visibility === 'named');
- const stars = mine.filter(q => q.author_visibility !== 'named');
  return <>
   <div className="page-heading"><div><h1>Your profile</h1><p>This is exactly how other women see you.</p></div><Button variant="editorial" size="sm" onClick={() => setEditing(true)}><Pencil />Edit profile</Button></div>
 
@@ -72,14 +67,7 @@ function Profile() {
 
   <TrustedPicks ownerOnly />
 
-  <section className="circle-card mine-panel" aria-labelledby="mine-title">
-   <h2 id="mine-title">My ripples and my stars</h2>
-   <p className="form-note">Only you see this list. Stars stay anonymous to everyone else.</p>
-   <div className="mine-columns">
-    <MineList title="My ripples" icon={<Waves size={14} />} items={ripples} empty="No named ripples yet." />
-    <MineList title="My stars" icon={<Star size={14} />} items={stars} empty="No anonymous stars yet." />
-   </div>
-  </section>
+  <MemberRipples memberId={data.id} firstName={data.first_name} own />
 
   <Dialog open={editing} onOpenChange={setEditing}>
    <DialogContent className="profile-edit-dialog" aria-describedby={undefined}>
@@ -96,15 +84,3 @@ function Profile() {
  </>;
 }
 
-function MineList({ title, icon, items, empty }: { title: string; icon: React.ReactNode; items: FeedQuestion[]; empty: string }) {
- return <div className="mine-col">
-  <h3 className="mine-col-title">{icon}{title}<span className="mine-count">{items.length}</span></h3>
-  {items.length ? <ScrollPanel label={title} className="mine-list">{items.map(q => <li key={q.id}>
-   <Link to="/askher/$id" params={{ id: q.id }} className="mine-link">
-    <span className="question-category">{q.category}</span>
-    <span className="mine-body">{q.body}</span>
-    <span className="form-note">{q.reply_count} {q.reply_count === 1 ? 'perspective' : 'perspectives'} · {relativeTime(q.created_at)}</span>
-   </Link>
-  </li>)}</ScrollPanel> : <p className="form-note">{empty}</p>}
- </div>;
-}
