@@ -1,4 +1,5 @@
 # TellHer foundation
+- [ ] Fix invitation handoff across email confirmation: automatic admitted Feed entry, no second code, no automatic friendship; verify security and real signup flow.
 - [x] Simplify Circle: email lookup removed, code actions combined, membership invitations distinct; member search/profile, code creation/cancel and desktop/phone layouts verified; 31 focused checks passed.
 - [x] Invitation-required membership: confirmed email, self-attestation and one-use personal vouch; database/AI gates and onboarding verified. 191 checks passed across full run and rate-limited fixture reruns; invitation creation, blocked entry, acceptance and Feed readback checked on desktop/mobile. Existing members retained; no gender verification claim.
 - [x] Opening-page orbiting circles, stars/wings and coloured sections; distinct sign-in/signup and member feed entry verified at four sizes; 8 focused checks passed. Basic backend and production dependency scans clear after overrides; reviewed SQL/auth/XSS code has no confirmed exploit, independent penetration/deployed testing not performed.
