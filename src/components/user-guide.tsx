@@ -60,6 +60,7 @@ export function UserGuide({ userId }: { userId: string }) {
       <Button variant="outline" disabled={index === 0 || moving} aria-label="Previous guide chapter" onClick={() => void visit(index - 1)}><ArrowLeft />Back</Button>
       {index === guideSteps.length - 1 ? <Dialog.Close asChild><Button><Check />Finish</Button></Dialog.Close> : <Button disabled={moving} onClick={() => void visit(index + 1)}>{moving ? 'Opening…' : index === 0 ? 'Start tour' : 'Next'}<ArrowRight /></Button>}
      </div>
+     <Dialog.Close asChild><Button variant="link" className="tellher-guide-skip">Skip tour</Button></Dialog.Close>
      <details className="tellher-guide-chapters"><summary>All chapters</summary><ol>{guideSteps.map((chapter, number) => <li key={chapter.title}><Button variant="ghost" disabled={moving} aria-current={number === index ? 'step' : undefined} onClick={() => void visit(number)}><span>{number + 1}</span>{chapter.title}</Button></li>)}</ol></details>
     </div>
    </Dialog.Content>
