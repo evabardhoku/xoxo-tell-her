@@ -16,7 +16,8 @@ function Auth() {
  const search = Route.useSearch();
  const [invite, setInvite] = useState<string | undefined>(search.invite);
  useEffect(() => { const code = pendingInvitation(search.invite); setInvite(code); if (code) rememberInvitation(code); }, [search.invite]);
- const [mode, setMode] = useState<'signin' | 'signup' | 'forgot'>(search.mode ?? 'signin'); const [error, setError] = useState(''); const [message, setMessage] = useState(''); const [busy, setBusy] = useState(false);
+ const [mode, setMode] = useState<'signin' | 'signup' | 'forgot'>(search.mode ?? 'signin'); const [error, setError] = useState(''); const [message, setMessage] = useState(''); const [busy, setBusy] = useState(false); const [sent, setSent] = useState('');
+ async function resend() { setBusy(true); setError(''); try { const { error } = await supabase.auth.resend({ type: 'signup', email: sent, options: { emailRedirectTo: `${window.location.origin}/feed` } }); if (error) throw error; setMessage('A new confirmation email is on its way. Use the newest email only.'); } catch (err) { setError(err instanceof Error ? err.message : 'We couldn’t resend the email. Please try again in a minute.'); } finally { setBusy(false); } }
  useEffect(() => { setMode(search.mode ?? 'signin'); setError(''); setMessage(''); }, [search.mode]);
  const { user, ready } = useAccount(); const navigate = useNavigate();
  useEffect(() => { if (ready && user) void navigate(invite ? { to: '/join', search: { invite }, replace: true } : { to: '/feed', replace: true }); }, [user, ready, navigate, invite]);
@@ -29,7 +30,10 @@ function Auth() {
    else if (mode === 'signup') {
     const details = profileSchema.parse({ first_name: fields.get('first_name'), last_name: fields.get('last_name'), city: '', country: '', bio: '', occupation: '', languages: '', known_for: '', ask_me_about: '', discoverability: 'direct', woman_attested: fields.get('woman_attested') === 'on' });
     if (password.length < 8 || password.length > 128) throw new Error('Choose a password between 8 and 128 characters.');
-    const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: `${window.location.origin}/join`, data: { first_name: details.first_name, last_name: details.last_name, woman_attested: true, ...(invite ? { membership_invite: invite } : {}) } } }); if (error) throw error; setMessage(invite ? 'Check your email and tap the confirmation link. Your invitation is saved to your account; TellHer will open without another code.' : 'Check your email to confirm your account. You’ll then need a personal membership invitation.');
+    const { data, error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: `${window.location.origin}/feed`, data: { first_name: details.first_name, last_name: details.last_name, woman_attested: true, ...(invite ? { membership_invite: invite } : {}) } } }); if (error) throw error;
+    // An existing address returns no identities and no new email is sent.
+    if (data.user && data.user.identities?.length === 0) { setMode('signin'); setMessage('This email already has a TellHer account. Sign in below, or use “Forgot password?” if you don’t remember it.'); }
+    else { setSent(email); setMessage('Check your email (and your spam folder) and tap the confirmation link. TellHer will open straight to your Feed.'); }
    }
    else { const { error } = await supabase.auth.signInWithPassword({ email, password }); if (error) throw error; }
   } catch (err) { setError(err instanceof Error ? err.message : 'We couldn’t complete that. Please try again.'); } finally { setBusy(false); }
