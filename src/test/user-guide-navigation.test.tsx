@@ -11,7 +11,7 @@ it('visits a guide destination without posting or requiring a user action on tha
  fireEvent.click(await screen.findByRole('button', { name: 'Start tour' }));
  await waitFor(() => expect(mocks.go).toHaveBeenCalledWith({ to: '/feed', search: {} }));
  await screen.findByText('Chapter 2 of 10');
- fireEvent.click(screen.getByRole('button', { name: 'Next', exact: true }));
+ fireEvent.click(screen.getByRole('button', { name: /^Next$/ }));
  await waitFor(() => expect(mocks.go).toHaveBeenLastCalledWith({ to: '/wingwoman', search: {} }));
  await screen.findByText('Chapter 3 of 10');
 });
