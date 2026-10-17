@@ -12,6 +12,7 @@ import { profileQuery } from '@/lib/profile';
 import { ProfileEditor } from './profile-editor';
 import { NotificationBell } from './notification-bell';
 import { QuickExit } from './safety';
+import { UserGuide } from './user-guide';
 
 // The four primary areas (same list on desktop and mobile). `match` lists every route that belongs to the area; each hub page's segmented control keeps its sub-pages reachable.
 const navigation = [
@@ -34,17 +35,17 @@ export function AppShell({ children }: { children: ReactNode }) {
  if (profile.isError) return <main className="app-main"><p role="alert" className="form-note form-error">Your profile could not be loaded.</p><Button variant="outline" onClick={() => profile.refetch()}>Try again</Button><SignOut /></main>;
  if (!profile.data.woman_attested_at) return <><header className="app-header"><Brand /><SignOut /></header><main className="app-main"><ProfileEditor profile={profile.data} onSaved={profile.refetch} /></main></>;
  const area = areaOf(pathname);
- const link = (item: (typeof navigation)[number]) => { const active = area === item; return <Link key={item.to} to={item.to} className="nav-link" data-active={active} aria-current={active ? 'page' : undefined}><item.icon /><span>{item.label}</span></Link>; };
+ const link = (item: (typeof navigation)[number]) => { const active = area === item; return <Link key={item.to} to={item.to} className="nav-link" data-guide={item.to.slice(1)} data-active={active} aria-current={active ? 'page' : undefined}><item.icon /><span>{item.label}</span></Link>; };
  // Sensitive surfaces: Wingwoman, Ripple detail / shared space, Messages.
  const sensitive = pathname.startsWith('/wingwoman') || pathname.startsWith('/askher/') || pathname.startsWith('/between-us');
  return <><header className="app-header"><Brand /><nav className="desktop-nav" aria-label="Main navigation">{navigation.map(link)}</nav><div className="app-header-actions">
   {sensitive && <QuickExit />}
-  <Link to="/search" search={{ q: '' }} className="avatar-link search-link" aria-label="Search TellHer" data-active={pathname === '/search'}><Search size={17} /></Link>
+  <Link to="/search" search={{ q: '' }} className="avatar-link search-link" data-guide="search" aria-label="Search TellHer" data-active={pathname === '/search'}><Search size={17} /></Link>
   <NotificationBell />
   <UserMenu initial={profile.data.first_name.slice(0, 1).toUpperCase()} active={pathname === '/profile'} />
  </div></header>
- <main className="app-main">{children}<p className="app-footnote"><LockKeyhole size={12} />A little space. A little perspective. Always your choice.</p></main>
- <nav className="mobile-nav" aria-label="Mobile navigation">{navigation.map(link)}</nav></>;
+ <main className="app-main" data-guide="page">{children}<p className="app-footnote"><LockKeyhole size={12} />A little space. A little perspective. Always your choice.</p></main>
+ <nav className="mobile-nav" aria-label="Mobile navigation">{navigation.map(link)}</nav><UserGuide key={user.id} userId={user.id} /></>;
 }
 
 function UserMenu({ initial, active }: { initial: string; active: boolean }) {

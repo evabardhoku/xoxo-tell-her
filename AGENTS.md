@@ -29,7 +29,8 @@
 - Feed and Constellations compose checked sources client-side, ordered by trust distance, topic and freshness; no new access.
 - Between Us messaging is one-to-one only, readable by participants via RLS, with all writes (open, send, read marker, block, report) through checked database functions that re-check accepted Direct trust and blocks on every send; it is never initiated from anonymous content.
 - One shell navigation includes Wingwoman. Shared identity navigation returns named Ripples to Feed and anonymous to Sky. Hubs preserve sub-page access and checked feeds.
-- Echo/Echo Rooms/The Other Side/Letters: anonymous Ripple add-ons via checked functions only. One Echo per member; counts and room entry (author + echoers) only at ECHO_THRESHOLD (mirrors DB); room voices are stable numbers; outcomes are author-only, private by default, shared only within Ripple reach; Letters (echoers, or the author after a shared outcome) are read only via tellher_letters with author_id column-revoked; none are searchable.
+- Anonymous add-ons use checked functions: one Echo per member, counts at ECHO_THRESHOLD; outcomes are author-only, private by default, shared within Ripple reach. Retired Echo Rooms and Letters remain unexposed.
+- The guide lives once in the member shell, visits existing pages without writes, and remembers first display per account in browser storage; blocked storage never blocks access.
 - Disclosure uses owner activity/account cutoff only for emphasis; never scores, hides routes or blocks navigation.
 - Retired Field Notes remain unexposed; never restore their reads or writes.
 - Moderation roles live only in user_roles; queue/actions use checked mod functions returning content without identities, logged, removal in place. Abuse limits are insert triggers on the rate_limits table; notification copy is neutralised by trigger.

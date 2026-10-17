@@ -1,0 +1,24 @@
+export const GUIDE_VERSION = 'v1';
+export type GuidePage = '/feed' | '/wingwoman' | '/home' | '/ripple' | '/circle' | '/profile' | '/search' | '/between-us';
+export type GuideStep = { title: string; intro: string; points: string[]; page?: GuidePage; target?: string; tone: 'rose' | 'blue' | 'gold' | 'sage' };
+
+export const guideSteps: GuideStep[] = [
+ { title: 'A little tour of TellHer', intro: 'Your space, at your pace.', points: ['Follow this guide through the main pages, or jump to any chapter below.', 'Nothing is posted, sent or changed during the tour. You can close it whenever you like.'], tone: 'rose' },
+ { title: 'My Feed · named Ripples', intro: 'Conversations with a name behind them.', points: ['Choose “What do you want to share today?” to start a Ripple.', 'For You, My Circle and Community filter the conversations already available to you.', 'Open a Ripple to read perspectives. The comment count opens its comments.'], page: '/feed', target: 'feed', tone: 'rose' },
+ { title: 'Wingwoman · think privately', intro: 'A place to talk things through first.', points: ['Write to Wingwoman and return to past chats in “What you have been through”. Wingwoman is AI, not a human adviser.', 'Turning a chat into a Ripple opens an editable draft. Your chat is not automatically published.', 'Your own anonymous Stars live below the chat, not on your profile.'], page: '/wingwoman', target: 'wingwoman', tone: 'blue' },
+ { title: 'Sky · anonymous Stars', intro: 'Stories without a public author name.', points: ['Explore the Constellations or browse Wandering, Trending, New and Forgotten Stars.', 'Open a Star to read the story, see its Perspective Map and offer a perspective.', '“This happened to me too” is an Echo. The author can write a Star Letter about what happened next; it stays private unless she shares it.'], page: '/home', target: 'home', tone: 'gold' },
+ { title: 'Share · choose your reach', intro: 'You decide what leaves your space.', points: ['Write your question, choose named or anonymous identity, then choose its audience.', 'Direct Circle, Extended Circle and Community are different reaches. Review the choice before publishing.', 'Only final confirmation publishes. Your identity choice and published audience cannot be widened later.'], page: '/ripple', target: 'page', tone: 'rose' },
+ { title: 'My Circle · build trust', intro: 'Connections, not followers.', points: ['Find a registered member, open her profile and send a connection request.', 'The recipient can accept into Direct Circle or Extended Circle, or decline.', 'Share or enter a member code to connect. Extended connections do not receive Direct-only access.'], page: '/circle', target: 'circle', tone: 'sage' },
+ { title: 'Profile · your public side', intro: 'Your name, with your choices intact.', points: ['Edit your details and open avatar through “Edit profile”. Your Picks and named Ripples appear here.', 'Other women only see named Ripples whose published audience includes them.', 'Anonymous Stars never appear on your profile. Account and privacy controls remain available here.'], page: '/profile', target: 'profile', tone: 'rose' },
+ { title: 'Search · find your way', intro: 'Women, Picks and conversations.', points: ['Search for members and open their profiles to request a connection.', 'Search only returns content you are allowed to see; it does not unlock private stories.', 'The bell in the header shows notifications and links back to the relevant activity.'], page: '/search', target: 'search', tone: 'gold' },
+ { title: 'Between Us · one to one', intro: 'For conversations that stay between two women.', points: ['Messages are available from My Circle, for accepted Direct Circle connections.', 'Only the participants can read a conversation. Extended acceptance does not enable messaging.', 'Blocking and reporting remain available in the conversation.'], page: '/between-us', target: 'circle', tone: 'blue' },
+ { title: 'Your pace. Your boundaries.', intro: 'You are ready to explore.', points: ['Use report and block controls when you need them. Quick Exit is available on sensitive pages.', 'Anonymous means your author identity is not displayed to other members; it is not a promise that details you write cannot identify you.', 'Reopen this guide anytime using the compass at the side.'], tone: 'sage' },
+];
+
+export function guideStorageKey(userId: string) { return `tellher:guide:${GUIDE_VERSION}:${userId}`; }
+export function shouldAutoOpenGuide(storage: Pick<Storage, 'getItem'>, userId: string) {
+ try { return storage.getItem(guideStorageKey(userId)) === null; } catch { return false; }
+}
+export function rememberGuideVisit(storage: Pick<Storage, 'setItem'>, userId: string) {
+ try { storage.setItem(guideStorageKey(userId), 'seen'); } catch { /* The guide still works when browser storage is blocked. */ }
+}
