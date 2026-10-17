@@ -919,3 +919,57 @@ summary:focus-visible { outline:2px solid var(--ring);outline-offset:3px; }
 .perspective-scroll .scroll-track { max-height:min(70vh,640px);gap:12px;padding-right:8px; }
 .reply-card.reply-card--been-there { border:1px solid color-mix(in oklab, var(--accent) 55%, var(--border));border-left:4px solid var(--accent);border-radius:14px;padding:16px;background:linear-gradient(135deg, color-mix(in oklab, var(--accent) 16%, var(--card)), color-mix(in oklab, var(--secondary) 8%, var(--card))); }
 .reply-form--been-there { border-color:color-mix(in oklab, var(--accent) 60%, var(--border));background:linear-gradient(135deg, color-mix(in oklab, var(--accent) 14%, var(--card)), var(--card));box-shadow:0 8px 28px color-mix(in oklab, var(--accent) 22%, transparent);transition:background .3s,box-shadow .3s; }
+
+/* ===== My Circle: animated trust ripple ===== */
+.circle-hero { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; background: linear-gradient(135deg, color-mix(in oklab, var(--primary) 8%, var(--card)), var(--card)); overflow: hidden; }
+.circle-hero-text h2 { margin-bottom: 0.25rem; }
+.circle-ripple { width: min(260px, 70vw); height: auto; flex-shrink: 0; }
+.cr-ring { fill: none; stroke: var(--primary); stroke-width: 1.2; opacity: 0.35; transform-origin: 160px 160px; animation: cr-pulse 4.5s ease-in-out infinite; }
+.cr-ring-2 { animation-delay: 1.5s; stroke: var(--accent); }
+.cr-ring-3 { animation-delay: 3s; }
+@keyframes cr-pulse { 0%, 100% { opacity: 0.18; transform: scale(0.97); } 50% { opacity: 0.5; transform: scale(1.02); } }
+.cr-orbit { transform-origin: 160px 160px; }
+.cr-orbit-inner { animation: cr-spin 36s linear infinite; }
+.cr-orbit-outer { animation: cr-spin-rev 60s linear infinite; }
+@keyframes cr-spin { to { transform: rotate(360deg); } }
+@keyframes cr-spin-rev { to { transform: rotate(-360deg); } }
+.cr-dot { r: 6; fill: var(--primary); animation: cr-dot-glow 3s ease-in-out infinite; }
+.cr-dot-ext { r: 4; fill: var(--accent); opacity: 0.7; }
+.cr-dot-direct { fill: var(--primary); }
+@keyframes cr-dot-glow { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+.cr-link { stroke: var(--primary); stroke-width: 0.8; opacity: 0.15; stroke-dasharray: 4 6; animation: cr-link-flow 6s linear infinite; }
+@keyframes cr-link-flow { to { stroke-dashoffset: -40; } }
+.cr-you { fill: var(--primary); }
+.cr-you-label { fill: var(--primary-foreground); font-size: 11px; text-anchor: middle; font-weight: 600; }
+
+/* ===== Profile: public-view card + waving avatar ===== */
+.me-public { position: relative; overflow: hidden; background: linear-gradient(150deg, color-mix(in oklab, var(--accent) 10%, var(--card)), var(--card) 55%); }
+.me-halo { position: absolute; inset: -40% 55% 40% -20%; background: radial-gradient(circle, color-mix(in oklab, var(--primary) 14%, transparent), transparent 70%); pointer-events: none; animation: me-halo-drift 9s ease-in-out infinite alternate; }
+@keyframes me-halo-drift { from { transform: translate(0, 0) scale(1); } to { transform: translate(6%, 8%) scale(1.15); } }
+.me-avatar-wave { display: inline-block; transform-origin: 50% 90%; animation: me-wave 2.4s ease-in-out 0.4s 2; }
+@keyframes me-wave { 0%, 100% { transform: rotate(0deg); } 20% { transform: rotate(-10deg); } 40% { transform: rotate(8deg); } 60% { transform: rotate(-8deg); } 80% { transform: rotate(5deg); } }
+.profile-edit-dialog { max-width: min(640px, 94vw); max-height: 88vh; overflow: hidden; display: flex; flex-direction: column; }
+.profile-edit-scroll { overflow-y: auto; display: grid; gap: 1rem; padding-right: 0.25rem; }
+
+/* ===== Picks: square grid cards ===== */
+.picks-grid .scroll-track { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; align-content: start; max-height: 26rem; }
+.pick-square { aspect-ratio: 1 / 1; display: flex; flex-direction: column; gap: 0.35rem; padding: 0.85rem; border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(160deg, color-mix(in oklab, var(--primary) 6%, var(--card)), var(--card)); overflow: hidden; transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.pick-square:hover { transform: translateY(-3px); box-shadow: 0 10px 24px -12px color-mix(in oklab, var(--primary) 35%, transparent); }
+.pick-square .pick-note { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.pick-square .pick-foot { margin-top: auto; }
+@media (max-width: 900px) { .picks-grid .scroll-track { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ===== Profile: my ripples and my stars ===== */
+.mine-panel { background: linear-gradient(180deg, var(--card), color-mix(in oklab, var(--accent) 5%, var(--card))); }
+.mine-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.75rem; }
+.mine-col-title { display: flex; align-items: center; gap: 0.4rem; font-size: 0.95rem; }
+.mine-count { margin-left: auto; font-size: 0.75rem; background: color-mix(in oklab, var(--primary) 12%, transparent); color: var(--primary); border-radius: 999px; padding: 0.1rem 0.55rem; }
+.mine-list .scroll-track { display: grid; gap: 0.5rem; max-height: 18rem; align-content: start; }
+.mine-link { display: grid; gap: 0.2rem; padding: 0.65rem 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); text-decoration: none; color: inherit; transition: border-color 0.2s ease, transform 0.2s ease; }
+.mine-link:hover { border-color: var(--primary); transform: translateY(-2px); }
+.mine-body { font-size: 0.85rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+@media (max-width: 760px) { .mine-columns { grid-template-columns: 1fr; } }
+
+@media (prefers-reduced-motion: reduce) {
+ .cr-ring, .cr-orbit, .cr-dot, .cr-link, .me-halo, .me-avatar-wave { animation: none; }
+}
