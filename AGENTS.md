@@ -19,7 +19,7 @@
 - Visual refinement stays in the shared stylesheet and existing controls; reuse checked MemberAvatar everywhere so presentation changes cannot bypass profile privacy.
 - Replies and Perspective Map data flow only through visibility-checked database functions (one reply per member, never by the question author); the map lists perspectives in a fixed order so no answer reads as winning.
 - Wingwoman AI turns run only in authenticated server functions sharing one gateway helper and safety prompt, saved under the caller's rows; drafts reload by owner-scoped session id, never URL text, so situations stay private.
-- Keep Wingwoman source context separate from editable Ripple state in the existing four-step composer, and publish through the explicit ripplePublication field allowlist only at final confirmation; this prevents private source/session data from leaking into shared questions.
+- Keep Wingwoman source context separate from editable Ripple state in the four-step composer; publish only the ripplePublication allowlist at final confirmation, preventing private source/session leaks.
 - AI synthesis is authenticated and on-demand: checked Ripple identity selects checked replies/comments, and only bodies reach AI. Shared meaningful-response gating avoids filler; summaries are not stored and never replace responses or the map.
 - Picks are owner-written; checked accepted Direct Circle reads expose only recommender first name. No ratings or ranking.
 - Profiles use tellher_member_profile viewer checks; avatars are signed afterward server-side. Raw profiles and storage paths stay private.
