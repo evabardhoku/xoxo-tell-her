@@ -48,7 +48,7 @@ export function UserGuide({ userId }: { userId: string }) {
  return <Dialog.Root modal={false} open={open} onOpenChange={setOpen}>
   <Dialog.Trigger asChild><Button variant="soft" size="icon" className="tellher-guide-trigger" title="TellHer guide" aria-label="Open TellHer guide" onClick={() => { setIndex(0); setError(''); }}><Compass /></Button></Dialog.Trigger>
   <Dialog.Portal>
-   <Dialog.Content className={`tellher-guide-panel tellher-guide-panel--${step.tone}`} onInteractOutside={event => event.preventDefault()} onOpenAutoFocus={event => event.preventDefault()}>
+   <Dialog.Content className={`tellher-guide-panel tellher-guide-panel--${step.tone}`} onInteractOutside={event => event.preventDefault()}>
     <div className="tellher-guide-header"><span><Compass size={15} /> Your TellHer guide</span><Dialog.Close asChild><Button variant="ghost" size="icon" aria-label="Close guide"><X /></Button></Dialog.Close></div>
     <div className="tellher-guide-scroll">
      <div className="tellher-guide-emblem" aria-hidden="true"><i /><i /><Feather /></div>

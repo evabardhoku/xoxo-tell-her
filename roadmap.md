@@ -1,5 +1,5 @@
 # TellHer foundation
-- [ ] First-visit guided navigator and repeatable side guide; verify first display, navigation, dismissal, and phone layout.
+- [x] First-visit guide with 10 chapters and side replay; signed-in navigation, dismissal, reload suppression and phone layout verified; account-scoped storage checks passed.
 - [x] Profile connection requests with recipient Direct/Extended choice; 25 focused tests passed; signed-in request, acceptance and reload verified.
 - [x] Landing XOXO wordmark, requested narrator aside and reduced-motion shimmer; desktop and phone checked.
 - [x] Invitation handoff: signup-bound one-use claim, confirmed-email admission, automatic Feed navigation, no automatic friendship; 36 focused tests passed including real token verification, cancellation and expiry-after-claim; build OK and phone form checked.
