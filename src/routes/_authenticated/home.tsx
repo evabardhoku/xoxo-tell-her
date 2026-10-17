@@ -26,7 +26,7 @@ function SkyHub() {
   <header className="sky-head"><div><h1>Sky</h1><p className="form-note">Stories connect even when identities don’t.</p></div><Button asChild variant="soft" size="sm"><Link to="/ripple">Ask anonymously</Link></Button></header>
   {sky.isError ? <p role="alert" className="form-note form-error">The sky could not be loaded. Please refresh.</p> : newcomer && !sky.data?.length ? <StarterConstellations /> : sky.data ? <ConstellationSky rows={sky.data} /> : <p role="status" className="form-note">Drawing the sky…</p>}
   {sky.data && <Trending rows={sky.data} />}
-  <section id="anonymous-ripples" aria-labelledby="anon-title" ref={el => { if (el && view === 'ripples') el.scrollIntoView(); }}><h2 id="anon-title" className="sky-section-title">Recent anonymous Ripples</h2><AnonymousRipples /></section>
+  <section id="anonymous-ripples" aria-labelledby="anon-title" ref={el => { if (el && view === 'ripples') el.scrollIntoView(); }}><h2 id="anon-title" className="sky-section-title">Recent stars</h2><AnonymousRipples /></section>
  </div>;
 }
 
@@ -54,8 +54,8 @@ function AnonymousRipples() {
  const feed = useQuery(feedQuery); const maps = useQuery(feedMapQuery);
  const [limit, setLimit] = useState(6);
  const list = (feed.data ?? []).filter(q => q.author_visibility !== 'named');
- if (feed.isPending) return <p role="status" className="form-note">Gathering anonymous Ripples…</p>;
- if (feed.isError) return <p role="alert" className="form-note form-error">Anonymous Ripples could not be loaded. <Button variant="ghost" size="sm" onClick={() => void feed.refetch()}>Try again</Button></p>;
- if (!list.length) return <section className="empty-panel"><p>No anonymous Ripples have reached you yet.</p></section>;
+ if (feed.isPending) return <p role="status" className="form-note">Gathering stars…</p>;
+ if (feed.isError) return <p role="alert" className="form-note form-error">Stars could not be loaded. <Button variant="ghost" size="sm" onClick={() => void feed.refetch()}>Try again</Button></p>;
+ if (!list.length) return <section className="empty-panel"><p>No stars have reached you yet.</p></section>;
  return <><ul className="question-list">{list.slice(0, limit).map(q => <QuestionCard key={q.id} q={q} counts={maps.data?.[q.id]} />)}</ul>{list.length > limit && <Button variant="ghost" onClick={() => setLimit(n => n + 6)}>Show more</Button>}</>;
 }

@@ -1225,6 +1225,7 @@ export type Database = {
           has_letters: boolean
           has_outcome: boolean
           id: string
+          reply_count: number
         }[]
       }
       tellher_constellation_women: {

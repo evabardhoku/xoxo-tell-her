@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { MessageCircle, ChevronUp } from 'lucide-react';
+import { MessageCircle, ChevronUp, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { MemberAvatar } from '@/components/avatars';
@@ -10,6 +10,20 @@ import { errorText, feedQuery, relativeTime } from '@/lib/askher';
 import { openCommentsQuery, type OpenComment } from '@/lib/open-feed';
 
 function Avatar({ c }: { c: OpenComment }) { return <MemberAvatar id={c.profile_id} name={c.first_name} hasPhoto={c.has_avatar} size={32} />; }
+
+/** Heart + counter on the side of a comment; uses the same checked reply-like functions as anonymous perspectives, never revealing who liked. */
+function CommentLike({ c, id }: { c: OpenComment; id: string }) {
+ const qc = useQueryClient();
+ const [busy, setBusy] = useState(false);
+ const toggle = async () => {
+  if (busy || c.is_mine) return; setBusy(true);
+  const { error } = await supabase.rpc(c.liked ? 'tellher_unlike_reply' : 'tellher_like_reply', { _reply: c.id });
+  setBusy(false); if (!error) await qc.invalidateQueries({ queryKey: openCommentsQuery(id).queryKey });
+ };
+ return c.is_mine
+  ? <span className="comment-like" aria-label={`${c.likes} ${c.likes === 1 ? 'like' : 'likes'}`}><Heart size={15} /><span>{c.likes}</span></span>
+  : <Button variant="ghost" type="button" className="comment-like" aria-pressed={c.liked} aria-label={c.liked ? 'Unlike comment' : 'Like comment'} disabled={busy} onClick={() => void toggle()}><Heart size={15} /><span>{c.likes}</span></Button>;
+}
 
 /** Named comments on an open Ripple. Older replies from before open comments stay anonymous. */
 export function OpenComments({ id, preview = 0, isAuthor = false }: { id: string; preview?: number; isAuthor?: boolean }) {
@@ -30,6 +44,7 @@ export function OpenComments({ id, preview = 0, isAuthor = false }: { id: string
      <p className="open-comment-head">{c.is_mine ? <strong>You</strong> : c.profile_id ? <Link to="/profile/$memberId" params={{ memberId: c.profile_id }} className="member-link"><strong>{c.first_name}</strong></Link> : <strong>{c.first_name ?? 'A TellHer woman'}</strong>}<span>{relativeTime(c.created_at)}</span></p>
      <p className="reply-body">{c.body}</p>
     </div>
+    <CommentLike c={c} id={id} />
    </li>)}</ul>}
   </>}
   {(all || preview === 0) && comments.isSuccess && <PerspectiveSynthesis key={JSON.stringify(list.map(c => [c.id, c.body]))} id={id} replies={list} comments />}

@@ -37,14 +37,23 @@ function Wingwoman() {
  return <>
   <div className="page-heading"><div><h1>Wingwoman</h1><p className="private-note"><LockKeyhole size={12} />A private conversation, at your own pace.</p><p className="form-note">A reflection tool, not a therapist, lawyer or emergency service.</p></div></div>
   <div className="ww-layout">
-   <details className="ww-sessions"><summary>Conversation history</summary>
-    <Button asChild variant="editorial" size="sm" className="w-full"><Link to="/wingwoman" search={{}}><Plus />New conversation</Link></Button>
+   <aside className="ww-side" aria-label="What you have been through">
+    <h2 className="ww-side-title">What you have been through</h2>
     <p className="private-note"><LockKeyhole size={12} />Only you can see these.</p>
-    {sessions.isError ? <p role="alert" className="form-note form-error">History could not be loaded. <Button variant="ghost" size="sm" onClick={() => void sessions.refetch()}>Try again</Button></p> : sessions.isPending ? <p role="status" className="form-note">Loading conversations…</p> : !sessions.data?.length ? <p className="form-note">No conversations yet.</p> : <ul>{sessions.data.map(x => <li key={x.id}><Link to="/wingwoman" search={{ s: x.id }} className="ww-session" aria-current={s === x.id ? 'page' : undefined}><span className="question-category">{x.context ?? 'Other'}</span><span className="ww-session-title">{x.title || 'Untitled'}</span><span className="form-note">{relativeTime(x.updated_at)}</span></Link></li>)}</ul>}
-   </details>
-   <div className="ww-main">{s ? <Thread key={s} id={s} /> : <Start />}</div>
+    <Button asChild variant="editorial" size="sm" className="w-full"><Link to="/wingwoman" search={{}}><Plus />New conversation</Link></Button>
+    {sessions.isError ? <p role="alert" className="form-note form-error">History could not be loaded. <Button variant="ghost" size="sm" onClick={() => void sessions.refetch()}>Try again</Button></p> : sessions.isPending ? <p role="status" className="form-note">Loading conversations…</p> : !sessions.data?.length ? <p className="form-note">No conversations yet.</p> : <ul className="ww-sessions">{sessions.data.map(x => <li key={x.id}><Link to="/wingwoman" search={{ s: x.id }} className="ww-session" aria-current={s === x.id ? 'page' : undefined}><span className="question-category">{x.context ?? 'Other'}</span><span className="ww-session-title">{x.title || 'Untitled'}</span><span className="form-note">{relativeTime(x.updated_at)}</span></Link></li>)}</ul>}
+   </aside>
+   <div className="ww-main"><Wings />{s ? <Thread key={s} id={s} /> : <Start />}</div>
   </div>
  </>;
+}
+
+/** Gentle wing beat above the conversation — a quiet reminder someone is in your corner. */
+function Wings() {
+ return <div className="ww-wings" aria-hidden><svg viewBox="0 0 140 64" focusable="false">
+  <path className="ww-wing ww-wing--l" d="M68 38 C52 12 26 4 8 14 C20 17 24 24 21 29 C28 30 31 36 30 42 C38 40 42 44 43 50 C52 45 62 41 68 38 Z" />
+  <path className="ww-wing ww-wing--r" d="M72 38 C88 12 114 4 132 14 C120 17 116 24 119 29 C112 30 109 36 110 42 C102 40 98 44 97 50 C88 45 78 41 72 38 Z" />
+ </svg></div>;
 }
 
 function Start() {

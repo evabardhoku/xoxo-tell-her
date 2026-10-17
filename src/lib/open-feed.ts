@@ -19,7 +19,8 @@ export const openCommentsQuery = (id: string) => ({
  queryFn: async () => { const { data, error } = await supabase.rpc('tellher_open_comments', { _id: id }); if (error) throw error; return (data ?? []) as OpenComment[]; },
 });
 
-export const relationLabel = (c?: OpenContext) => !c ? 'TellHer Community' : c.relation === 'mine' ? 'Your Ripple' : c.relation === 'circle' ? 'My Circle' : c.relation === 'extended' ? (c.via_name ? `Extended via ${c.via_name}` : 'Extended Circle') : 'TellHer Community';
+/** Named discussions are Ripples; the grade says how far they travelled — first grade (Direct Circle), second grade (Extended), open (whole community). */
+export const relationLabel = (c?: OpenContext) => !c ? 'Open ripple' : c.relation === 'mine' ? 'Your ripple' : c.relation === 'circle' ? 'First grade ripple' : c.relation === 'extended' ? (c.via_name ? `Second grade ripple via ${c.via_name}` : 'Second grade ripple') : 'Open ripple';
 const proximity: Record<Relation, number> = { mine: 0, circle: 0, extended: 1, community: 2 };
 
 /** For You: trust proximity first, then topics she has asked about, then recency. Likes never rank. */
