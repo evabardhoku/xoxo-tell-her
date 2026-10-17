@@ -6,7 +6,6 @@ import { QuestionCard } from '@/components/question-feed';
 import { PickItem, picksQuery } from '@/components/trusted-picks';
 import { Echo } from '@/components/echo';
 import { pageHead } from '@/lib/metadata';
-import { circleQuery } from '@/lib/circle';
 import { feedQuery } from '@/lib/askher';
 import { feedMapQuery } from '@/lib/perspectives';
 import { placeTitle, skyQuery } from '@/lib/constellations';

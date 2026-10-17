@@ -4,22 +4,36 @@ import { safeOpen } from '@/lib/avatar';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { MapPin, Pencil } from 'lucide-react';
+import { MapPin, Pencil, Star, Waves } from 'lucide-react';
 import { ProfileEditor } from '@/components/profile-editor';
-import { discoverabilityOptions, profileQuery } from '@/lib/profile';
+import { profileQuery } from '@/lib/profile';
 import { SignOut } from '@/components/app-shell';
-import { TrustShelf } from '@/components/trust-shelf';
+import { TrustedPicks } from '@/components/trusted-picks';
 import { pageHead } from '@/lib/metadata';
 import { supabase } from '@/integrations/supabase/client';
 import { PrivacyData } from '@/components/privacy-data';
-
+import { feedQuery, relativeTime, type FeedQuestion } from '@/lib/askher';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { ScrollPanel } from '@/components/scroll-panel';
 import { Button } from '@/components/ui/button';
 
-export const Route = createFileRoute('/_authenticated/profile')({ loader: ({ context }) => context.queryClient.ensureQueryData(profileQuery), head: () => pageHead('Profile', 'Your private TellHer account and profile.'), component: Profile });
+export const Route = createFileRoute('/_authenticated/profile')({ loader: ({ context }) => context.queryClient.ensureQueryData(profileQuery), head: () => pageHead('Profile', 'Your TellHer profile, exactly as other women see it.'), component: Profile });
+
+/** The same viewer-checked profile read other members get — relation 'self' for the owner. */
+const asOthersQuery = (id: string) => ({
+ queryKey: ['member-profile', id],
+ queryFn: async () => {
+  const { data, error } = await supabase.rpc('tellher_member_profile', { _id: id });
+  if (error) throw error;
+  return data?.[0] ?? null;
+ },
+});
 
 function Profile() {
  const { data, refetch } = useSuspenseQuery(profileQuery);
  const [editing, setEditing] = useState(false);
+ const view = useQuery(asOthersQuery(data.id));
+ const feed = useQuery(feedQuery);
  const { data: avatarUrl } = useQuery({
   queryKey: ['private-avatar', data.avatar_path],
   enabled: Boolean(data.avatar_path),
@@ -29,39 +43,68 @@ function Profile() {
    return signed.signedUrl;
   },
  });
- const discovery = discoverabilityOptions.find(o => o.value === data.discoverability);
  const isMod = useQuery({ queryKey: ['is-moderator'], queryFn: async () => (await supabase.rpc('tellher_is_moderator')).data === true });
+ const m = view.data;
+ const place = [m?.city, m?.country].filter(Boolean).join(', ');
+ const mine = (feed.data ?? []).filter(q => q.is_mine);
+ const ripples = mine.filter(q => q.author_visibility === 'named');
+ const stars = mine.filter(q => q.author_visibility !== 'named');
  return <>
-  <div className="page-heading"><div><h1>Your profile</h1><p>Your name, your account, your own pace.</p></div></div>
+  <div className="page-heading"><div><h1>Your profile</h1><p>This is exactly how other women see you.</p></div><Button variant="editorial" size="sm" onClick={() => setEditing(true)}><Pencil />Edit profile</Button></div>
 
-  <section className="circle-card me-header" aria-labelledby="me-title">
+  <section className="circle-card me-header me-public" aria-labelledby="me-title">
+   <span className="me-halo" aria-hidden />
    <div className="me-identity">
-    {data.open_avatar_type === 'illustrated' && data.open_avatar_config ? <span className="me-avatar avatar-frame" aria-hidden><IllustratedAvatar config={safeOpen(data.open_avatar_config)} size={72} /></span> : avatarUrl ? <img src={avatarUrl} alt="" className="me-avatar" /> : <span className="me-avatar me-initial" aria-hidden>{data.first_name.slice(0, 1).toUpperCase()}</span>}
+    <span className="me-avatar-wave">
+     {data.open_avatar_type === 'illustrated' && data.open_avatar_config ? <span className="me-avatar avatar-frame" aria-hidden><IllustratedAvatar config={safeOpen(data.open_avatar_config)} size={72} /></span> : avatarUrl ? <img src={avatarUrl} alt="" className="me-avatar" /> : <span className="me-avatar me-initial" aria-hidden>{data.first_name.slice(0, 1).toUpperCase()}</span>}
+    </span>
     <div>
-     <h2 id="me-title">{data.first_name} {data.last_name}</h2>
-     {(data.city || data.country) && <p className="form-note inline-flex items-center gap-1"><MapPin size={12} />{[data.city, data.country].filter(Boolean).join(', ')}</p>}
-     {data.occupation && <p className="form-note">{data.occupation}</p>}
+     <h2 id="me-title">{m?.first_name ?? data.first_name} {m?.last_name ?? data.last_name}</h2>
+     {(m?.occupation || place) && <p className="form-note">{m.occupation}{m.occupation && place && ' · '}{place && <span className="inline-flex items-center gap-1"><MapPin size={12} />{place}</span>}</p>}
+     <span className="trust-context" data-relation="self">This is how members see you</span>
     </div>
    </div>
-   {data.bio && <p className="me-bio">{data.bio}</p>}
-   {data.languages.length > 0 && <p className="form-note">Speaks {data.languages.join(', ')}</p>}
-   {data.known_for.length > 0 && <div className="me-tags"><span className="eyebrow">KNOWN FOR</span><div className="choice-row">{data.known_for.map(t => <span key={t} className="choice-chip" data-static>{t}</span>)}</div></div>}
-   {data.ask_me_about.length > 0 && <div className="me-tags"><span className="eyebrow">ASK ME ABOUT</span><div className="choice-row">{data.ask_me_about.map(t => <span key={t} className="choice-chip" data-static>{t}</span>)}</div></div>}
-   <div className="flex gap-2 flex-wrap mt-4">
-    <Button size="sm" variant="outline" onClick={() => setEditing(e => !e)}><Pencil />{editing ? 'Close editor' : 'Edit profile'}</Button>
-    <Link to="/profile/$memberId" params={{ memberId: data.id }} className="member-link text-sm self-center">See your member profile as others do</Link>
-   </div>
-
+   {m?.bio && <p className="me-bio">{m.bio}</p>}
+   {m && m.languages.length > 0 && <p className="form-note">Speaks {m.languages.join(', ')}</p>}
+   {m && m.known_for.length > 0 && <div className="me-tags"><span className="eyebrow">KNOWN FOR</span><div className="choice-row">{m.known_for.map(t => <span key={t} className="choice-chip" data-static>{t}</span>)}</div></div>}
+   {m && m.ask_me_about.length > 0 && <div className="me-tags"><span className="eyebrow">ASK ME ABOUT</span><div className="choice-row">{m.ask_me_about.map(t => <span key={t} className="choice-chip" data-static>{t}</span>)}</div></div>}
   </section>
 
-  {editing && <div id="profile-editor-region"><ProfileEditor profile={data} onSaved={async () => { await refetch(); setEditing(false); }} /></div>}
+  <TrustedPicks ownerOnly />
 
-  <TrustShelf memberId={data.id} firstName={data.first_name} editable />
+  <section className="circle-card mine-panel" aria-labelledby="mine-title">
+   <h2 id="mine-title">My ripples and my stars</h2>
+   <p className="form-note">Only you see this list. Stars stay anonymous to everyone else.</p>
+   <div className="mine-columns">
+    <MineList title="My ripples" icon={<Waves size={14} />} items={ripples} empty="No named ripples yet." />
+    <MineList title="My stars" icon={<Star size={14} />} items={stars} empty="No anonymous stars yet." />
+   </div>
+  </section>
 
-  <details className="profile-disclosure"><summary>Open Avatar</summary><AvatarStudio profile={data} photoUrl={avatarUrl} /></details>
-
-  <details className="profile-disclosure"><summary>Privacy &amp; data</summary><PrivacyData userId={data.id} discoverability={discovery?.label} onEditDiscoverability={() => { setEditing(true); requestAnimationFrame(() => document.getElementById('profile-editor-region')?.scrollIntoView({ block: 'start' })); }} /></details>
-  {isMod.data && <p className="form-note"><Link to="/admin/reports" className="member-link">Moderation reports</Link></p>}
-  <section className="account-settings"><SignOut /></section>
+  <Dialog open={editing} onOpenChange={setEditing}>
+   <DialogContent className="profile-edit-dialog" aria-describedby={undefined}>
+    <DialogTitle>Edit your profile</DialogTitle>
+    <div className="profile-edit-scroll">
+     <ProfileEditor profile={data} onSaved={async () => { await refetch(); setEditing(false); }} />
+     <details className="profile-disclosure"><summary>Open Avatar</summary><AvatarStudio profile={data} photoUrl={avatarUrl} /></details>
+     <details className="profile-disclosure"><summary>Privacy &amp; data</summary><PrivacyData userId={data.id} discoverability={undefined} onEditDiscoverability={() => {}} /></details>
+     {isMod.data && <p className="form-note"><Link to="/admin/reports" className="member-link">Moderation reports</Link></p>}
+     <section className="account-settings"><SignOut /></section>
+    </div>
+   </DialogContent>
+  </Dialog>
  </>;
+}
+
+function MineList({ title, icon, items, empty }: { title: string; icon: React.ReactNode; items: FeedQuestion[]; empty: string }) {
+ return <div className="mine-col">
+  <h3 className="mine-col-title">{icon}{title}<span className="mine-count">{items.length}</span></h3>
+  {items.length ? <ScrollPanel label={title} className="mine-list">{items.map(q => <li key={q.id}>
+   <Link to="/askher/$id" params={{ id: q.id }} className="mine-link">
+    <span className="question-category">{q.category}</span>
+    <span className="mine-body">{q.body}</span>
+    <span className="form-note">{q.reply_count} {q.reply_count === 1 ? 'perspective' : 'perspectives'} · {relativeTime(q.created_at)}</span>
+   </Link>
+  </li>)}</ScrollPanel> : <p className="form-note">{empty}</p>}
+ </div>;
 }
