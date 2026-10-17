@@ -7,16 +7,16 @@ describe.skipIf(!url || !key)('Trust Shelf notes', () => {
  const [A, B, U] = [0, 1, 2];
  const shelf = async (viewer: number) => ((await c[viewer]!.rpc('tellher_member_shelf', { _id: ids[A] })).data ?? []) as { kind: string; id: string; title: string }[];
  beforeAll(async () => {
-  admin = createClient(url!, key!, { auth: { persistSession: false } });
+  admin = createClient(url!, key!, { auth: { persistSession: false, storageKey: `test-${crypto.randomUUID()}` } });
   for (const n of ['Ana', 'Bea', 'Uma']) {
    const email = `tellher-tn-${n}-${crypto.randomUUID()}@example.com`; const password = crypto.randomUUID();
    const { data, error } = await admin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { first_name: n, last_name: 'Test', woman_attested: true } });
    if (error || !data.user) throw error; ids.push(data.user.id);
-   const client = createClient(url!, process.env['SUPABASE_PUBLISHABLE_KEY'] || key!, { auth: { persistSession: false } });
-   await client.auth.signInWithPassword({ email, password }); c.push(client);
+   const client = createClient(url!, process.env['SUPABASE_PUBLISHABLE_KEY'] || key!, { auth: { persistSession: false, storageKey: `test-${crypto.randomUUID()}` } });
+   const login = await client.auth.signInWithPassword({ email, password }); if (login.error) throw login.error; c.push(client);
   }
   // A and B trust each other; U is outside. A's profile stays Direct Circle only.
-  await admin.from('trust_connections').insert([{ requester_id: ids[A], recipient_id: ids[B], status: 'accepted' }, { requester_id: ids[B], recipient_id: ids[A], status: 'accepted' }]);
+  const trust = await admin.from('trust_connections').insert([{ requester_id: ids[A], recipient_id: ids[B], status: 'accepted' }, { requester_id: ids[B], recipient_id: ids[A], status: 'accepted' }]); if (trust.error) throw trust.error;
   await c[A]!.from('trusted_picks').insert({ owner_id: ids[A], title: 'A calm dentist', category: 'Health & Care', note: 'Explains everything first.' });
  }, 60000);
  afterAll(async () => { await admin.from('trust_connections').delete().in('requester_id', ids); for (const id of ids) await admin.auth.admin.deleteUser(id); });

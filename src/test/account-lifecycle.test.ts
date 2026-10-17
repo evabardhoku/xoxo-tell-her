@@ -41,4 +41,14 @@ describe('Safe account transitions', () => {
   account.change('SIGNED_IN', user('second')); account.initial(user('first'));
   expect(setUser).not.toHaveBeenCalled();
  });
+ it('clears private data before an identity-changing user update', () => {
+  const cache = new QueryClient(); const setUser = vi.fn(() => expect(cache.getQueryData(['private-profile'])).toBeUndefined());
+  const account = accountLifecycle({ setUser, setReady: vi.fn(), clearCache: () => cache.clear(), refresh: vi.fn() });
+  account.initial(user('first')); cache.setQueryData(['private-profile'], { id: 'first' }); account.change('USER_UPDATED', user('second'));
+  expect(setUser).toHaveBeenLastCalledWith(user('second'));
+ });
+ it('clears signed-out cache before a new sign-in', () => {
+  const clearCache = vi.fn(); const account = accountLifecycle({ setUser: vi.fn(), setReady: vi.fn(), clearCache, refresh: vi.fn() });
+  account.initial(null); account.change('SIGNED_IN', user('first')); expect(clearCache).toHaveBeenCalledTimes(1);
+ });
 });
