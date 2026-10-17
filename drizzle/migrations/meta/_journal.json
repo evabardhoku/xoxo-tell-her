@@ -358,6 +358,20 @@
       "when": 1792270626619,
       "tag": "0050_open_membership_without_invitation",
       "breakpoints": true
+    },
+    {
+      "idx": 51,
+      "version": "7",
+      "when": 1792274426414,
+      "tag": "0051_profile_connection_tiers",
+      "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "7",
+      "when": 1792274612220,
+      "tag": "0052_tier_connection_notifications",
+      "breakpoints": true
     }
   ]
 }

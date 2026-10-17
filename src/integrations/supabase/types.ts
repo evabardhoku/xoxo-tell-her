@@ -1014,6 +1014,7 @@ export type Database = {
       }
       trust_connections: {
         Row: {
+          connection_kind: string
           created_at: string
           id: string
           recipient_id: string
@@ -1022,6 +1023,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          connection_kind?: string
           created_at?: string
           id?: string
           recipient_id: string
@@ -1030,6 +1032,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          connection_kind?: string
           created_at?: string
           id?: string
           recipient_id?: string
@@ -1674,6 +1677,10 @@ export type Database = {
       }
       tellher_respond_trust: {
         Args: { _accept: boolean; _id: string }
+        Returns: undefined
+      }
+      tellher_respond_trust_tier: {
+        Args: { _circle: string; _id: string }
         Returns: undefined
       }
       tellher_ripple_audience: {
