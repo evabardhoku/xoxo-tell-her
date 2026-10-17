@@ -1,4 +1,5 @@
 # TellHer foundation
+- [ ] Final submission pass: audit core access and phone usability, fix proven issues, run serial regression suite and signed-in review
 - [x] Submission cleanup: calmer hubs, contextual Ripple navigation, wording, three-size browser review, private reflection/cancel/publish/readback; failing full-suite files passed on isolated rerun
 - [x] Platform regression pass: member avatars, compact feed comments, phone layouts, account switching, full tests and signed-in journeys
 - [x] Safety hardening: moderation, quick exit, safety panel, Wingwoman deletion, rate limits, PII warning, privacy & data, tests
