@@ -10,8 +10,8 @@ export function ScrollPanel({ label, className, children }: { label: string; cla
  useEffect(() => { update(); const el = track.current; if (!el) return; const ro = new ResizeObserver(update); ro.observe(el); return () => ro.disconnect(); }, [children]);
  const nudge = (dir: 1 | -1) => { const el = track.current; if (el) el.scrollBy({ top: dir * Math.max(el.clientHeight * 0.8, 200), behavior: 'smooth' }); };
  return <div className={`scroll-panel ${className ?? ''}`}>
-  <ul className="scroll-track" ref={track} onScroll={update} aria-label={label}>{children}</ul>
-  <div className="scroll-arrows">
+   <ul className="scroll-track" ref={track} onScroll={update} aria-label={label} tabIndex={0}>{children}</ul>
+   <div className="scroll-arrows" hidden={atStart && atEnd}>
    <Button type="button" variant="outline" size="icon" className="scroll-arrow" aria-label={`Scroll ${label} up`} disabled={atStart} onClick={() => nudge(-1)}><ChevronUp /></Button>
    <Button type="button" variant="outline" size="icon" className="scroll-arrow" aria-label={`Scroll ${label} down`} disabled={atEnd} onClick={() => nudge(1)}><ChevronDown /></Button>
   </div>

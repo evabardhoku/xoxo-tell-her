@@ -8,13 +8,13 @@ import { MapPin, Search as SearchIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { pageHead } from '@/lib/metadata';
-import { memberAvatar } from '@/lib/member.functions';
+import { MemberAvatar } from '@/components/avatars';
 import { reachContext, relativeTime } from '@/lib/askher';
 import { matchTopics, relationLabel, searchQuery, type SearchRow } from '@/lib/search';
 
 export const Route = createFileRoute('/_authenticated/search')({
  validateSearch: zodValidator(z.object({ q: fallback(z.string(), '').default('') })),
- head: () => pageHead('Search', 'Search people, Field Notes, picks and questions you can already see on TellHer.'),
+ head: () => pageHead('Search', 'Find women, picks, ripples and stars already shared with you on TellHer.'),
  component: SearchPage,
 });
 
@@ -24,11 +24,11 @@ function SearchPage() {
  const term = q.slice(0, 80);
  const res = useQuery(searchQuery(term));
  const submit = (e: FormEvent) => { e.preventDefault(); navigate({ search: { q: text.trim() } }); };
- const rows = res.data ?? [];
+ const rows = (res.data ?? []).filter(r => r.kind !== 'note');
  type Group = SearchRow['kind'] | 'open' | 'anon';
  const of = (k: Group) => k === 'open' ? rows.filter(r => r.kind === 'question' && r.author_visibility === 'named') : k === 'anon' ? rows.filter(r => r.kind === 'question' && r.author_visibility !== 'named') : rows.filter(r => r.kind === k);
  const topics = matchTopics(term);
- const groups: [string, Group][] = [['People', 'person'], ['Open Ripples', 'open'], ['Anonymous Ripples', 'anon'], ['Field Notes', 'note'], ['Picks', 'pick']];
+ const groups: [string, Group][] = [['People', 'person'], ['Ripples', 'open'], ['Stars', 'anon'], ['Picks', 'pick']];
  return <>
   <div className="page-heading"><div><div className="eyebrow">SEARCH</div><h1>Search</h1><p>Find what’s already shared with you.</p></div></div>
   <form className="search-bar" onSubmit={submit} role="search"><label htmlFor="global-q" className="sr-only">Search TellHer</label><Input id="global-q" value={text} maxLength={80} onChange={e => setText(e.target.value)} placeholder="A name, a city, a topic…" autoFocus /><Button type="submit" variant="editorial"><SearchIcon />Search</Button></form>
@@ -51,9 +51,8 @@ function Result({ r }: { r: SearchRow }) {
 }
 
 function PersonResult({ r }: { r: SearchRow }) {
- const avatar = useQuery({ queryKey: ['member-avatar', r.member_id], enabled: Boolean(r.has_avatar), queryFn: () => memberAvatar({ data: { id: r.member_id ?? '' } }), staleTime: 240000 });
  const [first, last = ''] = (r.title ?? '').split(' ');
- return <li className="search-item search-person"><span className="member-avatar ext-avatar" aria-hidden>{avatar.data?.url ? <img src={avatar.data.url} alt="" /> : first?.slice(0, 1).toUpperCase()}</span>
+ return <li className="search-item search-person"><MemberAvatar id={r.member_id} name={first} hasPhoto={Boolean(r.has_avatar)} size={44} className="ext-avatar" />
   <div className="member-meta"><Link to="/profile/$memberId" params={{ memberId: r.member_id ?? '' }} className="member-link"><strong>{first} {last.length === 1 ? `${last}.` : last}</strong></Link>{r.location && <span><MapPin size={12} className="inline mr-1" />{r.location}</span>}
    <span className="trust-context">{relationLabel(r.relation)}</span>{(r.known_for?.length ?? 0) > 0 && <span className="form-note">Known for {(r.known_for ?? []).join(', ')}</span>}</div></li>;
 }

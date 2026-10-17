@@ -16,6 +16,7 @@
 - Onboarding and Profile share validation/editing; triggers independently enforce attestation and field limits.
 - Open Avatars use private storage, stripped metadata, short-lived links and checked photo/illustration rendering. Anonymous display masks randomize on checked reads independently of profiles; historical storage stays untouched.
 - Use semantic tokens, shared controls and genuine empty states; disclosures never remove access.
+- Visual refinement stays in the shared stylesheet and existing controls; reuse checked MemberAvatar everywhere so presentation changes cannot bypass profile privacy.
 - Replies and Perspective Map data flow only through visibility-checked database functions (one reply per member, never by the question author); the map lists perspectives in a fixed order so no answer reads as winning.
 - Wingwoman AI turns run only in authenticated server functions sharing one gateway helper and safety prompt, saved under the caller's rows; drafts reload by owner-scoped session id, never URL text, so situations stay private.
 - Keep Wingwoman source context separate from editable Ripple state in the existing four-step composer, and publish through the explicit ripplePublication field allowlist only at final confirmation; this prevents private source/session data from leaking into shared questions.
