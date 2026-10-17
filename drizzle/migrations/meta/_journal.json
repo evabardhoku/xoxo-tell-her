@@ -323,6 +323,27 @@
       "when": 1792253487431,
       "tag": "0045_deprecate_retired_features",
       "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "7",
+      "when": 1792259805409,
+      "tag": "0046_invite_required_membership",
+      "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1792259842884,
+      "tag": "0047_enforce_membership_helpers",
+      "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "7",
+      "when": 1792260079584,
+      "tag": "0048_enforce_invitation_vouch",
+      "breakpoints": true
     }
   ]
 }

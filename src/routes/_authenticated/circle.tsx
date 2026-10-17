@@ -1,3 +1,4 @@
+import { MembershipInvite } from '@/components/membership-invite';
 import { MemberAvatar } from '@/components/avatars';
 import { ConnectInPerson, RedeemTrustCode } from '@/components/trust-code';
 import { createFileRoute, Link } from '@tanstack/react-router';
@@ -40,7 +41,7 @@ function Circle() {
  return <>
   <div className="page-heading"><div><h1>My Circle</h1><p>Women you chose to trust directly.</p></div></div>
   <div className="ripple-tabs" role="tablist" aria-label="Circle views">{tab('direct', 'My Circle')}{tab('extended', 'Extended')}{tab('requests', 'Requests', pending > 0 ? String(pending) : undefined)}{tab('messages', 'Messages')}</div>
-  {view === 'direct' && <DirectTab direct={direct} extendedCount={data.extendedCount} easing={easing} code={code} />}
+  {view === 'direct' && <><DirectTab direct={direct} extendedCount={data.extendedCount} easing={easing} code={code} /><MembershipInvite /></>}
   {view === 'extended' && easing && <p className="form-note discovery-hint">Your Direct Circle introduces new paths as it grows. <Link to="/circle" search={{ view: 'direct' }} className="member-link">Add your first trusted woman</Link></p>}
   {view === 'extended' && <ExtendedCircle direct={direct} />}
   {view === 'messages' && <InboxList />}

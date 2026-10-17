@@ -206,6 +206,42 @@ export type Database = {
           },
         ]
       }
+      member_access: {
+        Row: {
+          admission_source: string
+          admitted_at: string
+          invited_by: string | null
+          member_id: string
+        }
+        Insert: {
+          admission_source?: string
+          admitted_at?: string
+          invited_by?: string | null
+          member_id: string
+        }
+        Update: {
+          admission_source?: string
+          admitted_at?: string
+          invited_by?: string | null
+          member_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_access_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_access_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       member_blocks: {
         Row: {
           blocked_id: string
@@ -908,6 +944,7 @@ export type Database = {
           expires_at: string
           id: string
           max_uses: number
+          membership_invite: boolean
           uses: number
         }
         Insert: {
@@ -918,6 +955,7 @@ export type Database = {
           expires_at: string
           id?: string
           max_uses?: number
+          membership_invite?: boolean
           uses?: number
         }
         Update: {
@@ -928,6 +966,7 @@ export type Database = {
           expires_at?: string
           id?: string
           max_uses?: number
+          membership_invite?: boolean
           uses?: number
         }
         Relationships: [
@@ -1232,6 +1271,23 @@ export type Database = {
         Returns: number
       }
       tellher_conversation_partner: { Args: { _c: string }; Returns: string }
+      tellher_create_membership_invite:
+        | {
+            Args: never
+            Returns: {
+              code: string
+              expires_at: string
+              id: string
+            }[]
+          }
+        | {
+            Args: { _vouch?: boolean }
+            Returns: {
+              code: string
+              expires_at: string
+              id: string
+            }[]
+          }
       tellher_create_trust_code: {
         Args: { _group?: boolean }
         Returns: {
@@ -1254,6 +1310,7 @@ export type Database = {
           mine: boolean
         }[]
       }
+      tellher_enrollment_ready: { Args: never; Returns: boolean }
       tellher_extended_circle: {
         Args: { _via?: string }
         Returns: {
@@ -1535,6 +1592,10 @@ export type Database = {
         }[]
       }
       tellher_reach_preview: { Args: { _scope: string }; Returns: number }
+      tellher_redeem_membership_invite: {
+        Args: { _code: string }
+        Returns: string
+      }
       tellher_redeem_trust_code: {
         Args: { _code: string }
         Returns: {
