@@ -60,7 +60,7 @@ function Profile() {
     </span>
     <div>
      <h2 id="me-title">{m?.first_name ?? data.first_name} {m?.last_name ?? data.last_name}</h2>
-     {(m?.occupation || place) && <p className="form-note">{m.occupation}{m.occupation && place && ' · '}{place && <span className="inline-flex items-center gap-1"><MapPin size={12} />{place}</span>}</p>}
+     {(m?.occupation || place) && <p className="form-note">{m?.occupation}{m?.occupation && place && ' · '}{place && <span className="inline-flex items-center gap-1"><MapPin size={12} />{place}</span>}</p>}
      <span className="trust-context" data-relation="self">This is how members see you</span>
     </div>
    </div>
