@@ -1,5 +1,5 @@
 # TellHer foundation
-- [ ] Expressive anonymous Ripple detail: restore likes, open map/composer, response avatars, animated Echo and Trust Letter, visible synthesis; verify checked flows and phone layout
+- [x] Expressive anonymous Ripple detail: likes/counters, open map/composer, response avatars, animated Echo and Trust Letter, prominent synthesis; 34 checks passed, signed-in like/reply persistence, real private letter opening, live AI summary and four-size layouts verified
 - [x] Automatic anonymous avatars, focused Open Avatar editor, optional AI comment summaries, and multi-comment question-read fix; 33 checks passed, signed-in refresh/profile/live-summary verified
 - [x] Final submission pass: verified recovery, compact unranked comments, own-post emphasis, narrow-phone safety header, safe export failures; 180 checks passed across suite and isolated reruns; four-size signed-in review and reflection/cancel/publish/readback passed
 - [x] Submission cleanup: calmer hubs, contextual Ripple navigation, wording, three-size browser review, private reflection/cancel/publish/readback; failing full-suite files passed on isolated rerun

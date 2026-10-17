@@ -35,6 +35,6 @@
 - Account deletion removes auth with cascading rows. Safety uses src/lib/safety.ts. Trust Codes are hashed, row-locked and create ordinary accepted connections.
 
 - Password reset requires verified recovery or its user-bound session marker, never URL flags; blocked storage must not break it.
-- Tests run serially: hosted auth and abuse limits are shared. Check fixture writes and reads for errors.
+- Run tests serially for shared auth/limits; check fixture read/write errors.
 
 - Ripple detail reuses checked reply-likes and outcomes; decorative reply masks never use profiles. Trust Letter reveals the checked outcome, preserving author-only/private defaults.
