@@ -75,7 +75,7 @@ function Profile() {
     <div className="profile-edit-scroll">
      <ProfileEditor profile={data} onSaved={async () => { await refetch(); setEditing(false); }} />
      <details className="profile-disclosure"><summary>Open Avatar</summary><AvatarStudio profile={data} photoUrl={avatarUrl} /></details>
-     <details className="profile-disclosure"><summary>Privacy &amp; data</summary><PrivacyData userId={data.id} discoverability={discoverabilityOptions.find(o => o.value === data.discoverability)?.label} onEditDiscoverability={() => {}} /></details>
+      <details className="profile-disclosure"><summary>Privacy &amp; data</summary><PrivacyData userId={data.id} discoverability={discoverabilityOptions.find(o => o.value === data.discoverability)?.label} onEditDiscoverability={() => { const control = document.querySelector<HTMLInputElement>('input[name="discoverability"]:checked'); control?.scrollIntoView({ block: 'center', behavior: 'instant' }); control?.focus({ preventScroll: true }); }} /></details>
      {isMod.data && <p className="form-note"><Link to="/admin/reports" className="member-link">Moderation reports</Link></p>}
      <section className="account-settings"><SignOut /></section>
     </div>
