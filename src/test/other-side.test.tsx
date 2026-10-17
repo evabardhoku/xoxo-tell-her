@@ -16,7 +16,7 @@ it('lets the author write a decision immediately and saves it privately by defau
  let saved: Record<string, unknown> | null = null;
  mocks.rpc.mockImplementation(async (name: string, args: Record<string, unknown>) => {
   if (name === 'tellher_set_outcome') saved = args;
-  return { error: null, data: name === 'tellher_outcome' && saved ? [{ status: null, summary: saved._summary, note: '', shared: false, updated_at: new Date().toISOString(), is_mine: true }] : [] };
+  return { error: null, data: name === 'tellher_outcome' && saved ? [{ status: null, summary: saved['_summary'], note: '', shared: false, updated_at: new Date().toISOString(), is_mine: true }] : [] };
  });
  show(true);
  fireEvent.click(await screen.findByRole('button', { name: 'Write your Star Letter' }));
