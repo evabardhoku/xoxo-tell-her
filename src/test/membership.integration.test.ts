@@ -20,7 +20,7 @@ describe.skipIf(!url || !key || !pub)('Open membership (invitations paused)', ()
  afterAll(async()=>{ if(!admin) return; for(const id of ids) { const r=await admin.auth.admin.deleteUser(id); if(r.error) throw r.error; } });
  it('confirmed, self-attested accounts enter without any invitation',async()=>{ expect((await client(1).rpc('tellher_member_ready')).data).toBe(true); const f=await client(1).rpc('tellher_feed'); expect(f.error).toBeNull(); });
  it('accounts still cannot write their own admission receipt',async()=>{ expect((await client(1).from('member_access').insert({member_id:ids[1]})).error).not.toBeNull(); });
- it('self-attestation cannot be removed to bypass enrollment',async()=>{const r=await client(4).from('profiles').update({woman_attested_at:null}).eq('id',ids[4]); expect(r.error).not.toBeNull(); expect((await client(4).rpc('tellher_member_ready')).data).toBe(false);});
+ it('self-attestation cannot be removed to bypass enrollment',async()=>{const r=await client(4).from('profiles').update({woman_attested_at:null}).eq('id',ids[4]); expect(r.error).not.toBeNull(); expect((await admin.from('profiles').select('woman_attested_at').eq('id',ids[4]).single()).data?.woman_attested_at).not.toBeNull();});
  it('unconfirmed email accounts cannot sign in or receive membership',async()=>{
   const email=`unconfirmed-${crypto.randomUUID()}@example.com`; const password=crypto.randomUUID();
   const r=await admin.auth.admin.createUser({email,password,email_confirm:false,user_metadata:{first_name:'Unconfirmed',last_name:'Fixture',woman_attested:true}});
