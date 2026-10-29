@@ -1,7 +1,56 @@
-# Xoxo Tell Her
+# TellHer
 
-Buildthe initialfoundationforanewproduct calledTellHer. PRODUCT THESIS TellHer isawomen-centered trustnetworkforsensitivequestionsandsecondperspectives. Usersbuild asmall circleofwomen theytrust.Whentheywantadvice,theycansendan anonymous "Trust Ripple"totheirdirectcircle,toatwo-hopextendedcircle,or tothe widerTellHer community. ResponsesareorganizedintoaPerspectiveMapratherthana popularityscore.WingwomanisaprivateAI reflectiontoolthatcanlaterturna situation intoaneditableTrustRipple draft. Forthisfirstimplementation,buildONLYthevisualfoundation,publiclandingpage, authenticatedappshell,navigation,andempty states.Donotimplementbackendlogic fortrust,questions,replies,orAIyet. NAVIGATION Desktop:Home,AskHer,MyCircle,Wingwoman,Profile. Mobile: bottomnavigationforHome,AskHer, Circle,Wingwoman;Profileaccessiblefrom avatar/menu. Keep"Start a Ripple"easytoreach. LANDING COPY Headline: "Some thingsyoudon'tasktheinternet. Youaskher." Supportingline: "Trust travels.Identitydoesn'thaveto." Explain the product inthreeshortideas: 1. Startwith yourowninstinct. 2. Choose how faryouranonymousquestiontravels.
-3. Seeperspectives, not popularity. Primary CTA:"Enter TellHer"or"Getstarted". VISUALSYSTEM TheUIshould visuallymatchanelegant editorialplanningdocument:-background#F8F2EC (warmcream);-primary #54283E(deep plum);-secondary #B4778B (mutedrose);-accent#C79B58 (softgold);-text#262126(ink);-softsurface#F2E8E5;-success/accent #53735B;-information #567083. Typography:-NotoSerif(or closest availablehigh-quality serif)forheroandmajoreditorial headings;-Interfor navigation, forms,buttons, metadata,anddenseUI. Components:-maturerounded cards, 14-18pxradius;-thinmutedborders and minimalshadow;-generouswhitespace;-clearlabelsabove form fields;-nobright pink stereotype,nogeneric AI illustrations,noexcessivegradients. SIGNATURE VISUAL Usesubtleconcentricripplerings/trust nodesasanabstractvisualmotifinthelanding heroandempty states. Donotoveruseit. Createemptystates/placeholdersfor:-Homedashboard;-MyCircle;-AskHerfeed;-TrustRipplecomposerentry;-Wingwoman;-Profile. Do notcreate fakefunctionalbehavior. Do notaddfeatures outside thisscope. Preserveaclean architectureforlater backend implementation. Verifynavigation,responsivebehavior, focusstates,andreadabilityondesktopandmobile beforefinishing.
+> Some things you don't ask the internet. You ask her.
+
+TellHer is a women-centered trust network for real-life decisions.
+
+It gives women two complementary ways to seek perspective:
+- **My Feed** for conversations where identity adds context and trust.
+- **Sky** for questions that are easier to ask anonymously.
+
+TellHer combines trusted social connections, anonymous lived experience,
+private AI reflection, and outcome sharing to help useful experience
+travel between women without requiring identity to travel with it.
+
+## Why TellHer?
+
+Advice online is abundant, but context and trust are not.
+
+Many real-life decisions — relationships, work, moving, housing, travel,
+services, or difficult social situations — are too personal for a search
+engine and too context-dependent for generic advice.
+
+TellHer was designed around a simple question:
+
+**What if women could access the experience already held within their
+communities, while choosing when to be seen and when to stay anonymous?**
+
+## Core experience
+
+### My Feed
+Identity-visible conversations between women.
+
+### Sky
+Anonymous discussions represented as Stars and organized into topic
+Constellations.
+
+### Perspectives
+Structured responses that allow disagreement instead of reducing advice
+to popularity.
+
+### Echo
+A private signal for: "This happened to me too."
+
+### Star Letters
+Follow-ups that show what happened after the original question.
+
+### Wingwoman
+A private AI reflection space that helps a user think before deciding
+whether to share anything with the community.
+
+### My Circle
+A trust network built around Direct and Extended relationships rather
+than follower counts.
 
 This project was built with [Lovable](https://lovable.dev).
 
