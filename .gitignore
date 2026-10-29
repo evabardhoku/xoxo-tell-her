@@ -1,32 +1,177 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# TellHer
 
-node_modules
-dist
-dist-ssr
-.output
-.vinxi
-.tanstack/**
-.nitro
-*.local
+> Some things you don't ask the internet. You ask her.
 
-# Wrangler / Cloudflare
-.wrangler/
-.dev.vars
+TellHer is a women-centered trust network for real-life decisions.
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+It gives women two complementary ways to seek perspective:
+- My Feed for conversations where identity adds context and trust.
+- Sky for questions that are easier to ask anonymously.
+
+TellHer combines trusted social connections, anonymous lived experience,
+private AI reflection, and outcome sharing to help useful experience
+travel between women without requiring identity to travel with it.
+
+## Why TellHer?
+
+Advice online is abundant, but context and trust are not.
+
+Many real-life decisions — relationships, work, moving, housing, travel,
+services, or difficult social situations — are too personal for a search
+engine and too context-dependent for generic advice.
+
+TellHer was designed around a simple question:
+
+What if women could access the experience already held within their
+communities, while choosing when to be seen and when to stay anonymous?
+
+## Core experience
+
+### My Feed
+Identity-visible conversations between women.
+
+### Sky
+Anonymous discussions represented as Stars and organized into topic
+Constellations.
+
+### Perspectives
+Structured responses that allow disagreement instead of reducing advice
+to popularity.
+
+### Echo
+A private signal for: "This happened to me too."
+
+### Star Letters
+Follow-ups that show what happened after the original question.
+
+### Wingwoman
+A private AI reflection space that helps a user think before deciding
+whether to share anything with the community.
+
+### My Circle
+A trust network built around Direct and Extended relationships rather
+than follower counts.
+
+## Origin
+
+TellHer was originally prototyped during Lovable SheBuilds Season 04
+in October 2026 and submitted in the Social Good category.
+
+The initial 72-hour prototype was subsequently refactored, documented,
+tested, and extended as an independent software project.
+
+This repository reflects the post-competition work: architecture cleanup,
+security review, permission hardening, and product-level refinements that
+turn the prototype into a more robust, maintainable application.
+
+## Privacy model
+
+TellHer is built around the idea that women should be able to choose how
+much of themselves they reveal in a given situation.
+
+- Public routes stay top-level and intentionally simple.
+- Private routes use authenticated-only access.
+- Anonymous participation is designed to preserve privacy and reduce
+  unnecessary exposure.
+- Trust and visibility are enforced through checked server-side logic,
+  not client-only assumptions.
+- Identity, profile data, and storage paths remain protected by design.
+
+## Architecture
+
+TellHer is structured around a trusted social layer, private decision-support
+features, and a curated content experience.
+
+- Frontend app shell and routing for public and authenticated experiences
+- Checked database access for trust, visibility, and moderation workflows
+- Profile, feed, and constellation data composed from allowed sources only
+- AI assistance intentionally limited to authenticated, on-demand flows
+- Reusable design system with shared controls, semantic tokens, and empty states
+
+## Tech stack
+
+- React + TypeScript + Vite
+- TanStack Router / app routing
+- Supabase for authentication, database, and storage
+- Server-side checks and database functions for permission enforcement
+- Shared UI patterns and design tokens for a consistent product experience
+
+## Screenshots
+
+Add product screenshots here once the project is ready for public-facing
+showcase material.
+
+Suggested sections:
+- Landing / motivation
+- My Feed experience
+- Sky anonymous question flow
+- Profile and trust network
+- Wingwoman reflection flow
+
+## Local setup
+
+### Prerequisites
+
+- Node.js 18+ or newer
+- npm
+- A Supabase project
+
+### Install
+
+```bash
+git clone https://github.com/evabardhoku/xoxo-tell-her.git
+cd xoxo-tell-her
+npm install
+```
+
+### Environment variables
+
+Create a local `.env` file from the example and fill in your own values.
+
+```bash
+cp .env.example .env
+```
+
+Example values:
+
+```env
+SUPABASE_PROJECT_ID="your-project-id"
+SUPABASE_PUBLISHABLE_KEY="your-publishable-key"
+SUPABASE_URL="https://your-project.supabase.co"
+VITE_SUPABASE_PROJECT_ID="your-project-id"
+VITE_SUPABASE_PUBLISHABLE_KEY="your-publishable-key"
+VITE_SUPABASE_URL="https://your-project.supabase.co"
+```
+
+### Run locally
+
+```bash
+npm run dev
+```
+
+## Development notes
+
+This project includes a strong emphasis on:
+
+- access control and privacy checks
+- trusted social graph behavior
+- anonymous content boundaries
+- moderation and abuse prevention
+- private AI reflection without exposing hidden source context
+
+## Acknowledgements
+
+TellHer was developed as a women-centered product concept with a focus on
+trust, context, and harm-aware design.
+
+Special thanks to the Lovable SheBuilds program and the broader community
+that supported the initial prototype and its development path.
+
+## License
+
+This project is currently under active development and may not yet be
+licensed for external reuse.
+
+---
+
+Built with care for women seeking better context before they act.
